@@ -1,9 +1,41 @@
 import {Link} from 'react-router-dom'
-
+import React , {useState} from 'react';
 let Login=(props)=>{
 
-    function submitForm() {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    })
+    console.log(formData)
 
+    let handleChange=(event)=>{
+        const {name,value} = event.target;
+        setFormData(prevData=>{
+            return{
+                ...prevData,
+                [name]: value
+            }
+        })
+    }
+    function submitForm(event) {
+        event.preventDefault()
+        fetch("http://localhost:7070/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email:formData.email,
+                password:formData.password
+            })
+        })
+        .then(response => response.json())
+        .then(data =>{
+            if(data.loggedIn) {
+                window.localStorage.setItem("accessToken",data.accessToken);
+            }
+        })
+        .catch(err => console.log(err))
     }
     return (
         <div className={props.darkMode?"w-screen h-screen overflow-hidden flex items-center flex-col justify-center bg-[#252329]":"w-screen h-screen overflow-hidden flex items-center flex-col justify-center"}>
@@ -29,12 +61,19 @@ let Login=(props)=>{
                 <div className="my-2 flex flex-col w-full">
                  
                     <input type="Email" autoComplete="off" 
-                    className={props.darkMode?"border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-4 placeholder:text-lg placeholder:pl-4 bg-inherit":"border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-4 placeholder:text-lg placeholder:pl-4"}
+                    className={props.darkMode?"border-[1px] border-[#BDBDBD] text-white rounded-[8px] py-2 my-4 placeholder:text-lg px-4 bg-inherit":"border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-4 placeholder:text-lg px-4"}
                     placeholder="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+
                     />
                     <input type="password" autoComplete="off" 
-                     className={props.darkMode?"border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-2 placeholder:text-lg placeholder:pl-4 bg-inherit":"border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-2 placeholder:text-lg placeholder:pl-4"}
+                     className={props.darkMode?"border-[1px] text-white border-[#BDBDBD] rounded-[8px] py-2 my-2 placeholder:text-lg px-4 bg-inherit":"border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-2 placeholder:text-lg px-4"}
                     placeholder="Password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     />
                 </div>
                 <div className="w-full my-3">

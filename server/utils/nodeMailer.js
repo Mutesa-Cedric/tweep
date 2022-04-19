@@ -24,7 +24,7 @@ const sendEmail = async (email, subject, text) => {
         to: email,
         subject: subject,
         // text: text,
-        html:`<a href=${text}>verify account</a>`
+        html:`<a href="${text}">verify account</a>`
       });
       console.log("email sent sucessfully");
     } catch (error) {
@@ -32,7 +32,6 @@ const sendEmail = async (email, subject, text) => {
       console.log(error);
     }
   };
-  
   module.exports.sendEmail = sendEmail;
 
 //sending email

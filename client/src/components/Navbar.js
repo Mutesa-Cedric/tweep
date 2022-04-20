@@ -3,7 +3,7 @@ import ManImg from "../images/Man.jpg"
 
 let Navbar=(props)=>{
     return (
-        <div className="w-screen h-16 px-[72px] bg-white">
+        <div className="w-screen h-16 px-[72px] bg-white fixed left-0 top-0 z-index-100">
            <div className="w-full h-full flex items-center justify-between">
                {/* logo */}
                 <div className="flex items-center ">

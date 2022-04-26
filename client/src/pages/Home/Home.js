@@ -72,7 +72,7 @@ let Home=(props)=>{
         return (
             <div className={props.darkMode?"bg-[#252329] h-auto overflow-x-hidden":"bg-[#F2F2F2] h-auto overflow-x-hidden"}>
 
-                {userProfile.profileImage ? <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
+                {userProfile.profileImage ? <Navbar toHome={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
                 <div className=" mt-20   xl:px-52 ">
                     <div className=" h-auto flex  justify-between">
                         {/* main */}
@@ -89,13 +89,13 @@ let Home=(props)=>{
                              <WhoToFollow fixSide={fixSide} darkMode={props.darkMode}/> 
                         </div>    
                         {/* side banners */}
-                    </div>
+                    </div>  
                 </div>
             </div>
         )
     }else{
         return (
-            <div className="w-full h-screen flex items-center justify-center">
+            <div className={props.darkMode?"w-full bg-[#252329] h-screen flex items-center justify-center":"w-full h-screen flex items-center justify-center"}>
                  <CircularProgress/>
             </div>
         )

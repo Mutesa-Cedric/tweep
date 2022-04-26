@@ -50,12 +50,12 @@ const register=async(req,res)=>{
                         const accessToken=jwt.sign(userToSign,process.env.ACCESS_KEY_SECRET)
         
                         if(user){
-                            let message=`${process.env.VERIFY_URL}/${user._id}`
-                            sendEmail(email,"verify your account",message)
+                            // let message=`${process.env.VERIFY_URL}/${user._id}`
+                            // sendEmail(email,"verify your account",message)
                             res.json({
                                 status:201,
                                 success:true,
-                                message:"user created successfully!",
+                                message:"user created successfully! profile was also created!",
                                 accessToken:accessToken
                             })
                          }

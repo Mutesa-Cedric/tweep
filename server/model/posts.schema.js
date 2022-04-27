@@ -1,5 +1,5 @@
 const mongoose=require("mongoose")
-const moment=require("moment")
+const momment=require("moment")
 //posts schema
 
 const postsSchema=new mongoose.Schema({
@@ -10,9 +10,8 @@ const postsSchema=new mongoose.Schema({
         max:40
     },
     postedAt:{
-        type:Date,
-        required:true,
-        default:moment().format('Do MMMM , h:mm a')
+        type:Number,
+        required:true
     },
     text:{
         type:String,
@@ -23,9 +22,32 @@ const postsSchema=new mongoose.Schema({
         required:false
     },
     comments:{
-        type:[String],
-        required:true,
-        default:[]
+        type:Array,
+        reqired:true,
+        default:[],
+        commentBy:{
+            type:String,
+            min:2,
+            max:40,
+            required:true
+        },
+        commentedAt:{
+            type:Date,
+            required:true,
+            default:new Date().toUTCString(),
+        },
+        body:{
+            type:String,
+            required:true
+        },
+        likes:{
+            type:Number,
+            default:0,
+            required:true
+        }
+        // type:[String],
+        // required:true,
+        // default:0
     },
     retweets:{
         type:Number,

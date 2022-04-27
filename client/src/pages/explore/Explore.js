@@ -14,7 +14,6 @@ let Explore=(props)=>{
     let navigate=useNavigate()
     const [userProfile, setUserProfile] = useState({})
     const [hasProfile, setHasProfile] = useState(false)
-    console.log(userProfile)
     //checking if the user is logged in 
     useEffect(()=>{
         const accessToken=window.localStorage.getItem("accessToken")
@@ -30,7 +29,6 @@ let Explore=(props)=>{
                    fetch(`http://localhost:7070/profiles/${data.user.userName}`)
                    .then(response=>response.json())
                    .then(data=>{
-                      console.log(data.profile)
                       setUserProfile(data.profile)
                       setHasProfile(true)
                    }) 

@@ -17,6 +17,7 @@ let Home=(props)=>{
     const [userProfile, setUserProfile] = useState({})
     const [hasProfile, setHasProfile] = useState(false)
     //checking if the user is logged in 
+
     useEffect(()=>{
         const accessToken=window.localStorage.getItem("accessToken")
         if(!accessToken){
@@ -51,22 +52,11 @@ let Home=(props)=>{
 
 
     // fixing who to follow section
-    const [fixSide, setFixSide] = useState(false)
-    useEffect(() => {
-        window.addEventListener("scroll",()=>{
-           if(window.scrollY>510){
-               setFixSide(true)
-           }else{
-               setFixSide(false)
-           }
-        })
-    })
-
+  
     // fixing who to follow section
 
 
     if(hasProfile){
-     console.log('component rendered')
         return (
             <div className={props.darkMode?"bg-[#252329] h-auto overflow-x-hidden":"bg-[#F2F2F2] h-auto overflow-x-hidden"}>
 
@@ -84,7 +74,7 @@ let Home=(props)=>{
                         {/* side banners */}
                         <div className="md:ml-4" >
                              <TrendsForYou darkMode={props.darkMode}/>
-                             <WhoToFollow fixSide={fixSide} darkMode={props.darkMode}/> 
+                             <WhoToFollow fixSide={props.fixSide} darkMode={props.darkMode}/> 
                         </div>    
                         {/* side banners */}
                     </div>  

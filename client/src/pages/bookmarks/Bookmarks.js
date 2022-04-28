@@ -45,7 +45,7 @@ let Bookmarks=(props)=>{
                 {userProfile.profileImage ? <Navbar toBookmarks={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
                 <div className=" mt-20 flex justify-between  xl:px-52 ">
                     <div>
-                      <SideSection darkMode={props.darkMode}/>
+                      <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch}/>
                     </div>
                     <div className="w-[745px]" >
                         <Post darkMode={props.darkMode} name="Peyton Lyons" profile={tweeper} createdAt='24 August at 20:43' text="Traveling-it leaves you speechless, then turns you into a storyteller." img={post} comments={449} retweeps={59004} saves={234}/>

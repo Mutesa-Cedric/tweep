@@ -1,17 +1,18 @@
-import {Link} from "react-router-dom"
+import {Link,useNavigate} from "react-router-dom"
 import React, {useState,useEffect} from 'react'
-import ManImg from "../images/Man.jpg"
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import PersonIcon from '@mui/icons-material/Person';
+
+import '../App.css';
 let Navbar=(props)=>{
 
     //showing or hiding dropdown
-
+    let navigate=useNavigate()
     const [showDropDown, setShowDropDown] = useState(false)
-
     const toggleDropDown=()=>{
         setShowDropDown(prevState=>{
             return !prevState
@@ -26,8 +27,13 @@ let Navbar=(props)=>{
         })
     })
 
+    const logout=()=>{
+        window.localStorage.removeItem('accessToken')
+        navigate('/auth/login')
+    }
+
     return (
-        <div className={props.darkMode?"w-screen h-16 px-[72px] bg-inherit shadow-md fixed left-0 top-0 z-index-100":"w-screen h-16 px-[72px] bg-white fixed left-0 top-0 z-index-100"}>
+        <div id="nav" className={props.darkMode?"w-full  h-16 lg:px-[72px] md:px-7 px-3  bg-inherit shadow-md fixed left-0 top-0 z-100":"w-full h-16 lg:px-[72px] md:px-7 px-3 bg-white fixed left-0 top-0 z-10"}>
            <div className="w-full h-full flex items-center justify-between relative">
                {/* logo */}
                 <div className="flex items-center ">
@@ -41,19 +47,20 @@ let Navbar=(props)=>{
                 </div>
 
                 {/* links */}
-                <div className={props.darkMode?"flex w-96  items-center justify-between text-white":"flex w-96  items-center justify-between text-[#828282]"}>
-                    <Link className="hover:text-[#2f80ed]" to="/"><p className="text-[#2F80ED] font-[600] text-[14px] py-3 px-3 border-b-[3px]   border-[#2F80ED]">Home</p></Link>
-                    <Link className="hover:text-[#2f80ed]" to="/explore"><p className="font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] ">Explore</p></Link>
-                    <Link className="hover:text-[#2f80ed]" to="/bookmarks"><p className="font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed]">Bookmarks</p></Link>
+                <div id="links" className={props.darkMode?"md:flex lg:flex w-96 sm:hidden   items-center justify-between text-white":"md:flex lg:flex w-96 sm:hidden  items-center justify-between text-[#828282]"}>
+                    <Link className="hover:text-[#2f80ed]" to="/"><p className={props.toHome?"text-[#2F80ED] font-[600] text-[14px] py-3 px-3 border-b-[3px]   border-[#2F80ED]":" font-[600] text-[14px] py-3 px-3"} >Home</p></Link>
+                    <Link className="hover:text-[#2f80ed]" to="/explore"><p className={props.toExplore?"text-[#2F80ED] font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]":"font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] "} >Explore</p></Link>
+                    <Link className="hover:text-[#2f80ed]" to="/bookmarks"><p className={props.toBookmarks?" text-[#2F80ED] font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]":"font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed]"}>Bookmarks</p></Link>
                 </div>
 
                 {/* profile */}
                 <div className="flex items-center"> 
                     <Link to="/profile" className="flex items-center relative">
-                        <img src={ManImg} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4"/>
-                        <p className={props.darkMode?"font-[700] text-[14px] text-white":"font-[700] text-[14px] text-[#333333]"}>Xanthe Neal</p>
+
+                        {props.profileImg ? <img src={props.profileImg} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4"/>:<PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{fill:"#808080"}}/>}
+                        <p className={props.darkMode?"font-[700] text-[14px] text-white":"font-[700] text-[14px] text-[#333333]"} id="userName">{props.userName}</p>
                     </Link>
-                    <ArrowDropDownOutlinedIcon fontSize="medium" className="mx-4 cursor-pointer" onClick={toggleDropDown} style={props.darkMode?{fill:"white"}:{}}/>
+                    <ArrowDropDownOutlinedIcon id="dropdown" fontSize="medium" className="mx-4 cursor-pointer" onClick={toggleDropDown} style={props.darkMode?{fill:"white"}:{}}/>
                     <div>
                         {! props.darkMode && <svg className="MuiSvgIcon-root w-6 h-6 mr-4 cursor-pointer" fill="#828282" focusable="false" viewBox="0 0 24 24" aria-hidden="true" onClick={props.setDarkMode}><path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48zM12.29 7c-.74 0-1.45.17-2.08.46 1.72.79 2.92 2.53 2.92 4.54s-1.2 3.75-2.92 4.54c.63.29 1.34.46 2.08.46 2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path>
                          </svg>}
@@ -87,7 +94,7 @@ let Navbar=(props)=>{
                             </div>
                         </Link>
                      </div>  
-                     <button className="my-2 flex mr-3 items-center px-3 py-1 rounded-lg hover:bg-[#f0e2e2]">
+                     <button className="my-2 flex mr-3 items-center px-3 py-1 rounded-lg hover:bg-[#f0e2e2]" onClick={logout}>
                         <LogoutOutlinedIcon style={{fill:'#EB5757'}} fontSize="small" className="mr-3"/>
                         <span className="text-[#EB5757] font-medium ">Logout</span>
                      </button> 

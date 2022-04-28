@@ -5,16 +5,47 @@
   
   /* Track */
   ::-webkit-scrollbar-track {
-    border-radius: 10px;
+    /* border-radius: 10px; */
+    background: #c9c9c9; 
+
   }
    
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #9d9797; 
+    background:#847d92;
     border-radius: 10px;
   }
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #BDBDBD; 
+    background: #f1f1f1; 
+    
+
   }
+
+  @media (max-width:720px) {
+    #links{
+        display:none;
+    }
+    #userName{
+        display: none;
+    }
+    #dropdown{
+        display: none;
+    }
+    #chat-side{
+      display:none;
+    }
+   
+  }
+
+  @media (max-width:1055px) {
+    #expCategory{
+      display:none;
+    }
+    #expContainer{
+      margin:auto;
+    }
+    
+  }
+

@@ -19,7 +19,7 @@ let Post=(props)=>{
     }
 
     return (
-        <div className={props.darkMode?"bg-inherit shadow-xl border-[0.2px] border-gray-700 w-[745px] h-auto flex flex-col justify-between  mb-8 rounded-md pl-4 pr-6  py-4 ":"bg-inherit border-[1px] w-[745px] h-auto flex flex-col justify-between  mb-8 rounded-md pl-4 pr-6  py-4 "}>
+        <div className={props.darkMode?"bg-inherit shadow-xl  border-[0.2px] border-gray-700 xl:w-auto sm:mx-4 sm:w-full md:w-[600px] lg:w-[650px]    h-auto flex flex-col justify-between  mb-8 rounded-md pl-4 pr-6  py-4 ":"bg-white border-[1px] w-[745px] h-auto flex flex-col justify-between xl:w-auto sm:mx-4 sm:w-full md:w-[600px] lg:w-[650px]  mb-8 rounded-md pl-4 pr-6  py-4 "}>
             <div className="flex items-center justify-start my-2">
                 {props.profile!==undefined && <img src={props.profile} alt="tweeper" className="w-[36px] h-[36px] rounded-md mr-4"></img>}
                 {props.profile===undefined && <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{fill:"#808080"}}/>}
@@ -40,7 +40,6 @@ let Post=(props)=>{
                 <p className="cursor-pointer ">{props.saves} Saved</p>
             </div>
             <div className="w-full flex justify-between items-center py-1 border-b-[1.3px]">
-                
                 <button className={props.darkMode?"text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]":"text-[#4f4f4f] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}><ChatBubbleOutlineOutlinedIcon fontSize="small" className="mr-2"/> Comment </button>
                 <button className={props.darkMode?"text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]":"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}><CachedOutlinedIcon fontSize="small" className="mr-2"/>Retweep </button>
                 <button className={props.darkMode?"text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]":"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}><FavoriteBorderOutlinedIcon fontSize="small" className="mr-2"/>Like</button>

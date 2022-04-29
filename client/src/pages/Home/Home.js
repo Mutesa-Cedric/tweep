@@ -1,4 +1,5 @@
 import Navbar from "../../components/Navbar";
+import PreviewImage from "../../components/PreviewImage"
 import '../../App.css';
 import Post from "../../components/Post";
 import TrendsForYou from "../../components/TrendsForYou";
@@ -15,7 +16,8 @@ import {useNavigate} from "react-router-dom"
 let Home=(props)=>{
     let navigate=useNavigate()
     const [userProfile, setUserProfile] = useState({})
-    const [hasProfile, setHasProfile] = useState(false)
+    const [hasProfile, setHasProfile] = useState(false);
+    const [hasFile,setHasFile]=useState(false)
     //checking if the user is logged in 
 
     useEffect(()=>{
@@ -43,29 +45,48 @@ let Home=(props)=>{
 
     //checking if the user is logged in
     
-    // getting a user profile
+    //handling image
 
- 
+    let file;
+    const [image,setImage]=useState("")
+    let handleImage=(event)=>{
+        file=event.target.files[0]
+        if(file){
+          var reader = new FileReader();
+          reader.onload = function(event) {
+            // console.log(event.target.result)
+            setImage(event.target.result)
+            setHasFile(true)
+          };
+          reader.readAsDataURL(file);
+    
+          // reader.readAsText(file);
+        }
+    }
+    //handling image
 
-    // getting a user profile
 
-
-
+    const hideEditPic=()=>{
+        setHasFile(false)
+        window.location.reload()
+    }
     // fixing who to follow section
   
     // fixing who to follow section
 
+    
 
     if(hasProfile){
         return (
+           
             <div className={props.darkMode?"bg-[#252329] h-auto overflow-x-hidden":"bg-[#F2F2F2] h-auto overflow-x-hidden"}>
-
+                <PreviewImage hasFile={hasFile} image={image} hideEditPic={hideEditPic}/>
                 {userProfile.profileImage ? <Navbar toHome={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
                 <div className=" mt-20   xl:px-52 ">
                     <div className=" h-auto flex  justify-between">
                         {/* main */}
                         <div className="mx-auto" >
-                          {userProfile.profileImage ?  <TweepSomething darkMode={props.darkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`}/>:<TweepSomething darkMode={props.darkMode}/>}
+                          {userProfile.profileImage ?  <TweepSomething handleImage={handleImage} darkMode={props.darkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`}/>:<TweepSomething darkMode={props.darkMode}/>}
                             <Post darkMode={props.darkMode} name="Peyton Lyons" profile={tweeper} createdAt='24 August at 20:43' text="Traveling-it leaves you speechless, then turns you into a storyteller." img={post} comments={449} retweeps={59004} saves={234}/>
                             <Post darkMode={props.darkMode} name="Bianca Lois" profile={Lois} createdAt='24 August at 20:43' text="“We travel, some of us forever, to seek other places, other lives, other souls.” – Anais Nin" img={post2} comments={208} retweeps={2764} saves={178}/>
                             <Post darkMode={props.darkMode} name="Mikael Stanley" createdAt='13 September at 12:41' text="Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma – which is living with the results of other people's thinking. -Steve Jobs" comments={23} retweeps={10} saves={20}/>
@@ -81,7 +102,8 @@ let Home=(props)=>{
                 </div>
             </div>
         )
-    }else{
+    }
+    else{
         return (
             <div className={props.darkMode?"w-full bg-[#252329] h-screen flex items-center justify-center":"w-full h-screen flex items-center justify-center"}>
                  <CircularProgress/>

@@ -145,6 +145,7 @@ const updatePost = async(req,res)=>{
                 })
             }
         })
+        
     } catch (error) {
         return console.error(error)
     }
@@ -152,6 +153,28 @@ const updatePost = async(req,res)=>{
 
 
 //updating a post
+
+// updateting post comments
+
+const updateComments=async(req,res) => {
+    try {
+        let postId = req.params.id
+        let {comments}=req.body
+            if(await postsSchema.updateOne({_id: postId}, {$push: {comments:comments}})){
+                res.json({
+                    status:203,
+                    message:"updated!"
+                })
+                }    
+        } catch (error) {
+            res.json({
+                message:error
+            })
+        }
+}
+
+// updateting post comments
+
 
 
 //deleting a post
@@ -186,3 +209,4 @@ module.exports.getAllPosts=getAllPosts;
 module.exports.getPostsByUsername=getPostsByUsername;
 module.exports.updatePost=updatePost;
 module.exports.deletePost=deletePost;
+module.exports.updateComments=updateComments;

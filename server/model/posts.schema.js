@@ -22,7 +22,7 @@ const postsSchema=new mongoose.Schema({
         required:false
     },
     comments:{
-        type:Array,
+        type:[Object],
         reqired:true,
         default:[],
         commentBy:{
@@ -45,9 +45,6 @@ const postsSchema=new mongoose.Schema({
             default:0,
             required:true
         }
-        // type:[String],
-        // required:true,
-        // default:0
     },
     retweets:{
         type:Number,

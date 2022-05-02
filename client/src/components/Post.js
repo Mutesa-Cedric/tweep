@@ -1,13 +1,12 @@
 import Comment from "./Comment";
 import commentor1 from "../images/commentor1.png"
-import React ,{useState} from 'react';
-import ManImg from "../images/Man.jpg";
+import React , {useState,useEffect} from 'react';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
 import PersonIcon from '@mui/icons-material/Person';
-import commentor2 from '../images/commentor2.jpg'
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 let Post=(props)=>{
 
     //showing comments
@@ -17,6 +16,70 @@ let Post=(props)=>{
             return !prevState
         })
     }
+    const [comments, setComments] = useState(props.commentsArray)
+
+    let commentElements=comments.map(comment=>{
+        return <Comment 
+         darkMode={props.darkMode}
+         profileImg={`http://localhost:7070/${comment.commentedBy}Profile.png`}
+         name={comment.commentedBy}
+         createdAt={new Date(comment.commentedAt).toDateString()}
+         body={comment.body}
+         likes={comment.likes}
+
+          />
+    })
+
+    //commenting on a post
+    const [commentData, setCommentData] = useState({
+        comment:''
+    })
+    const [sendVisible, setSendVisible] = useState(false)
+    console.log(commentData.comment.length,commentData.comment)
+    const handleCommentChange=(e)=>{
+        
+        const {name,value}=e.target;
+        setCommentData(prevState=>{
+            return {
+                ...prevState,
+                [name]:value
+            }
+        }) 
+    }
+
+    //showing and hidding send button
+
+    useEffect(()=>{
+        if(commentData.comment==''){
+            setSendVisible(false)
+        }else{
+            setSendVisible(true)  
+        }
+    },[commentData])
+
+    //showing and hidding send button
+
+    //posting a comment
+    const postComment=()=>{
+        fetch(`http://localhost:7070/posts/updateComments/${props.postId}`,{
+            method:"PATCH",
+            headers:{
+                "content-type":"application/json"
+            },body:JSON.stringify({
+                comments:{
+                    commentedBy:props.currentUser,
+                    body:commentData.comment,
+                    commentedAt:new Date().getTime()
+                }
+            })
+        }).then(response=>response.json()).then(data=>{
+            console.log(data);
+        }).catch(err=>console.log(err))
+    }   
+    //posting a comment
+
+    //commenting on a post
+
 
     return (
         <div className={props.darkMode?"bg-inherit shadow-xl  border-[0.2px] border-gray-700 xl:w-auto sm:mx-4 sm:w-full md:w-[600px] lg:w-[650px]    h-auto flex flex-col justify-between  mb-8 rounded-md pl-4 pr-6  py-4 ":"bg-white border-[1px] w-[745px] h-auto flex flex-col justify-between xl:w-auto sm:mx-4 sm:w-full md:w-[600px] lg:w-[650px]  mb-8 rounded-md pl-4 pr-6  py-4 "}>
@@ -45,39 +108,25 @@ let Post=(props)=>{
                 <button className={props.darkMode?"text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]":"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}><FavoriteBorderOutlinedIcon fontSize="small" className="mr-2"/>Like</button>
                 <button className={props.darkMode?"text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]":"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}><BookmarkAddOutlinedIcon fontSize="small" className="mr-2"/>Save</button>
             </div>
-            <div className="flex items-center my-3">
-                 <img src={ManImg} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4"/>
-                 <input placeholder="Tweep your reply" className={props.darkMode?"bg-inherit shadow-sm  w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none":"bg-[#FAFAFA] w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none"}/>
-            </div>
-           {showComments &&
+            {showComments &&
            
-            <div className="w-full h-72 border-t-2 overflow-y-scroll flex flex-col">
-                <Comment 
-                    darkMode={props.darkMode}
-                    profileImg={commentor1}
-                    name="Waqar Bloom"
-                    createdAt="24 August at 20:43"
-                    body="I’ve seen awe-inspiring things that I thought I’d never be able to explain to another person."
-                    likes={20}
-                />  
-                <Comment
-                    darkMode={props.darkMode}
-                    likes={12}
-                    createdAt="30 June at 11:35"
-                    name="Marina deborah"
-                    body="I’ve felt this pull many times, like while road tripping through Morocco. Seeking out the vastness of the desert, and looking inward at the same time."
-                />
-                <Comment 
-                    darkMode={props.darkMode}
-                    profileImg={commentor2}
-                    name="Ish Kevin"
-                    createdAt="19 september at 12:00"
-                    body="I’ve seen awe-inspiring things that I thought I’d never be able to explain to another person."
-                    likes={50}
-                /> 
+           <div className={props.darkMode?"w-full h-auto border-t-2 overflow-y-scroll flex flex-col ":"w-full h-72 border-t-2 overflow-y-scroll flex flex-col"}>
+               {commentElements}
+           </div>
+          }
+            <div className={props.darkMode?"flex items-center my-3 z-10":"flex items-center my-3"}>
+                 <img src={props.image} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4"/>
+                 <textarea
+                  placeholder="Tweep your reply"
+                  rows="1"
+                  className={props.darkMode?"bg-inherit shadow-sm  w-full placeholder:text-[#BDBDBD] text-white placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none":"bg-[#FAFAFA] w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none"}
+                  name="comment"
+                  onInput={handleCommentChange}
+                  value={commentData.comment}
+                  ></textarea>
+                  {sendVisible &&<button className="px-5 py-2 flex items-center justify-center bg-blue-500 hover:bg-blue-600  rounded-xl" onClick={postComment}> <SendOutlinedIcon style={{fill:"white"}} fontSize="small" className=""/></button>}
             </div>
            
-           }
         </div>
     )
 }

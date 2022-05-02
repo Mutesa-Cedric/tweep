@@ -5,8 +5,8 @@ import {useNavigate} from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import SideSection from '../../components/SideSection';
 import Post from '../../components/Post';
-import post from "../../images/post.jpg";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import EditProfile from "./EditProfile";
 
 
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
@@ -17,8 +17,10 @@ const  CurrentProfile=(props)=>{
     const [hasProfile, setHasProfile] = useState(false)
     const [posts,setPosts]=useState([])
     const [hasNoPost,setHasNoPost]=useState(false)
+    const [isEditing,setIsEditing]=useState(false)
+    //states
 
-    // console.log(posts)
+    console.log(isEditing)
     //checking if the user is logged in
     useEffect(()=>{
         const accessToken=window.localStorage.getItem("accessToken")
@@ -79,10 +81,19 @@ const  CurrentProfile=(props)=>{
     });
 
 
+    //handling profile editing
+
+    const toggleIsEditing=()=>{
+        setIsEditing(prevState => {
+            return !prevState;
+        })
+    }
+    //handling profile editing
 
     if(hasProfile){
         return (
             <div className={props.darkMode?"bg-[#252329] h-screen overflow-x-hidden":"relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
+                {isEditing && <EditProfile userProfile={userProfile}/>}
                 {userProfile.profileImage ? <Navbar  darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
                 <div >
                     <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{backgroundImage:`url(http://localhost:7070/${userProfile.coverImage})`}} >
@@ -101,8 +112,8 @@ const  CurrentProfile=(props)=>{
                                     </div>
                                 </div>
                             </div>
-                            <button className="bg-[#2F80ED] text-white h-max flex items-center justify-between py-1 px-5 capitalize rounded-sm mt-5 mx-10">
-                                <EditOutlinedIcon fontSize="small" className="mr-2"/> edit
+                            <button className="bg-[#2F80ED] text-white h-max flex items-center justify-between py-1 px-5 capitalize rounded-sm mt-5 mx-10" onClick={toggleIsEditing}>
+                                <EditOutlinedIcon fontSize="small" className="mr-2"/> edit Profile
                             </button>
                         </div>
                     </div>

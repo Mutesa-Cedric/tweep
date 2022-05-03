@@ -17,7 +17,6 @@ let WhoToFollow=(props)=>{
                     <PersonToFollow darkMode={props.darkMode} profile={Lois} followers={200} bio="Follow me on IG: @bilois" coverPhoto={cover2} name="Bianca Lois "/>
                 </div>
             </div>  
-            <p className={props.fixSide?"fixed bottom-8 text-[14px] italic text-gray-400 px-20 font-bold":""}>copyright &copy; mutesa cedric</p> 
         </div>    
     )
 }

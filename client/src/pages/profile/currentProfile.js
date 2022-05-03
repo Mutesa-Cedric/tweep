@@ -18,6 +18,7 @@ const  CurrentProfile=(props)=>{
     const [posts,setPosts]=useState([])
     const [hasNoPost,setHasNoPost]=useState(false)
     const [isEditing,setIsEditing]=useState(false)
+    const [user,setUser]=useState([])
     //states
 
     console.log(isEditing)
@@ -33,7 +34,7 @@ const  CurrentProfile=(props)=>{
                     if(!data.authorized){
                         navigate('/auth/login')
                     }else{
-
+                        setUser(data.user)
                         // getting a user profile
                         fetch(`http://localhost:7070/profiles/${data.user.userName}`)
                             .then(response=>response.json())
@@ -93,7 +94,7 @@ const  CurrentProfile=(props)=>{
     if(hasProfile){
         return (
             <div className={props.darkMode?"bg-[#252329] h-screen overflow-x-hidden":"relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
-                {isEditing && <EditProfile userProfile={userProfile}/>}
+                {isEditing && <EditProfile userProfile={userProfile} user={user} toggleIsEditing={toggleIsEditing}/>}
                 {userProfile.profileImage ? <Navbar  darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
                 <div >
                     <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{backgroundImage:`url(http://localhost:7070/${userProfile.coverImage})`}} >

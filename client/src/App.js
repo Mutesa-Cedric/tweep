@@ -8,7 +8,8 @@ import Chat from './pages/chat/Main';
 import Profile from "./pages/profile/Profile"
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import React,{useState,useEffect} from 'react';
-
+import CurrentProfile from "./pages/profile/currentProfile";
+import SimpleSnackbar from "./components/ProcessSuccessful";
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   const toggleDarkMode=()=>{
@@ -38,6 +39,9 @@ function App() {
       })
   })
 
+  //file handling
+  
+
     return (
       <Router>
         <div>
@@ -46,9 +50,11 @@ function App() {
             <Route path='/auth/signup' exact element={<SignupMain darkMode={darkMode} setDarkMode={toggleDarkMode} />} />
             <Route path='/bookmarks' exact element={<Bookmarks darkMode={darkMode} setDarkMode={toggleDarkMode} fixSideSearch={setFixSideSearch}/>}/>
             <Route path='/explore' exact element={<Explore darkMode={darkMode} setDarkMode={toggleDarkMode}/>}/>
-            <Route path='/' exact element={<Home darkMode={darkMode} setDarkMode={toggleDarkMode} fixSide={fixSide}/>}/>
+            <Route path='/' exact element={<Home darkMode={darkMode} setDarkMode={toggleDarkMode} fixSide={fixSide} />}/>
             <Route path='/chat' element={<Chat darkMode={darkMode} setDarkMode={toggleDarkMode}/>}/>
             <Route path='/profile' element={<Profile darkMode={darkMode} setDarkMode={toggleDarkMode} fixSideSearch={setFixSideSearch}/>}/>
+             <Route path={'/simple'} element={<SimpleSnackbar/>} />
+              <Route path='/currentProfile' element={<CurrentProfile darkMode={darkMode} setDarkMode={toggleDarkMode} fixSideSearch={setFixSideSearch}/>}/>
           </Routes>  
         </div>
       </Router>  

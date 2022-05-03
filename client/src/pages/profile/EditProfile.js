@@ -15,7 +15,6 @@ const EditProfile=(props)=>{
     const [nothingToSave,setNothingToSave]=useState(false)
 
     console.log(`profile image ${profileImage} cover image ${coverImage}`)
-
     function updateProfileData(event) {
         let {name,value}=event.target;
         setProfileData(prevState =>
@@ -48,7 +47,7 @@ const EditProfile=(props)=>{
         let coverImageForm=document.getElementById('coverImageForm');
         let formData=new FormData(coverImageForm)
         formData.append('coverImg',coverImage)
-        fetch(`http://localhost:7070/profiles/profileImg/${props.userProfile.userName}`, {
+        fetch(`http://localhost:7070/profiles/cover/${props.userProfile.userName}`, {
             method: "POST",
             body: formData
         }).then(response => response.json()).then(data => {
@@ -59,7 +58,9 @@ const EditProfile=(props)=>{
 
     //posting form data
     function postForm(data) {
-        fetch(`http://localhost:7070/profiles/updateProfile`,{
+        console.log(data)
+        // console.log("uploading a form")
+        fetch(`http://localhost:7070/profiles/updateProfile/${props.userProfile.userName}`,{
             method:'PATCH',
             headers:{
                 'content-type':"application/json"
@@ -77,8 +78,10 @@ const EditProfile=(props)=>{
 
     //controlling posting process
 
+    let myTestString=/^\s*$/
+    console.log(myTestString.test(profileData.bio))
     function controlPosting() {
-        if((profileData.userName!==props.userProfile.userName||profileData.email!== props.user.email||profileData.bio!==props.userProfile.bio) && profileImage!==props.userProfile.profileImage && coverImage!==props.userProfile.coverImage ){
+        if((profileData.userName!==props.userProfile.userName &&profileData.userName!==''||profileData.email!== props.user.email||profileData.bio!==props.userProfile.bio && !myTestString.test(profileData.bio)) && profileImage!==props.userProfile.profileImage && coverImage!==props.userProfile.coverImage ){
             postForm(profileData)
             postProfile(profileImage)
             postCover(coverImage)
@@ -119,10 +122,10 @@ const EditProfile=(props)=>{
                                         <span>Save</span>
                                     </button>
                                 </div>
-                                <div className={'cursor-pointer w-full h-full flex rounded-t-xl flex-col text-white relative font-medium items-center justify-center bg-gray-700 opacity-80'}>
+                                <div className={'cursor-pointer relative w-full h-full flex rounded-t-xl flex-col text-white relative font-medium items-center justify-center bg-gray-700 opacity-80'}>
                                     <CameraAltIcon fontSize={'large'} style={{fill:"white"}} className={'z-10'}/>
                                     <p>Choose Cover</p>
-                                    <form id={'coverImageForm'}>
+                                    <form id={'coverImageForm'} className={'w-full h-full opacity-0 absolute'} encType={'multipart/form-data'}>
                                         <input type={"file"} className={'w-full opacity-0 absolute w-full z-10 h-full cursor-pointer'} onChange={(e)=>setCoverImage(e.target.files[0])}/>
                                     </form>
                                 </div>
@@ -131,8 +134,8 @@ const EditProfile=(props)=>{
                                 <div className={'cursor-pointer w-full h-full flex flex-col text-white rounded-[50%] relative font-medium items-center justify-center bg-gray-700 opacity-80'}>
                                     <CameraAltIcon fontSize={'large'} style={{fill:"white"}} className={'opacity-100'}/>
                                     <p>Profile</p>
-                                    <form id={'profileImageForm'}>
-                                        <input type={"file"} className={'w-full opacity-0 absolute w-full h-full cursor-pointer'} onChange={(e)=>setProfileImage(e.target.files[0])}/>
+                                    <form id={'profileImageForm'} className={''}>
+                                        <input type={"file"} className={'w-full border-2 border-red-500 opacity-0 absolute w-full h-full cursor-pointer'} onChange={(e)=>setProfileImage(e.target.files[0])}/>
                                     </form>
                                 </div>
                             </div>

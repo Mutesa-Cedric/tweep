@@ -4,7 +4,7 @@ import {Snackbar,Alert} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function CreatedSuccessfully() {
+export default function ProcessSuccessful(props) {
     const [open, setOpen] = React.useState(true);
 
     const handleClick = () => {
@@ -43,7 +43,7 @@ export default function CreatedSuccessfully() {
                 action={action}
              >
                     <Alert severity="success" sx={{ width: "100%" }}>
-                        This is a success message!
+                        {props.message}
                     </Alert>
             </Snackbar>
         </div>

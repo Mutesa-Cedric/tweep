@@ -7,9 +7,8 @@ import SideSection from '../../components/SideSection';
 import Post from '../../components/Post';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditProfile from "./EditProfile";
-
-
-import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
+import ProcessSuccessful from "../../components/ProcessSuccessful";
+import PreviewImage from "../../components/PreviewImage";
 const  CurrentProfile=(props)=>{
     let navigate=useNavigate()
     //states
@@ -18,10 +17,19 @@ const  CurrentProfile=(props)=>{
     const [posts,setPosts]=useState([])
     const [hasNoPost,setHasNoPost]=useState(false)
     const [isEditing,setIsEditing]=useState(false)
-    const [user,setUser]=useState([])
+    const [user,setUser]=useState({})
+    const [successStatus, setSuccessStatus] = useState({
+        coverSuccessful:false,
+        profileSuccessful:false,
+        aboutSuccessful:false,
+        allSuccessful:false
+    });
     //states
 
-    console.log(isEditing)
+    console.log("actual profile:")
+    console.log(userProfile)
+
+    // console.log(isEditing)
     //checking if the user is logged in
     useEffect(()=>{
         const accessToken=window.localStorage.getItem("accessToken")
@@ -91,11 +99,81 @@ const  CurrentProfile=(props)=>{
     }
     //handling profile editing
 
+    //handling success message
+    let successProfile=()=>{
+        setIsEditing(false)
+        setSuccessStatus(()=>{
+            return {
+                profileSuccessful: true,
+                coverSuccessful: false,
+                aboutSuccessful: false,
+                allSuccessful: false
+            }
+        })
+    }
+
+    let successCover=()=>{
+        setIsEditing(false)
+        setSuccessStatus(()=>{
+            return {
+                profileSuccessful: false,
+                coverSuccessful: true,
+                aboutSuccessful: false,
+                allSuccessful: false
+            }
+        })
+    }
+
+    let successAbout=()=>{
+        setIsEditing(false)
+        setSuccessStatus(()=>{
+            return {
+                profileSuccessful: false,
+                coverSuccessful: false,
+                aboutSuccessful: true,
+                allSuccessful: false
+            }
+        })
+    }
+
+    let successAll=()=>{
+        setIsEditing(false)
+        setSuccessStatus(()=>{})
+        return {
+            profileSuccessful: false,
+            coverSuccessful: false,
+            aboutSuccessful: false,
+            allSuccessful: true
+        }
+    }
+
+    //handling success message
+
+    //auto updating content
+    const updateDom=()=>{
+        fetch(`http://localhost:7070/profiles/${user.userName}`).then(response=>response.json()).then(data=>{
+            if(data.isFound){
+                // setUserProfile(data.profile)
+                // console.log("updated profile:")
+                // console.log(userProfile)
+                setTimeout(()=>{
+                    window.location.reload()
+                },3000)
+            }
+        }).catch(err=>console.error(err))
+    }
+
+    //auto updating content
+
     if(hasProfile){
         return (
             <div className={props.darkMode?"bg-[#252329] h-screen overflow-x-hidden":"relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
-                {isEditing && <EditProfile userProfile={userProfile} user={user} toggleIsEditing={toggleIsEditing}/>}
+                {isEditing && <EditProfile updateDom={updateDom} successProfile={successProfile} successAll={successAll} successAbout={successAbout} successCover={successCover}  userProfile={userProfile} user={user} toggleIsEditing={toggleIsEditing}/>}
                 {userProfile.profileImage ? <Navbar  darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
+                {successStatus.profileSuccessful && <ProcessSuccessful message={'profile image updated successfully!!'}/>}
+                {successStatus.coverSuccessful && <ProcessSuccessful message={'cover image Updated successfully'}/>}
+                {successStatus.aboutSuccessful && <ProcessSuccessful message={'your \" about \" was updated successfully!'}/>}
+                {successStatus.allSuccessful && <ProcessSuccessful message={'your Profile was updated successfully'}/>}
                 <div >
                     <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{backgroundImage:`url(http://localhost:7070/${userProfile.coverImage})`}} >
                         <div className={props.darkMode?"bg-[#23212b] mb-4 flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]":"bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4"}>

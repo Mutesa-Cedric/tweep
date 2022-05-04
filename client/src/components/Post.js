@@ -6,6 +6,8 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import {Link} from  'react-router-dom'
+import log from "tailwindcss/lib/util/log";
 
 let Post = (props) => {
 
@@ -108,7 +110,7 @@ let Post = (props) => {
                 <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200"
                             style={{fill: "#808080"}}/>}
             <div className="flex flex-col">
-                <h1 className={props.darkMode ? "font-medium capitalize text-white" : "font-medium capitalize text-black"}>{props.name}</h1>
+                <h1 className={props.darkMode ? "font-medium capitalize text-white cursor-pointer" : "font-medium capitalize text-black cursor-pointer"} onClick={(e)=>console.log(e.target.innerText)}>{props.name}</h1>
                 <p className="text-[#BDBDBD] text-[14px]">{props.createdAt}</p>
             </div>
         </div>
@@ -145,7 +147,7 @@ let Post = (props) => {
         {showComments &&
 
             <div
-                className={props.darkMode ? "w-full h-auto border-t-2 overflow-y-scroll flex flex-col " : "w-full h-auto max-h-72 border-t-2 overflow-y-scroll flex flex-col"}>
+                className={props.darkMode ? "w-full h-auto border-t-2 overflow-y-scroll max-h-72 flex flex-col " : "w-full h-auto max-h-72 border-t-2 overflow-y-scroll flex flex-col"}>
                 {commentElements.length !== 0 ? commentElements :
                     <p className={props.darkMode ? "mx-auto py-6 capitalize text-white" : 'text-gray-600 mx-auto py-6 capitalize'}> no
                         comments yet! be first to comment</p>}

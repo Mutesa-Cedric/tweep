@@ -11,17 +11,17 @@ const PreviewImage=(props)=>{
     }, [])
     return (
         <div className={props.hasFile?"":"hidden"}>
-            <div class="fixed z-[100] inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed justify-center inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <div className="fixed z-[100] inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div className="fixed justify-center inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
                     <div className="absolute top-0 rounded-md  left-[20%] w-3/5 m-auto  h-full">
                         <div className="flex flex-col justify-between absolute top-20 right-0 left-0 bottom-32  w-3/4 mx-auto">
-                            <div className="w-full px-14 flex justify-between  items-center text-white z-10 h-16 rounded-t-xl bg-gray-900">
+                            <div className="w-full px-14 flex justify-between  items-center text-white z-10 h-16  bg-gray-900">
                                 <div className="flex justify-between ">
                                     <KeyboardBackspaceOutlinedIcon className=" mr-6 cursor-pointer hover:bg-gray-700 hover:text-white rounded-[50%]" onClick={props.hideEditPic}/>
-                                    <p>Edit Media</p>
+                                    <p>Edit {props.message}</p>
                                 </div>
-                                <button className="bg-white hover:bg-gray-200 rounded-2xl text-gray-900 font-[600] px-4 py-1">
+                                <button className="bg-white hover:bg-gray-200 rounded-2xl text-gray-900 font-[600] px-4 py-1" onClick={props.finishEditing}>
                                     <span>Apply</span>
                                 </button>
                             </div>
@@ -29,7 +29,7 @@ const PreviewImage=(props)=>{
                                 image={props.image}
                                 crop={crop}
                                 zoom={zoom}
-                                aspect={4/3}
+                                aspect={props.aspect}
                                 onCropChange={setCrop}
                                 onCropComplete={onCropComplete}
                                 onZoomChange={setZoom}

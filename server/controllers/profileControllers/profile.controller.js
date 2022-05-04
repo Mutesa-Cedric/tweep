@@ -140,7 +140,7 @@ const getProfileById = async(req,res)=>{
 
 const updateProfile= async(req,res)=>{
     try {
-        const {userName}=req.body.userName
+        const userName=req.params.userName
         const updates=req.body;
         await  profileSchema.findOneAndUpdate({userName: userName},updates,{new:true},(err,updatedProfile)=>{
             if (err) {

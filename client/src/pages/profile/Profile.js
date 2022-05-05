@@ -1,6 +1,5 @@
-
 import Navbar from '../../components/Navbar';
-import React , {useState,useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import SideSection from '../../components/SideSection';
@@ -12,84 +11,155 @@ import Lois from "../../images/Lois.jpg";
 // import cover from '../../images/cover2.jpg';
 
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
-let Profile=(props)=>{
 
-    let navigate=useNavigate()
-    const [userProfile, setUserProfile] = useState({})
+let Profile = (props) => {
+
+    //getting a search parameter from the url
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    const username = urlParams.get('user');
+
+    //getting a search parameter from the url
+
+    //states
     const [hasProfile, setHasProfile] = useState(false)
-    //checking if the user is logged in 
-    useEffect(()=>{
-        const accessToken=window.localStorage.getItem("accessToken")
-        if(!accessToken){
-            navigate('/auth/signup')
-        }else{
-            fetch(`http://localhost:7070/auth/verifyToken/${accessToken}`)
-            .then(response=>response.json())
-            .then(data=>{
-                if(!data.authorized){
-                    navigate('/auth/login')
-                }else{
-                   fetch(`http://localhost:7070/profiles/${data.user.userName}`)
-                   .then(response=>response.json())
-                   .then(data=>{
-                      setUserProfile(data.profile)
-                      setHasProfile(true)
-                   }) 
-                }
-            })
-            .catch(err=>console.error(err))
+    const [posts, setPosts] = useState([])
+    const [hasNoPost, setHasNoPost] = useState(false)
+    const [currentUser, setCurrentUser] = useState({});
+    const [searchedUser, setSearchedUser] = useState({});
+
+    // const [user,setUser]=useState(username)
+    // const [currentUserProfile,setCurrentUser]=useState({})
+    // const [userProfile, setUserProfile] = useState({})
+
+
+    // console.log(currentUserProfile)
+    console.log(posts)
+    //checking if the user is logged in
+    let navigate = useNavigate()
+    useEffect(() => {
+        const accessToken = window.localStorage.getItem("accessToken")
+        if (!accessToken) {
+            return navigate('/auth/signup')
         }
-    },[])
+        fetch(`http://localhost:7070/auth/verifyToken/${accessToken}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.authorized) {
+                    return navigate('/auth/login')
+                }
+                fetch(`http://localhost:7070/profiles/${data.user.userName}`)
+                    .then(response => response.json()).then(data => {
+                    if (data.isFound) {
+                        setCurrentUser(data.profile)
+                        setHasProfile(true)
+                    }
+                    fetch(`http://localhost:7070/profiles/${username}`)
+                        .then(response => response.json()).then(data => {
+                        if (data.isFound) {
+                            setSearchedUser(data.profile)
+                            fetch(`http://localhost:7070/posts/${data.profile.userName}`).then(response => response.json())
+                                .then(data => {
+                                    if (data.posts.length === 0) {
+                                        setHasNoPost(true)
+                                    } else {
+                                        setPosts(data.posts)
+                                    }
+                                })
+                                .catch(err => console.error(err))
+                        }
+                    }).catch(err => console.log(err))
+                }).catch(err => console.log(err))
+            }).catch(err => console.log(err))
+    }, [])
+
+    //checking if the user is logged in
+
+    let postElements = posts.map(post => {
+        return <Post
+            key={post._id}
+            postId={post._id}
+            darkMode={props.darkMode}
+            name={post.postedBy}
+            profile={`http://localhost:7070/${post.postedBy}Profile.png`}
+            createdAt={new Date(post.postedAt).toDateString()} text={post.text}
+            img={`http://localhost:7070/${post.media}`}
+            comments={post.comments.length}
+            retweeps={post.retweets}
+            saves={post.saved}
+            commentsArray={post.comments}
+            image={`http://localhost:7070/${`${searchedUser.profileImage}`}`}
+            currentUser={currentUser.userName}
+        />
+    });
 
 
-    if(hasProfile){
-        return (
-            <div className={props.darkMode?"bg-[#252329] h-screen overflow-x-hidden":"relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
-                {userProfile.profileImage ? <Navbar  darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}      
+    if (hasProfile) {
+        console.log('rendered')
+        return (<div
+                className={props.darkMode ? "bg-[#252329] h-screen overflow-x-hidden" : "relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
+                {currentUser.profileImage ? <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode}
+                                                    profileImg={`http://localhost:7070/${`${currentUser.profileImage}`}`}
+                                                    userName={currentUser.userName}/> :
+                    <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode}
+                            userName={currentUser.userName}/>}
                 <div>
-                <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{backgroundImage:`url(${post})`}} >
-                    <div className={props.darkMode?"bg-[#23212b] flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]":"bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px]"}>
-                        <div className="flex">
-                            <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{backgroundImage:`url("https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80")`}}>
+                    <div
+                        className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center"
+                        style={{backgroundImage: `url(${post})`}}>
+                        <div
+                            className={props.darkMode ? "bg-[#23212b] flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]" : "bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px]"}>
+                            <div className="flex">
+                                <div
+                                    className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg "
+                                    style={{backgroundImage: `url(http://localhost:7070/${searchedUser.profileImage})`}}>
 
-                            </div>
-                            <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
-                                <div className="flex items-center justify-between  mb-4">
-                                    <h1 className={props.darkMode?"text-2xl font-[600] text-gray-300":"text-2xl font-[600]"}>Lina Iris</h1>
-                                    <p className={props.darkMode?"text-[#828282] text-[14px] font-[600]":"text-[#828282] text-[14px]"}><span className={props.darkMode?"font-[600] text-gray-300":"font-[600] text-black"}>1,300</span> following</p>
-                                    <p className={props.darkMode?"text-[#828282] text-[14px] font-[600]":"text-[#828282] text-[14px]"}><span className={props.darkMode?"font-[600] text-gray-300":"font-[600] text-black"}>3.5M</span>  followers</p>
                                 </div>
-                                <div>
-                                    <p className={props.darkMode?"text-[#828282] font-[600]":"text-[#828282]"}>Photographer & Filmmaker based in Copenhagen, Denmark ✵ 🇩🇰</p>
+                                <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
+                                    <div className="flex items-center justify-between  mb-4">
+                                        <h1 className={props.darkMode ? "text-2xl font-[600] text-gray-300" : "text-2xl font-[600]"}>
+                                            {searchedUser.userName}</h1>
+                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}>
+                                            <span
+                                                className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{searchedUser.following}</span> following
+                                        </p>
+                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}>
+                                            <span
+                                                className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{searchedUser.followers}</span> followers
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className={props.darkMode ? "text-[#828282] font-[600]" : "text-[#828282]"}>
+                                            {searchedUser.bio? searchedUser.bio : "This user has no bio yet !"}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
+                            <button
+                                className="bg-[#2F80ED] text-white h-max flex items-center justify-between py-1 px-5 capitalize rounded-sm mt-5 mx-10">
+                                <PersonAddAlt1OutlinedIcon fontSize="small" className="mr-2"/> follow
+                            </button>
                         </div>
-                        <button className="bg-[#2F80ED] text-white h-max flex items-center justify-between py-1 px-5 capitalize rounded-sm mt-5 mx-10">
-                           <PersonAddAlt1OutlinedIcon fontSize="small" className="mr-2"/> follow
-                        </button>
+                    </div>
+                    <div className=" mt-28 flex justify-between  xl:px-52  ">
+                        <div>
+                            <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch}/>
+                        </div>
+                        <div className="w-[650px]">
+                            <h1 className="ml-5 text-gray-500 capitalize font-medium mb-4">posts
+                                from {searchedUser.userName}</h1>
+                            {postElements}
+                        </div>
+
                     </div>
                 </div>
-                <div className=" mt-28 flex justify-between  xl:px-52  ">
-                    <div>
-                      <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch}/>
-                    </div>
-                    <div className="w-[745px]" >
-                        <h1 className="ml-5 text-gray-500 capitalize font-medium mb-2">posts from Lina Iris</h1>
-                        <Post darkMode={props.darkMode} name="Lina Iris" profile={tweeper} createdAt='24 August at 20:43' text="Traveling-it leaves you speechless, then turns you into a storyteller." img={post} comments={449} retweeps={59004} saves={234}/>
-                        <Post darkMode={props.darkMode} name="Bianca Lois" profile={Lois} createdAt='24 August at 20:43' text="“We travel, some of us forever, to seek other places, other lives, other souls.” – Anais Nin" img={post2} comments={208} retweeps={2764} saves={178}/>
-                        <Post darkMode={props.darkMode} name="Mikael Stanley" createdAt='13 September at 12:41' text="Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma – which is living with the results of other people's thinking. -Steve Jobs" comments={23} retweeps={10} saves={20}/>
-                    </div>
-                </div>
-                </div>
-                
-            </div>
-        )
-    }else{
-        return (
-            <div className={props.darkMode?"w-full bg-[#252329] h-screen flex items-center justify-center":"w-full h-screen flex items-center justify-center"}>
-                 <CircularProgress/>
-            </div>
-        )
+
+            </div>)
+    } else {
+        return (<div
+                className={props.darkMode ? "w-full bg-[#252329] h-screen flex items-center justify-center" : "w-full h-screen flex items-center justify-center"}>
+                <CircularProgress/>
+            </div>)
     }
 }
 

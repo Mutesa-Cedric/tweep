@@ -33,14 +33,14 @@ const profileSchema=new mongoose.Schema({
         required:false
     },
     followers:{
-        type:Number,
+        type:[String],
         required:true,
-        default:0
+        default:[]
     },
     following:{
-        type:Number,
+        type:[String],
         required:true,
-        default:0
+        default:[]
     }
 })
 

@@ -186,92 +186,187 @@ const updateComments = async (req, res) => {
 // updating post comments
 
 //update likes of a comment
-const updateLikesOfComment = async (req, res) => {
+// const updateLikesOfComment = async (req, res) => {
+//     try {
+//         let postId = req.params.postId;
+//         let commentedAt = req.params.commentedAt;
+//         // console.log(`the commented at from params is ${commentedAt}`)
+//         let {like} = req.body
+//         await postsSchema.findOne({_id: postId}, (err, post) => {
+//             if (err) {
+//                 res.json({
+//                     status: 404,
+//                     success: false,
+//                     message: "no posts found"
+//                 })
+//             } else {
+//                 console.log(post)
+//                 // let comments = post.comments;
+//                 // console.log(comments)
+//
+//
+//                 //used this for debugging
+//                 // comments.map(comment=>{
+//                 //     if(comment.commentedAt.toString()===commentedAt){
+//                 //         // console.log("the comment is :")
+//                 //         // console.log(comment);
+//                 //         // console.log(commentedAt)
+//                 //     }
+//                 //     // console.log(comment.commentedAt)
+//                 // })
+//
+//                 //finding index of a comment
+//                 let index = comments.findIndex(comment => comment.commentedAt.toString() === commentedAt);
+//                 // console.log(`the index is ${index}`)
+//                 if (index === -1) {
+//                     res.json({
+//                         status: 404,
+//                         success: false,
+//                         message: "comment not found"
+//                     })
+//                 } else {
+//                     await postsSchema.updateOne({_id:postId},{'$push':{'comments[index].likes':like}},(err,post)=>{
+//                         if(err){
+//                             res.json({
+//                                 status:404,
+//                                 updated:false,
+//                                 message:err
+//                             })
+//                         }else{
+//                             res.json({
+//                                 status:200,
+//                                 updated:true,
+//                                 post:post
+//                             })
+//                         }
+//                     })
+//                     // if(comments[index].likes.includes(like)){
+//                     //     let likeIndex=comments[index].likes.indexOf(like)
+//                     //     comments[index].likes.splice(likeIndex,1)
+//                     //     post.save((err,post)=>{
+//                     //         if(err){
+//                     //             res.json({
+//                     //                 status:404,
+//                     //                 success:false,
+//                     //                 message:"post not found!"
+//                     //             })
+//                     //         }else{
+//                     //             res.json({
+//                     //                 status:200,
+//                     //                 success:true,
+//                     //                 message:"like  removed from  a comment!",
+//                     //                 post:post
+//                     //             })
+//                     //         }
+//                     //     })
+//                     // }else{
+//                         // comments[index].likes.push(like);
+//                         // await post.save((err, updatedPost) => {
+//                         //     if (err) {
+//                         //         res.json({
+//                         //             status: 404,
+//                         //             success: false,
+//                         //             message: "no posts found"
+//                         //         })
+//                         //     } else {
+//                         //         updatedPost.save()
+//                         //         res.json({
+//                         //             status: 204,
+//                         //             success: true,
+//                         //             message: "like added to a comment",
+//                         //             updatedPost: updatedPost
+//                         //         })
+//                         //     }
+//                         // })
+//
+//                     // }
+//                 }
+//             }
+//         })
+//     } catch (error) {
+//     }
+// };
+//update likes of a comment
+
+const updateLikesOfComment=(req,res)=>{
+    let postId=req.params.postId;
+    let commentedAt=req.params.commentedAt;
+    let like=req.body.like;
     try {
-        let postId = req.params.postId;
-        let commentedAt = req.params.commentedAt;
-        // console.log(`the commented at from params is ${commentedAt}`)
-        let {like} = req.body
-        console.log(`the like is ${like}`)
-        await postsSchema.findOne({_id: postId}, async (err, post) => {
-            if (err) {
+        postsSchema.findOne({_id:postId},(err,post)=>{
+            if(err){
                 res.json({
-                    status: 404,
-                    success: false,
-                    message: "no posts found"
+                    status:404,
+                    updated:false,
+                    message:err
                 })
-            } else {
-                let comments = post.comments;
-                // console.log(comments)
-                console.log(comments[3].commentedAt)
-
-                //used this for debugging
-                // comments.map(comment=>{
-                //     if(comment.commentedAt.toString()===commentedAt){
-                //         // console.log("the comment is :")
-                //         // console.log(comment);
-                //         // console.log(commentedAt)
-                //     }
-                //     // console.log(comment.commentedAt)
-                // })
-
-                //finding index of a comment
-                let index = comments.findIndex(comment => comment.commentedAt.toString() === commentedAt);
-                // console.log(`the index is ${index}`)
-                if (index === -1) {
+            }else{
+                if(!post){
                     res.json({
-                        status: 404,
-                        success: false,
-                        message: "comment not found"
+                        status:404,
+                        updated:false,
+                        message:"post not found!"
                     })
-                } else {
-                    if(comments[index].likes.includes(like)){
-                        let likeIndex=comments[index].likes.indexOf(like)
-                        comments[index].likes.splice(likeIndex,1)
-                        post.save((err,post)=>{
-                            if(err){
-                                res.json({
-                                    status:404,
-                                    success:false,
-                                    message:"post not found!"
-                                })
-                            }else{
-                                res.json({
-                                    status:200,
-                                    success:true,
-                                    message:"like  removed from  a comment!",
-                                    post:post
-                                })
-                            }
+                }else{
+                    let comments=post.comments;
+                    let index=comments.findIndex(comment=>comment.commentedAt.toString()===commentedAt);
+                    if(index===-1){
+                        res.json({
+                            status:404,
+                            updated:false,
+                            message:"comment not found!"
                         })
                     }else{
-                        comments[index].likes.push(like);
-                        await post.save((err, updatedPost) => {
-                            if (err) {
-                                res.json({
-                                    status: 404,
-                                    success: false,
-                                    message: "no posts found"
-                                })
-                            } else {
-                                updatedPost.save()
-                                res.json({
-                                    status: 204,
-                                    success: true,
-                                    message: "like added to a comment",
-                                    updatedPost: updatedPost
-                                })
-                            }
-                        })
+                        console.log(like)
+                        console.log(comments[index].likes.includes('isite'));
+
+                        if(comments[index].likes.includes(like)){
+                            let likeIndex=comments[index].likes.indexOf(like)
+                            comments[index].likes.splice(likeIndex,1)
+                            postsSchema.updateOne({_id:postId},{$set:{comments:comments}},(err,updatedPost)=>{
+                                if(err){
+                                    res.json({
+                                        status:404,
+                                        updated:false,
+                                        message:err
+                                    })
+                                }else{
+                                    res.json({
+                                        status:200,
+                                        updated:true,
+                                        message:"like removed from a comment",
+                                        updatedPost:updatedPost
+                                    })
+                                }
+                            })
+
+                        }else{
+                            comments[index].likes.push(like);
+                            postsSchema.updateOne({_id:postId},{$set:{comments:comments}},(err,updatedPost)=>{
+                                if(err){
+                                    res.json({
+                                        status:404,
+                                        updated:false,
+                                        message:err
+                                    })
+                                }else{
+                                    res.json({
+                                        status:200,
+                                        updated:true,
+                                        message:"like added to a comment",
+                                        updatedPost:updatedPost
+                                    })
+                                }
+                            })
+                        }
                     }
                 }
             }
         })
     } catch (error) {
-    }
-};
-//update likes of a comment
 
+    }
+}
 
 //updating retweeps
 
@@ -291,7 +386,6 @@ const updateRetweeps = async (req, res) => {
                if(post.retweeps.includes(retweep)){
                    let retweepIndex=post.retweeps.indexOf(retweep);
                    post.retweeps.splice(retweepIndex,1);
-
                    post.save((err,post)=>{
                        if(err){
                            res.json({

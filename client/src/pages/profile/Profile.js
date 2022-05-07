@@ -28,7 +28,7 @@ let Profile = (props) => {
     const [searchedUser, setSearchedUser] = useState({});
     const [searchedUserFound, setSearchedUserFound] = useState(false);
     const [searchedUserFollowers, setSetSearchedUserFollowers] = useState(0);
-
+    const [allSet, setAllSet] = useState(false);
     // console.log(currentUserProfile)
     console.log(isFollowing)
     //checking if the user is logged in
@@ -86,7 +86,9 @@ let Profile = (props) => {
             if (searchedUserFound && currentUser.following.includes(searchedUser.userName)) {
                 setIsFollowing(true)
             }
-    },[])
+
+            setAllSet(true)
+    },[searchedUserFound])
 
     const followUser = () => {
         setIsFollowing(true);
@@ -148,7 +150,7 @@ let Profile = (props) => {
     });
 
 
-    if (hasProfile && searchedUserFound) {
+    if (hasProfile && searchedUserFound && allSet) {
         return (<div
                 className={props.darkMode ? "bg-[#252329] h-screen overflow-x-hidden" : "relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
                 {currentUser.profileImage ? <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode}

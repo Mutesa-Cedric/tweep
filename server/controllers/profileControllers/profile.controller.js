@@ -211,40 +211,93 @@ const updateProfileWithProfileImage =async(req,res)=>{
 
 //updating followers
 
-const updateFollowers=async(req,res)=>{
+const updateFollowers=(req,res)=>{
     try {
         //follower is the one who is going to follow another
         //while following is the one who is going to be followed
         let {follower,following}=req.body;
-        await profileSchema.updateOne({userName:following},{$push:{followers:follower}},(err,profile) => {
+
+        profileSchema.findOne({userName:following},(err,followingProfile)=>{
             if(err){
                 res.json({
-                    status: 404,
-                    updated:false,
+                    status:404,
                     message:"profile not found"
                 })
-            }else {
-                profileSchema.updateOne({userName:follower},{$push:{following:following}},(err,followersProfile)=>{
-                    if(err){
-                        res.json({
-                            status: 404,
-                            updated:false,
-                            message:"profile not found"
-                        })
-                    }else {
-                        
-                        res.json({
+            }else{
+                let followers=followingProfile.followers;
+                if(followers.includes(follower)){
+                    let followerIndex=followers.indexOf(follower);
+                    followers.splice(followerIndex,1);
+                    profileSchema.updateOne({userName:following},{$set:{followers:followers}},(err,updatedPost)=>{
+                        if(err){
+                            res.json({
+                                status:404,
+                                updated:false,
+                                message:err
+                            })
+                        }else{
+                           //here, the follower is removed from the followers array of the following profile
+                            //the next step is to remove the following profile from the followers array of the follower
+                            profileSchema.findOne({userName:follower},(err,followerProfile)=>{
+                                if(err){
+                                    res.json({
+                                        message:"no profile found"
+                                    })
+                                }else{
+                                    let followingArray=followerProfile.following;
+                                    let followingIndex=following.indexOf(following);
+                                    followingArray.splice(followingIndex,1)
+                                    profileSchema.updateOne({userName:follower},{$set:{following:followingArray}},(err,updatedPost)=>{
+                                        if(err){
+                                            res.json({
+                                                status:404,
+                                                message:"profile not updated successfully"
+                                            })
+                                        }else{
+                                            res.json({
+                                                status:201,
+                                                updated:true,
+                                                message:"both follower and following were removed successfully!"
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }else {
+                    profileSchema.updateOne({userName:following},{$push:{followers:follower}},(err,profile) => {
+                        if(err){
+                            res.json({
+                                status: 404,
+                                updated:false,
+                                message:"profile not found"
+                            })
+                        }else {
+                            profileSchema.updateOne({userName:follower},{$push:{following:following}},(err,followersProfile)=>{
+                                if(err){
+                                    res.json({
+                                        status: 404,
+                                        updated:false,
+                                        message:"profile not found"
+                                    })
+                                }else {
 
-                            status:200,
-                            updated:true,
-                            message:"both profiles were updated successfully",
-                            followersProfile:followersProfile,
-                            followingProfile:profile
-                        })
-                    }
-                })
+                                    res.json({
+
+                                        status:200,
+                                        updated:true,
+                                        message:"both profiles were updated successfully",
+                                        followersProfile:followersProfile,
+                                        followingProfile:profile
+                                    })
+                                }
+                            })
+                        }
+                    });
+                }
             }
-        });
+        })
     }catch (e) {
         // console.log(err)
     }

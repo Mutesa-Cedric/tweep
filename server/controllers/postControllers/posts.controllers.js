@@ -93,7 +93,7 @@ const getPostsByUsername = async (req, res) => {
             }
         }).sort({postedAt: -1})
     } catch (error) {
-        return console.error(error)
+        // return console.error(error)
     }
     let userName = req.params.userName
 }
@@ -317,8 +317,6 @@ const updateLikesOfComment=(req,res)=>{
                             message:"comment not found!"
                         })
                     }else{
-                        console.log(like)
-                        console.log(comments[index].likes.includes('isite'));
 
                         if(comments[index].likes.includes(like)){
                             let likeIndex=comments[index].likes.indexOf(like)
@@ -570,6 +568,40 @@ const deletePost = async (req, res) => {
 
 //deleting a post
 
+//getting saved tweeps
+
+
+const getSavedTweeps=async(req,res)=>{
+    try{
+        const userName=req.params.userName;
+        await postsSchema.find((err,posts)=>{
+            if(err) {
+                res.json({
+                    status:500,
+                    message:"there was an error retrieving posts"
+                })
+            }else{
+                let savedPosts=[];
+                posts.map((post)=>{
+                   if(post.saved.includes(userName)){
+                       savedPosts.push(post);
+                   }
+               })
+                res.json({
+                    status:200,
+                    success:true,
+                    message:"saved posts retrieved successfully",
+                    posts:savedPosts
+                })
+            }
+        })
+    }catch(err){}
+
+}
+
+//getting saved tweeps
+
+
 //exporting functions
 module.exports.getPostById = getPostById;
 module.exports.newPost = newPost;
@@ -582,6 +614,7 @@ module.exports.updateRetweeps = updateRetweeps;
 module.exports.updateLikes = updateLikes;
 module.exports.updateSaved=updateSaved;
 module.exports.updateLikesOfComment=updateLikesOfComment;
+module.exports.getSavedTweeps=getSavedTweeps;
 //exporting functions
 
 

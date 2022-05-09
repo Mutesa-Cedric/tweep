@@ -61,7 +61,7 @@ const getAllPosts = async (req, res) => {
             }
         }).sort({postedAt: -1})
     } catch (error) {
-        return console.error(error)
+        // return console.error(error)
     }
 }
 
@@ -185,108 +185,7 @@ const updateComments = async (req, res) => {
 
 // updating post comments
 
-//update likes of a comment
-// const updateLikesOfComment = async (req, res) => {
-//     try {
-//         let postId = req.params.postId;
-//         let commentedAt = req.params.commentedAt;
-//         // console.log(`the commented at from params is ${commentedAt}`)
-//         let {like} = req.body
-//         await postsSchema.findOne({_id: postId}, (err, post) => {
-//             if (err) {
-//                 res.json({
-//                     status: 404,
-//                     success: false,
-//                     message: "no posts found"
-//                 })
-//             } else {
-//                 console.log(post)
-//                 // let comments = post.comments;
-//                 // console.log(comments)
-//
-//
-//                 //used this for debugging
-//                 // comments.map(comment=>{
-//                 //     if(comment.commentedAt.toString()===commentedAt){
-//                 //         // console.log("the comment is :")
-//                 //         // console.log(comment);
-//                 //         // console.log(commentedAt)
-//                 //     }
-//                 //     // console.log(comment.commentedAt)
-//                 // })
-//
-//                 //finding index of a comment
-//                 let index = comments.findIndex(comment => comment.commentedAt.toString() === commentedAt);
-//                 // console.log(`the index is ${index}`)
-//                 if (index === -1) {
-//                     res.json({
-//                         status: 404,
-//                         success: false,
-//                         message: "comment not found"
-//                     })
-//                 } else {
-//                     await postsSchema.updateOne({_id:postId},{'$push':{'comments[index].likes':like}},(err,post)=>{
-//                         if(err){
-//                             res.json({
-//                                 status:404,
-//                                 updated:false,
-//                                 message:err
-//                             })
-//                         }else{
-//                             res.json({
-//                                 status:200,
-//                                 updated:true,
-//                                 post:post
-//                             })
-//                         }
-//                     })
-//                     // if(comments[index].likes.includes(like)){
-//                     //     let likeIndex=comments[index].likes.indexOf(like)
-//                     //     comments[index].likes.splice(likeIndex,1)
-//                     //     post.save((err,post)=>{
-//                     //         if(err){
-//                     //             res.json({
-//                     //                 status:404,
-//                     //                 success:false,
-//                     //                 message:"post not found!"
-//                     //             })
-//                     //         }else{
-//                     //             res.json({
-//                     //                 status:200,
-//                     //                 success:true,
-//                     //                 message:"like  removed from  a comment!",
-//                     //                 post:post
-//                     //             })
-//                     //         }
-//                     //     })
-//                     // }else{
-//                         // comments[index].likes.push(like);
-//                         // await post.save((err, updatedPost) => {
-//                         //     if (err) {
-//                         //         res.json({
-//                         //             status: 404,
-//                         //             success: false,
-//                         //             message: "no posts found"
-//                         //         })
-//                         //     } else {
-//                         //         updatedPost.save()
-//                         //         res.json({
-//                         //             status: 204,
-//                         //             success: true,
-//                         //             message: "like added to a comment",
-//                         //             updatedPost: updatedPost
-//                         //         })
-//                         //     }
-//                         // })
-//
-//                     // }
-//                 }
-//             }
-//         })
-//     } catch (error) {
-//     }
-// };
-//update likes of a comment
+
 
 const updateLikesOfComment=(req,res)=>{
     let postId=req.params.postId;
@@ -601,6 +500,96 @@ const getSavedTweeps=async(req,res)=>{
 
 //getting saved tweeps
 
+//getting top posts
+
+const getTopPosts=async(req,res)=>{
+
+    try {
+        await postsSchema.find((err, posts) => {
+            if (err) {
+                throw err
+            } else {
+                if (posts.length === 0) {
+                    res.json({
+                        status: 404,
+                        areFound: false,
+                        message: "no posts found!"
+                    })
+                } else {
+                    res.json({
+                        status: 200,
+                        success: true,
+                        numberOfPosts: posts.length,
+                        posts: posts
+                    })
+                }
+            }
+        }).sort('likes DESC').exec()
+    } catch (error) {
+        // return console.error(error)
+    }
+}
+//getting top posts
+
+//getting the most retweeped posts
+
+const getMostRetweepedPosts = async (req, res) => {
+    try {
+        await postsSchema.find((err, posts) => {
+            if (err) {
+                throw err
+            } else {
+                if (posts.length === 0) {
+                    res.json({
+                        status: 404,
+                        areFound: false,
+                        message: "no posts found!"
+                    })
+                } else {
+                    res.json({
+                        status: 200,
+                        success: true,
+                        numberOfPosts: posts.length,
+                        posts: posts
+                    })
+                }
+            }
+        }).sort('retweeps DESC').exec()
+    } catch (error) {
+        // return console.error(error)
+    }
+}
+//getting the most retweeped  posts
+
+//getting most commented posts
+const getMostCommentedPosts = async (req, res) => {
+    try {
+        await postsSchema.find((err, posts) => {
+            if (err) {
+                throw err
+            } else {
+                if (posts.length === 0) {
+                    res.json({
+                        status: 404,
+                        areFound: false,
+                        message: "no posts found!"
+                    })
+                } else {
+                    res.json({
+                        status: 200,
+                        success: true,
+                        numberOfPosts: posts.length,
+                        posts: posts
+                    })
+                }
+            }
+        }).sort({comments :-1})
+    } catch (error) {
+        // return console.error(error)
+    }
+}
+//getting most commented posts
+
 
 //exporting functions
 module.exports.getPostById = getPostById;
@@ -615,6 +604,9 @@ module.exports.updateLikes = updateLikes;
 module.exports.updateSaved=updateSaved;
 module.exports.updateLikesOfComment=updateLikesOfComment;
 module.exports.getSavedTweeps=getSavedTweeps;
+module.exports.getTopPosts=getTopPosts;
+module.exports.getMostRetweepedPosts=getMostRetweepedPosts;
+module.exports.getMostCommentedPosts=getMostCommentedPosts;
 //exporting functions
 
 

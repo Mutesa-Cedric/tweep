@@ -10,7 +10,6 @@ const saltRounds=10
 const register=async(req,res)=>{
     try{
         const {userName,email,password}=req.body;
-
         //checking if username is teaken
         const existingUserName= await usersSchema.findOne({userName:userName})
         if(existingUserName){
@@ -43,10 +42,12 @@ const register=async(req,res)=>{
     
                         await user.save()
         
+
                         let userToSign={
                             userName:userName,
                             email:email
                         }
+                        
                         const accessToken=jwt.sign(userToSign,process.env.ACCESS_KEY_SECRET)
         
                         if(user){

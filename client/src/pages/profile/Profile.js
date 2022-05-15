@@ -137,7 +137,7 @@ let Profile = (props) => {
             name={post.postedBy}
             profile={`http://localhost:7070/${post.postedBy}Profile.png`}
             createdAt={new Date(post.postedAt).toDateString()} text={post.text}
-            img={`http://localhost:7070/${post.media}`}
+            img={post.media?`http://localhost:7070/${post.media}`:undefined} 
             comments={post.comments.length}
             retweeps={post.retweeps.length}
             retweepsArray={post.retweeps}
@@ -168,7 +168,6 @@ let Profile = (props) => {
                                 <div
                                     className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg "
                                     style={{backgroundImage: `url(http://localhost:7070/${searchedUser.profileImage})`}}>
-
                                 </div>
                                 <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
                                     <div className="flex items-center justify-between  mb-4">

@@ -1,18 +1,37 @@
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 
+
 let PersonToFollow=(props)=>{
+    console.log(props.currentUser)
+    const followUser=()=>{
+        fetch("http://localhost:7070/profiles/updateFollowers/", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                follower: props.currentUser,
+                following: props.name
+            })
+        }).then(response => response.json()).then(data => {
+            if(data.status===200){
+                props.finishedFollowing()
+            }
+        }).catch(err => console.log(err))
+    }
     return (
         <div>
-            <div className="flex items-center my-4 justify-between">
+            <div className="flex border-t-[1.3px] pt-4 items-center my-4 justify-between">
                 <div className="flex items-center">
                     <img src={props.profile} alt="woman" className="rounded-md mr-4  h-10 w-10"/>
                     <div className="flex flex-col">
                         <h1 className={props.darkMode?"font-medium text-white":"font-medium"}>{props.name}</h1>
-                        <p className="text-gray-300  text-[14px]">{props.followers}k followers</p>
+                        <p className="text-gray-300  text-[14px]">{props.followers} followers</p>
                     </div>
                 </div>
                 <div className="flex items-center">
-                    <button className="text-white bg-[#2F80ED] px-4 py-1 flex items-center justify-between rounded-md capitalize">
+                    <button className="text-white bg-[#2F80ED] px-4 py-1 flex items-center justify-between rounded-md capitalize"
+                            onClick={followUser}>
                         <PersonAddAlt1OutlinedIcon fontSize="small" className="mr-1"/> follow
                     </button>
                 </div>

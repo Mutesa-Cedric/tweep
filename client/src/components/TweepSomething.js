@@ -3,13 +3,14 @@ import PersonIcon from '@mui/icons-material/Person';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {Modal} from "@mui/material";
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 
 let TweepSomething=(props)=>{
     let postForm =document.getElementById("postForm")
     let file=document.getElementById("file")
+    // console.log('file'+file.files[0])
     const [finishedPosting, setFinishedPosting] = useState(false);
-    // console.log(file.files[0])
+    const [noThingToPost, setNoThingToPost] = useState(false);
     const handlePostSubmit=(e)=>{
         e.preventDefault()
        let formData=new FormData(postForm)
@@ -17,11 +18,11 @@ let TweepSomething=(props)=>{
         formData.append('postedBy',props.userName);
        formData.append("media",file.files[0])
 
-       fetch("http://localhost:7070/posts/newPost/",{
-           method:'POST',
-           body:formData
-       }).then(response=>response.json())
-       .then(data=>{
+       if(file.files[0]===undefined){
+           fetch('http://localhost:7070/posts/newPostWithoutImage',{
+            method:'POST',
+            body:formData
+           }).then(response=>response.json()).then(data=>{
             if(data.saved===true){
                 props.updateDomPost()
                 let textArea=document.getElementById('textarea')
@@ -30,10 +31,29 @@ let TweepSomething=(props)=>{
                 props.cancelImage()
                 props.finishPosting()
             }
-       }).catch(err=>console.log(err))
+           }).catch(err=>console.error(err))
+       }
+else{
+    
+    fetch("http://localhost:7070/posts/newPost/",{
+        method:'POST',
+        body:formData
+    }).then(response=>response.json())
+    .then(data=>{
+         if(data.saved===true){
+             props.updateDomPost()
+             let textArea=document.getElementById('textarea')
+             textArea.textContent=null
+             textArea.value=null
+             props.cancelImage()
+             props.finishPosting()
+         }
+    }).catch(err=>console.log(err))
+}
     }
+    
     return (
-        <div className={props.darkMode?"w-auto mb-10 bg-inherit  h-auto shadow-xl rounded-xl sm:mx-4 px-6":"w-auto sm:mx-4 mb-10 bg-white h-auto shadow-sm rounded-xl px-6"}>
+        <div className={props.darkMode?"w-[650px] mb-10 bg-inherit mx-auto  h-auto shadow-xl rounded-xl sm:mx-4 px-6":"w-[650px] mx-auto sm:mx-4 mb-10 bg-white h-auto shadow-sm rounded-xl px-6"}>
 
             {/*/!*{finishedPosting && <Modal keepMounted />*!/*/}
             {/*}*/}
@@ -67,7 +87,7 @@ let TweepSomething=(props)=>{
                     <p className="text-[#2F80ED] text-[14px] cursor-pointer font-medium">Everyone can reply</p>
                 </div>
                 <div>
-                    <button type="submit" className="text-white text-[14px] font-medium bg-[#2F80ED] rounded-[4px] px-6 py-[6px]" onClick={props.tweepPost}>Tweep</button>
+                    <button type="submit" className={"text-white text-[14px] font-medium bg-[#2F80ED] rounded-[4px] px-6 py-[6px]"} onClick={props.tweepPost}>Tweep</button>
                 </div>
             </div>  
             </form>

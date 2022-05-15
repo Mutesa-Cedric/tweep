@@ -2,7 +2,7 @@ const {postsSchema} = require('../../model/posts.schema')
 const {indexOf} = require("lodash/array");
 //new post
 const newPost = async (req, res) => {
-    console.log(`posted at ${req.body.postedAt}`)
+    // console.log(`posted at ${req.body.postedAt}`)
     try {
         const {postedBy, text} = req.body;
         const postedAt = req.body.postedAt
@@ -35,6 +35,40 @@ const newPost = async (req, res) => {
     }
 }
 //new post
+
+//new post without image
+
+const newPostWithoutImage = async (req, res) => {
+    try {
+        const {postedBy, text} = req.body;
+        const postedAt = req.body.postedAt
+
+        const post = new postsSchema({
+            postedBy: postedBy,
+            text: text,
+            postedAt: postedAt,
+        })
+        await post.save((err, post) => {
+            if (err) {
+                return res.json({
+                    status: 500,
+                    success: false,
+                    message: "post not saved!"
+                })
+            } else {
+                res.json({
+                    status: 201,
+                    saved: true,
+                    post: post,
+                    message: "post saved successfully"
+                })
+            }
+        })
+    } catch (error) {
+        return console.error(error)
+    }
+}
+//new post without image
 
 //getting all posts
 
@@ -134,7 +168,8 @@ const updatePost = async (req, res) => {
         let postId = req.params.id;
         let updates = req.body;
 
-        if (!await postsSchema.updateOne({_id: postId}, updates, (err, post) => {if (err) {
+        if (!await postsSchema.updateOne({_id: postId}, updates, (err, post) => {
+            if (err) {
                 res.json({
                     status: 404,
                     success: false,
@@ -186,72 +221,71 @@ const updateComments = async (req, res) => {
 // updating post comments
 
 
-
-const updateLikesOfComment=(req,res)=>{
-    let postId=req.params.postId;
-    let commentedAt=req.params.commentedAt;
-    let like=req.body.like;
+const updateLikesOfComment = (req, res) => {
+    let postId = req.params.postId;
+    let commentedAt = req.params.commentedAt;
+    let like = req.body.like;
     try {
-        postsSchema.findOne({_id:postId},(err,post)=>{
-            if(err){
+        postsSchema.findOne({_id: postId}, (err, post) => {
+            if (err) {
                 res.json({
-                    status:404,
-                    updated:false,
-                    message:err
+                    status: 404,
+                    updated: false,
+                    message: err
                 })
-            }else{
-                if(!post){
+            } else {
+                if (!post) {
                     res.json({
-                        status:404,
-                        updated:false,
-                        message:"post not found!"
+                        status: 404,
+                        updated: false,
+                        message: "post not found!"
                     })
-                }else{
-                    let comments=post.comments;
-                    let index=comments.findIndex(comment=>comment.commentedAt.toString()===commentedAt);
-                    if(index===-1){
+                } else {
+                    let comments = post.comments;
+                    let index = comments.findIndex(comment => comment.commentedAt.toString() === commentedAt);
+                    if (index === -1) {
                         res.json({
-                            status:404,
-                            updated:false,
-                            message:"comment not found!"
+                            status: 404,
+                            updated: false,
+                            message: "comment not found!"
                         })
-                    }else{
+                    } else {
 
-                        if(comments[index].likes.includes(like)){
-                            let likeIndex=comments[index].likes.indexOf(like)
-                            comments[index].likes.splice(likeIndex,1)
-                            postsSchema.updateOne({_id:postId},{$set:{comments:comments}},(err,updatedPost)=>{
-                                if(err){
+                        if (comments[index].likes.includes(like)) {
+                            let likeIndex = comments[index].likes.indexOf(like)
+                            comments[index].likes.splice(likeIndex, 1)
+                            postsSchema.updateOne({_id: postId}, {$set: {comments: comments}}, (err, updatedPost) => {
+                                if (err) {
                                     res.json({
-                                        status:404,
-                                        updated:false,
-                                        message:err
+                                        status: 404,
+                                        updated: false,
+                                        message: err
                                     })
-                                }else{
+                                } else {
                                     res.json({
-                                        status:200,
-                                        updated:true,
-                                        message:"like removed from a comment",
-                                        updatedPost:updatedPost
+                                        status: 200,
+                                        updated: true,
+                                        message: "like removed from a comment",
+                                        updatedPost: updatedPost
                                     })
                                 }
                             })
 
-                        }else{
+                        } else {
                             comments[index].likes.push(like);
-                            postsSchema.updateOne({_id:postId},{$set:{comments:comments}},(err,updatedPost)=>{
-                                if(err){
+                            postsSchema.updateOne({_id: postId}, {$set: {comments: comments}}, (err, updatedPost) => {
+                                if (err) {
                                     res.json({
-                                        status:404,
-                                        updated:false,
-                                        message:err
+                                        status: 404,
+                                        updated: false,
+                                        message: err
                                     })
-                                }else{
+                                } else {
                                     res.json({
-                                        status:200,
-                                        updated:true,
-                                        message:"like added to a comment",
-                                        updatedPost:updatedPost
+                                        status: 200,
+                                        updated: true,
+                                        message: "like added to a comment",
+                                        updatedPost: updatedPost
                                     })
                                 }
                             })
@@ -269,55 +303,55 @@ const updateLikesOfComment=(req,res)=>{
 
 const updateRetweeps = async (req, res) => {
     try {
-       let postId=req.params.id;
-       let {retweep}=req.body;
+        let postId = req.params.id;
+        let {retweep} = req.body;
 
-       await postsSchema.findOne({_id: postId},(err,post)=>{
-           if(err){
-               res.json({
-                   status:404,
-                   success:false,
-                   message:"post not found!"
-               })
-           }else{
-               if(post.retweeps.includes(retweep)){
-                   let retweepIndex=post.retweeps.indexOf(retweep);
-                   post.retweeps.splice(retweepIndex,1);
-                   post.save((err,post)=>{
-                       if(err){
-                           res.json({
-                               status:404,
-                               success:false,
-                               message:"post not found!"
-                           })
-                       }else{
-                           res.json({
-                               status:200,
-                               success:true,
-                               message:"retweet removed!",
-                               post:post
-                           })
-                       }
-                   })
-               }else{
-                   postsSchema.updateOne({_id:postId},{$push:{retweeps:retweep}},(err,post)=> {
-                       if (err){
-                        return res.json({
-                               status:404,
-                               success:false,
-                               message:"post not found!"
-                           })
-                       }
-                       res.json({
-                           status: 203,
-                           message: "updated!",
-                           success: true
-                       })
-                   })
-               }
-           }
-       })
-    }catch(error){
+        await postsSchema.findOne({_id: postId}, (err, post) => {
+            if (err) {
+                res.json({
+                    status: 404,
+                    success: false,
+                    message: "post not found!"
+                })
+            } else {
+                if (post.retweeps.includes(retweep)) {
+                    let retweepIndex = post.retweeps.indexOf(retweep);
+                    post.retweeps.splice(retweepIndex, 1);
+                    post.save((err, post) => {
+                        if (err) {
+                            res.json({
+                                status: 404,
+                                success: false,
+                                message: "post not found!"
+                            })
+                        } else {
+                            res.json({
+                                status: 200,
+                                success: true,
+                                message: "retweet removed!",
+                                post: post
+                            })
+                        }
+                    })
+                } else {
+                    postsSchema.updateOne({_id: postId}, {$push: {retweeps: retweep}}, (err, post) => {
+                        if (err) {
+                            return res.json({
+                                status: 404,
+                                success: false,
+                                message: "post not found!"
+                            })
+                        }
+                        res.json({
+                            status: 203,
+                            message: "updated!",
+                            success: true
+                        })
+                    })
+                }
+            }
+        })
+    } catch (error) {
     }
 }
 
@@ -325,47 +359,47 @@ const updateRetweeps = async (req, res) => {
 
 //updating likes
 
-const updateLikes=async (req, res) => {
+const updateLikes = async (req, res) => {
     try {
 
-        let postId=req.params.id;
-        let {like}=req.body;
+        let postId = req.params.id;
+        let {like} = req.body;
 
-        await postsSchema.findOne({_id: postId},(err,post)=>{
-            if(err){
+        await postsSchema.findOne({_id: postId}, (err, post) => {
+            if (err) {
                 res.json({
-                    status:404,
-                    success:false,
-                    message:"post not found!"
+                    status: 404,
+                    success: false,
+                    message: "post not found!"
                 })
-            }else{
-                if(post.likes.includes(like)){
-                    let likeIndex=post.likes.indexOf(like);
-                    post.likes.splice(likeIndex,1);
+            } else {
+                if (post.likes.includes(like)) {
+                    let likeIndex = post.likes.indexOf(like);
+                    post.likes.splice(likeIndex, 1);
 
-                    post.save((err,post)=>{
-                        if(err){
+                    post.save((err, post) => {
+                        if (err) {
                             res.json({
-                                status:404,
-                                success:false,
-                                message:"post not found!"
+                                status: 404,
+                                success: false,
+                                message: "post not found!"
                             })
-                        }else{
+                        } else {
                             res.json({
-                                status:200,
-                                success:true,
-                                message:"like removed successfully!",
-                                remainingLikes:post.likes.length
+                                status: 200,
+                                success: true,
+                                message: "like removed successfully!",
+                                remainingLikes: post.likes.length
                             })
                         }
                     })
-                }else{
-                    postsSchema.updateOne({_id:postId},{$push:{likes:like}},(err,post)=> {
-                        if (err){
+                } else {
+                    postsSchema.updateOne({_id: postId}, {$push: {likes: like}}, (err, post) => {
+                        if (err) {
                             return res.json({
-                                status:404,
-                                success:false,
-                                message:"post not found!"
+                                status: 404,
+                                success: false,
+                                message: "post not found!"
                             })
                         }
                         res.json({
@@ -377,65 +411,65 @@ const updateLikes=async (req, res) => {
                 }
             }
         })
-     }catch(error){
-     }
+    } catch (error) {
+    }
 }
 //updating likes
 
 //update saved
-const updateSaved=async(req,res)=>{
+const updateSaved = async (req, res) => {
     try {
-        let postId=req.params.id;
-        let {save}=req.body;
+        let postId = req.params.id;
+        let {save} = req.body;
 
-        await postsSchema.findOne({_id: postId},(err,post)=>{
-          if(err){
-              res.json({
-                  status:404,
-                  success:false,
-                  message:"post not found!"
-              })
-          }else{
-              if(post.saved.includes(save)){
-                  let saveIndex=post.saved.indexOf(save);
-                  post.saved.splice(saveIndex,1);
-                  post.save((err,post)=>{
-                      if(err){
-                          res.json({
-                              status:404,
-                              success:false,
-                              message:"post not found!"
-                          })
-                      }else{
-                          res.json({
-                              status:200,
-                              success:true,
-                              message:"save removed successfully!",
-                              remainingSaves:post.saved.length
-                          })
-                      }
-                  })
-              }else{
-                  postsSchema.updateOne({_id:postId},{$push:{saved:save}},(err,post)=> {
-                      if (err){
-                          return res.json({
-                              status:404,
-                              success:false,
-                              message:"post not found!"
-                          })
-                      }
-                      res.json({
-                          status: 203,
-                          message: "save added successfully!",
-                          success: true
-                      })
-                  })
-              }
-          }
+        await postsSchema.findOne({_id: postId}, (err, post) => {
+            if (err) {
+                res.json({
+                    status: 404,
+                    success: false,
+                    message: "post not found!"
+                })
+            } else {
+                if (post.saved.includes(save)) {
+                    let saveIndex = post.saved.indexOf(save);
+                    post.saved.splice(saveIndex, 1);
+                    post.save((err, post) => {
+                        if (err) {
+                            res.json({
+                                status: 404,
+                                success: false,
+                                message: "post not found!"
+                            })
+                        } else {
+                            res.json({
+                                status: 200,
+                                success: true,
+                                message: "save removed successfully!",
+                                remainingSaves: post.saved.length
+                            })
+                        }
+                    })
+                } else {
+                    postsSchema.updateOne({_id: postId}, {$push: {saved: save}}, (err, post) => {
+                        if (err) {
+                            return res.json({
+                                status: 404,
+                                success: false,
+                                message: "post not found!"
+                            })
+                        }
+                        res.json({
+                            status: 203,
+                            message: "save added successfully!",
+                            success: true
+                        })
+                    })
+                }
+            }
 
         })
 
-    }catch(error){
+    } catch (error) {
     }
 }
 //update saved
@@ -470,31 +504,32 @@ const deletePost = async (req, res) => {
 //getting saved tweeps
 
 
-const getSavedTweeps=async(req,res)=>{
-    try{
-        const userName=req.params.userName;
-        await postsSchema.find((err,posts)=>{
-            if(err) {
+const getSavedTweeps = async (req, res) => {
+    try {
+        const userName = req.params.userName;
+        await postsSchema.find((err, posts) => {
+            if (err) {
                 res.json({
-                    status:500,
-                    message:"there was an error retrieving posts"
+                    status: 500,
+                    message: "there was an error retrieving posts"
                 })
-            }else{
-                let savedPosts=[];
-                posts.map((post)=>{
-                   if(post.saved.includes(userName)){
-                       savedPosts.push(post);
-                   }
-               })
+            } else {
+                let savedPosts = [];
+                posts.map((post) => {
+                    if (post.saved.includes(userName)) {
+                        savedPosts.push(post);
+                    }
+                })
                 res.json({
-                    status:200,
-                    success:true,
-                    message:"saved posts retrieved successfully",
-                    posts:savedPosts
+                    status: 200,
+                    success: true,
+                    message: "saved posts retrieved successfully",
+                    posts: savedPosts
                 })
             }
         })
-    }catch(err){}
+    } catch (err) {
+    }
 
 }
 
@@ -502,7 +537,7 @@ const getSavedTweeps=async(req,res)=>{
 
 //getting top posts
 
-const getTopPosts=async(req,res)=>{
+const getTopPosts = async (req, res) => {
 
     try {
         await postsSchema.find((err, posts) => {
@@ -516,15 +551,18 @@ const getTopPosts=async(req,res)=>{
                         message: "no posts found!"
                     })
                 } else {
+                    let topPosts = posts.sort((a, b) => {
+                        return b.likes.length - a.likes.length
+                    })
                     res.json({
                         status: 200,
                         success: true,
                         numberOfPosts: posts.length,
-                        posts: posts
+                        posts: topPosts
                     })
                 }
             }
-        }).sort('likes DESC').exec()
+        }).sort({likes: -1}).exec()
     } catch (error) {
         // return console.error(error)
     }
@@ -546,11 +584,14 @@ const getMostRetweepedPosts = async (req, res) => {
                         message: "no posts found!"
                     })
                 } else {
+                    let mostRetweepedPosts = posts.sort((a, b) => {
+                        return b.retweeps.length - a.retweeps.length
+                    })  //sort by retweets
                     res.json({
                         status: 200,
                         success: true,
                         numberOfPosts: posts.length,
-                        posts: posts
+                        posts: mostRetweepedPosts
                     })
                 }
             }
@@ -575,15 +616,18 @@ const getMostCommentedPosts = async (req, res) => {
                         message: "no posts found!"
                     })
                 } else {
+                    let mostCommentedPosts = posts.sort((a, b) => {
+                        return b.comments.length - a.comments.length
+                    }) //sort by comments                 }
                     res.json({
                         status: 200,
                         success: true,
                         numberOfPosts: posts.length,
-                        posts: posts
+                        posts: mostCommentedPosts
                     })
                 }
             }
-        }).sort({comments :-1})
+        }).sort({comments: -1})
     } catch (error) {
         // return console.error(error)
     }
@@ -601,12 +645,13 @@ module.exports.deletePost = deletePost;
 module.exports.updateComments = updateComments;
 module.exports.updateRetweeps = updateRetweeps;
 module.exports.updateLikes = updateLikes;
-module.exports.updateSaved=updateSaved;
-module.exports.updateLikesOfComment=updateLikesOfComment;
-module.exports.getSavedTweeps=getSavedTweeps;
-module.exports.getTopPosts=getTopPosts;
-module.exports.getMostRetweepedPosts=getMostRetweepedPosts;
-module.exports.getMostCommentedPosts=getMostCommentedPosts;
+module.exports.updateSaved = updateSaved;
+module.exports.updateLikesOfComment = updateLikesOfComment;
+module.exports.getSavedTweeps = getSavedTweeps;
+module.exports.getTopPosts = getTopPosts;
+module.exports.getMostRetweepedPosts = getMostRetweepedPosts;
+module.exports.getMostCommentedPosts = getMostCommentedPosts;
+module.exports.newPostWithoutImage=newPostWithoutImage;
 //exporting functions
 
 

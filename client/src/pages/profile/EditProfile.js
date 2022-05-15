@@ -56,8 +56,9 @@ const EditProfile = (props) => {
     //profile image
 
     //post image
-    let coverImageForm = document.getElementById('coverImageForm');
+    // console.log(typeof(coverImageForm))
     function postCover(coverImage) {
+        let coverImageForm = document.getElementById('coverImageForm');
         let formData = new FormData(coverImageForm)
         formData.append('coverImg', coverImage)
         fetch(`http://localhost:7070/profiles/cover/${props.userProfile.userName}`, {
@@ -133,7 +134,7 @@ const EditProfile = (props) => {
         } else if (coverImage !== props.userProfile.coverImage) {
             postCover(coverImage)
             props.successCover()
-            // props.updateDom()
+            props.updateDom()
 
         } else {
             setNothingToSave(true)
@@ -262,8 +263,7 @@ const EditProfile = (props) => {
                                         className={'cursor-pointer relative w-full h-full flex rounded-t-xl flex-col text-white relative font-medium items-center justify-center bg-gray-700 opacity-80'}>
                                         <CameraAltIcon fontSize={'large'} style={{fill: "white"}} className={'z-10'}/>
                                         <p>Choose Cover</p>
-                                        <form id={'coverImageForm'} className={'w-full h-full absolute'}
-                                              encType={'multipart/form-data'}>
+                                        <form id={'coverImageForm'} className={'w-full h-full absolute'}>
                                             <input type={"file"}
                                                    id={'coverImage'}
                                                    className={'w-full opacity-0 left-0 absolute w-full z-10 h-full cursor-pointer'}

@@ -4,13 +4,18 @@ const bcrypt=require("bcrypt");
 const login=async(req, res)=>{
     try{
         const {email,password} = req.body;
-        const user=await usersSchema.findOne({email: email},(err,user)=>{
+        usersSchema.findOne({email: email},(err,user)=>{
             if(err){
                 res.json({
                     status:404,
                     isFound:false,
-                    message:"user not found"
+                    message:err.message
                 })
+            }else if(user===null){
+                    res.status(404).json({
+                        isFound:false,
+                        message:"user not found"
+                    })
             }else{
                 bcrypt.compare(password,user.password,(error,result)=>{
                     if(error){

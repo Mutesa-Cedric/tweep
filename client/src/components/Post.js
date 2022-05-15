@@ -24,7 +24,6 @@ let Post = (props) => {
     const [isRetweeped, setIsRetweeped] = useState(false);
     const [retweeps, setRetweeps] = useState(props.retweeps);
     const [retweepsArray, setRetweepsArray] = useState(props.retweepsArray);
-
     // console.log(likes)
 
     const toggleShowComments = () => {
@@ -38,7 +37,6 @@ let Post = (props) => {
     let commentElements = comments.map(comment => {
         // console.log(comment)
         return <Comment
-
             key={comment.commentedAt}
             darkMode={props.darkMode}
             profileImg={`http://localhost:7070/${comment.commentedBy}Profile.png`}
@@ -237,6 +235,8 @@ let Post = (props) => {
     }
 
     //retweeping
+
+    
 
     return <div
         className={props.darkMode ? "bg-inherit shadow-xl  border-[0.2px] border-gray-700 xl:w-auto sm:mx-4 sm:w-auto md:w-auto lg:w-[600px]    h-auto flex flex-col justify-between  mb-8 rounded-md pl-4 pr-6  py-4 " : "bg-white border-[1px] w-[745px] h-auto flex flex-col justify-between xl:w-auto sm:mx-4 sm:w-full md:w-[600px] lg:w-[650px]  mb-8 rounded-md pl-4 pr-6  py-4 "}>

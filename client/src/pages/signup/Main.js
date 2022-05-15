@@ -60,9 +60,9 @@ let SignupMain=(props)=>{
             })
             .then(response=>response.json())
             .then(data=>{
-                console.log(data)
                 if(data.success){
                     window.localStorage.setItem("accessToken",data.accessToken)
+                    window.localStorage.setItem("email",data.email)
                      setUserCreated(true)
                 }else if(data.existingUserName){
                     setErrorMessages(prevMessages=>{
@@ -82,7 +82,6 @@ let SignupMain=(props)=>{
             })
             .catch(err=>console.log(err));
         }
-        
     }
     useEffect(() => {
       setErrorMessages({

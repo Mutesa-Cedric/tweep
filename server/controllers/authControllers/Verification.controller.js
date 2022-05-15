@@ -30,9 +30,9 @@ const verifyEmail=async(req,res)=>{
 let verifyToken=async(req,res)=>{
     try {
         let accessToken=req.params.accessToken
-        await jwt.verify(accessToken,process.env.ACCESS_KEY_SECRET,(err,account)=>{
+        jwt.verify(accessToken,process.env.ACCESS_KEY_SECRET,(err,account)=>{
             if (err) {
-                return res.json({
+             return res.json({
                     status:403,
                     authorized:false,
                     message:"invalid access token"

@@ -26,6 +26,7 @@ const sendEmail = async (email, subject, text) => {
         // text: text,
         html:`<a href="${text}">verify account</a>`
       });
+      console.log(text)
       console.log("email sent sucessfully");
     } catch (error) {
       console.log("email not sent");

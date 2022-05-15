@@ -305,6 +305,48 @@ const updateFollowers=(req,res)=>{
 
 //updating followers
 
+//getting two most followed users
+const getMostFollowedUsers =async(req,res)=>{
+    try{
+     let userName=req.params.userName;
+
+        await profileSchema.find((err,profiles)=>{
+            if (err) {
+                return console.error(err)
+            } else {
+                if(profiles.length===0){
+                    res.json({
+                        status:400,
+                        success:false,
+                        message:"no profiles found!"
+                    })
+                }else{
+                    let twoProfilesToFollow=[];
+                    profiles.map(profile=>{
+                        if(!profile.followers.includes(userName) && profile.userName!==userName){
+                            twoProfilesToFollow.push(profile)
+                        }
+                    })
+
+                    let sortedProfilesToFollow=twoProfilesToFollow.sort((a,b)=>{
+                        return b.followers.length-a.followers.length
+                    }).slice(0,2)
+
+                    res.json({
+                        status:200,
+                        success:true,
+                        numberOfProfiles:sortedProfilesToFollow.length,
+                        profiles:sortedProfilesToFollow
+                    })
+                }
+            }
+        })
+    }catch(err){}
+
+}
+
+//getting two most followed users
+
 
 
 module.exports.newProfile = newProfile;
@@ -315,3 +357,4 @@ module.exports.getProfileById=getProfileById;
 module.exports.updateProfileWithCover=updateProfileWithCover;
 module.exports.updateProfileWithProfileImage=updateProfileWithProfileImage;
 module.exports.updateFollowers=updateFollowers
+module.exports.getMostFollowedUsers=getMostFollowedUsers;

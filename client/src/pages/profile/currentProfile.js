@@ -9,6 +9,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditProfile from "./EditProfile";
 import ProcessSuccessful from "../../components/ProcessSuccessful";
 import PreviewImage from "../../components/PreviewImage";
+import {Link} from "react-router-dom";
 const  CurrentProfile=(props)=>{
     let navigate=useNavigate()
     //states
@@ -18,6 +19,7 @@ const  CurrentProfile=(props)=>{
     const [hasNoPost,setHasNoPost]=useState(false)
     const [isEditing,setIsEditing]=useState(false)
     const [user,setUser]=useState({})
+
     const [successStatus, setSuccessStatus] = useState({
         coverSuccessful:false,
         profileSuccessful:false,
@@ -28,6 +30,8 @@ const  CurrentProfile=(props)=>{
 
     console.log("actual profile:")
     console.log(userProfile)
+
+    console.log(`has no post: ${hasNoPost}`)
 
     // console.log(isEditing)
     //checking if the user is logged in
@@ -53,7 +57,8 @@ const  CurrentProfile=(props)=>{
                                 //getting the posts of a user
                                 fetch(`http://localhost:7070/posts/${data.profile.userName}`).then(response=>response.json())
                                     .then(data=>{
-                                        if(data.posts.length===0){
+
+                                        if(data.areFound===false){
                                             setHasNoPost(true)
                                         }else{
                                             setPosts(data.posts)
@@ -74,15 +79,19 @@ const  CurrentProfile=(props)=>{
     let postElements = posts.map(post => {
         return <Post
             key={post._id}
+            likesArray={post.likes}
+            likes={post.likes.length}
             postId={post._id}
             darkMode={props.darkMode}
             name={post.postedBy}
-            profile={`http://localhost:7070/${post.postedBy}Profile.png`}
+            profile={`http://localhost:7070/${post.postedBy}Profile.png` }
             createdAt={new Date(post.postedAt).toDateString()} text={post.text}
-            img={`http://localhost:7070/${post.media}`}
+            img={post.media?`http://localhost:7070/${post.media}`:undefined} 
             comments={post.comments.length}
-            retweeps={post.retweets}
-            saves={post.saved}
+            retweeps={post.retweeps.length}
+            retweepsArray={post.retweeps}
+            saves={post.saved.length}
+            savesArray={post.saved}
             commentsArray={post.comments}
             image={`http://localhost:7070/${`${userProfile.profileImage}`}`}
             currentUser={userProfile.userName}
@@ -183,8 +192,8 @@ const  CurrentProfile=(props)=>{
                                 <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
                                     <div className="flex items-center justify-between  mb-4">
                                         <h1 className={props.darkMode?"text-2xl font-[600] text-gray-300":"text-2xl font-[600]"}>{userProfile.userName}</h1>
-                                        <p className={props.darkMode?"text-[#828282] text-[14px] font-[600]":"text-[#828282] text-[14px]"}><span className={props.darkMode?"font-[600] text-gray-300":"font-[600] text-black"}>{userProfile.following}</span> following</p>
-                                        <p className={props.darkMode?"text-[#828282] text-[14px] font-[600]":"text-[#828282] text-[14px]"}><span className={props.darkMode?"font-[600] text-gray-300":"font-[600] text-black"}>{userProfile.followers}</span>  followers</p>
+                                        <p className={props.darkMode?"text-[#828282] text-[14px] font-[600]":"text-[#828282] text-[14px]"}><span className={props.darkMode?"font-[600] text-gray-300":"font-[600] text-black"}>{userProfile.following.length}</span> following</p>
+                                        <p className={props.darkMode?"text-[#828282] text-[14px] font-[600]":"text-[#828282] text-[14px]"}><span className={props.darkMode?"font-[600] text-gray-300":"font-[600] text-black"}>{userProfile.followers.length}</span>  followers</p>
                                     </div>
                                     <div>
                                         <p className={props.darkMode?"text-[#828282] font-[600]":"text-[#828282]"}>{userProfile.bio?userProfile.bio:"You have no bio yet!"}</p>
@@ -200,10 +209,23 @@ const  CurrentProfile=(props)=>{
                         <div>
                             <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch}/>
                         </div>
-                        <div className="w-[745px]" >
-                            <h1 className="ml-5 text-gray-500 capitalize font-medium mb-4">Your posts</h1>
-                            {!hasNoPost ?postElements:"you have no posts yet"}
-                        </div>
+                        {hasNoPost ?
+                            <div className={props.darkMode?"bg-inherit border-2 border-gray-500 w-full flex flex-col items-center shadow-xl justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200":"bg-gray-100 border-2 w-full flex flex-col items-center justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200"}>
+                                    <span className={'text-xl'}>you have no posts yet!</span>
+                                <Link to={"/"}>
+                                    <button className={'text-white shadow-md text-[16px] bg-blue-500 px-4 py-1 my-4 rounded-sm'}>
+                                        <span>
+                                            Create One
+                                        </span>
+                                    </button>
+                                </Link>
+                            </div>
+                            :
+                            <div className="w-[745px]">
+                                <h1 className="ml-5 text-gray-500 capitalize font-medium mb-4">Your posts</h1>
+                                {postElements}
+                            </div>
+                        }
                     </div>
                 </div>
 

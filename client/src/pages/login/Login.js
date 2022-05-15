@@ -1,13 +1,14 @@
 import {Link,useNavigate} from 'react-router-dom'
 import React , {useState} from 'react';
 let Login=(props)=>{
-
+    const [loginError, setLoginError]=useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     }),navigate=useNavigate();
     let handleChange=(event)=>{
         const {name,value} = event.target;
+        setLoginError(false);
         setFormData(prevData=>{
             return{
                 ...prevData,
@@ -32,6 +33,8 @@ let Login=(props)=>{
             if(data.loggedIn) {
                 window.localStorage.setItem("accessToken",data.accessToken);
                 navigate("/")
+            }else{
+                setLoginError(true)
             }
         })
         .catch(err => console.log(err))
@@ -75,6 +78,12 @@ let Login=(props)=>{
                     onChange={handleChange}
                     />
                 </div>
+                {
+                    loginError && 
+                    <div className="w-full flex items-center">
+                        <p className='text-xl text-orange-500 py-2 font-semibold'>Invalid email or password!</p>
+                    </div>
+                }
                 <div className="w-full my-3">
                     <button className="bg-[#2F80ED] text-white w-full py-2 rounded-[8px] text-lg">Login</button>
                 </div>

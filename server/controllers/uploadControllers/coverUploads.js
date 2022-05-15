@@ -1,5 +1,6 @@
 const multer=require('multer');
 const path=require('path');
+const {login} = require("../authControllers/Login.controller");
 const storage=multer.diskStorage({
     destination:path.join(__dirname,'../../uploads/covers/'),
      filename:(req,file,cb)=>{
@@ -26,17 +27,22 @@ const upload=multer({
 })
 
 let uploadCover=(req,res,next)=>{
-    upload.single("coverImg")(req,res,(err)=>{
-       if(err){
-        return res.json({
-            status:500,
-            success:false,
-            message:err
+    try {
+        upload.single("coverImg")(req,res,(err)=>{
+            if(err){
+                return res.json({
+                    status:500,
+                    success:false,
+                    message:err
+                })
+            }else{
+                next()
+            }
         })
-       }else{
-           next()
-       }
-    })
+    }catch (e) {
+        return console.log(e)
+    }
+
 }
 
 module.exports.uploadCover=uploadCover;

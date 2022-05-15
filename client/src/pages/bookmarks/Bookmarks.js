@@ -62,7 +62,7 @@ let Bookmarks = (props) => {
             name={post.postedBy}
             profile={`http://localhost:7070/${post.postedBy}Profile.png`}
             createdAt={new Date(post.postedAt).toDateString()} text={post.text}
-            img={`http://localhost:7070/${post.media}`}
+            img={post.media?`http://localhost:7070/${post.media}`:undefined} 
             comments={post.comments.length}
             retweeps={post.retweeps.length}
             retweepsArray={post.retweeps}

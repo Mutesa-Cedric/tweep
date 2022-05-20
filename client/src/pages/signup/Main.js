@@ -1,18 +1,8 @@
 import React, {useState,useEffect} from "react";
 import Signup from './Signup';
-// import {Link} from 'react-router-dom'
-import ChooseProfile from './ChooseProfile';
-import VerifyAccount from './VerifyAccount';
+import {useNavigate} from 'react-router-dom'
 let SignupMain=(props)=>{
-
-    //checking if the user is signed up
-    // useEffect(()=>{
-    //     let accessToken=window.localStorage.getItem('accessToken')
-    //     if(accessToken){
-    //         window.location.replace("/")
-    //     }
-    // })
-
+    let navigate = useNavigate()
     const [errorMessages, setErrorMessages] = useState({
         userNameMessage:"",
         emailMessage: "",
@@ -24,9 +14,7 @@ let SignupMain=(props)=>{
         email:"",
         password:""
     })
-    const [userCreated, setUserCreated] = useState(false)
-    const [userVerified, setUserVerified]= useState(false)
-    console.log(userCreated)
+
     const handleChange=(event)=>{
         let {name,value} = event.target
         setFormData(prevData=>{
@@ -60,10 +48,11 @@ let SignupMain=(props)=>{
             })
             .then(response=>response.json())
             .then(data=>{
+            console.log(data)
                 if(data.success){
                     window.localStorage.setItem("accessToken",data.accessToken)
-                    window.localStorage.setItem("email",data.email)
-                     setUserCreated(true)
+                    window.localStorage.setItem("email",formData.email)
+                    navigate('/verifyEmail')
                 }else if(data.existingUserName){
                     setErrorMessages(prevMessages=>{
                             return {
@@ -97,9 +86,7 @@ let SignupMain=(props)=>{
     
     return (
         <div>
-             {!userCreated && <Signup darkMode={props.darkMode} formData={formData} errorMessages={errorMessages} submitForm={submitForm} handleChange={handleChange} setDarkMode={props.setDarkMode}/>}
-             {userCreated && !userVerified && <VerifyAccount darkMode={props.darkMode} setDarkMode={props.setDarkMode} formData={formData}/>}
-             {userCreated && userVerified && <ChooseProfile/>}
+            <Signup darkMode={props.darkMode} formData={formData} errorMessages={errorMessages} submitForm={submitForm} handleChange={handleChange} setDarkMode={props.setDarkMode}/>
         </div>
      
     )

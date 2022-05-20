@@ -1,7 +1,7 @@
 const express=require("express")
 const router=express.Router()
 const {register}=require("../controllers/authControllers/Signup.controller")
-const {verifyEmail,verifyToken}=require("../controllers/authControllers/Verification.controller")
+const {verifyEmail,verifyToken,resendEmailVerificationCode}=require("../controllers/authControllers/Verification.controller")
 const {login}=require("../controllers/authControllers/Login.controller") 
 const {getAllPosts,getSavedTweeps,newPostWithoutImage,getMostRetweepedPosts,getMostCommentedPosts,getTopPosts,getPostsByUsername,updateLikesOfComment,updatePost,updateSaved,deletePost,newPost,getPostById,updateLikes,updateComments,updateRetweeps}=require("../controllers/postControllers/posts.controllers")
 const {uploadMedia}=require("../controllers/uploadControllers/postUploads.controllers");
@@ -35,6 +35,8 @@ router.post("/posts/newPost",uploadMedia,newPost)
 router.post("/profiles/cover/:userName",uploadCover,updateProfileWithCover)
 router.post("/profiles/profileImg/:userName",uploadProfile,updateProfileWithProfileImage);
 router.post('/posts/newPostWithoutImage',newPostWithoutImage);
+router.post('/verification/verifyEmail',verifyEmail);
+router.post("/verification/resendCode",resendEmailVerificationCode)
 //post routes
 
 //update routes

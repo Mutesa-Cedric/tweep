@@ -19,7 +19,7 @@ function App() {
     });
   }
   const [fixSide, setFixSide] = useState(false)
-  // const [fixSideSearch,setFixSideSearch]=useState(false)
+  const [fixSideSearch,setFixSideSearch]=useState(false)
   useEffect(() => {
       window.addEventListener("scroll",()=>{
 
@@ -32,11 +32,11 @@ function App() {
 
         //  fixing side nav
 
-        // if(window.scrollY>50){
-        //   setFixSideSearch(true)
-        // }else{
-        //   setFixSideSearch(false)
-        // }
+        if(window.scrollY>50){
+          setFixSideSearch(true)
+        }else{
+          setFixSideSearch(false)
+        }
       })
   })
 
@@ -53,7 +53,7 @@ function App() {
             <Route path='/explore' exact element={<Explore darkMode={darkMode} setDarkMode={toggleDarkMode}/>}/>
             <Route path='/' exact element={<Home darkMode={darkMode} setDarkMode={toggleDarkMode} fixSide={fixSide} />}/>
             <Route path='/chat' element={<Chat darkMode={darkMode} setDarkMode={toggleDarkMode}/>}/>
-            <Route path='/profile/' element={<Profile darkMode={darkMode} setDarkMode={toggleDarkMode}/>}/>
+            <Route path='/profile/' element={<Profile darkMode={darkMode} setDarkMode={toggleDarkMode} fixSideSearch={fixSideSearch}/>}/>
              <Route path={'/simple'} element={<SimpleSnackbar/>} />
               <Route path='/currentProfile' element={<CurrentProfile darkMode={darkMode} setDarkMode={toggleDarkMode} />}/>
               <Route path={'/verifyEmail'} element={<VerifyAccount darkMode={darkMode} setDarkMode={toggleDarkMode}/>} />

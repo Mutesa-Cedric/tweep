@@ -10,7 +10,7 @@ const VerifyAccount = (props) => {
         success: false,
         failed: false
     })
-    // const [verificationCodeError,setVerificationCodeError]=useState("")
+ 
     const updateVerificationCode = (e) => {
         setVerificationCode(e.target.value)
     }

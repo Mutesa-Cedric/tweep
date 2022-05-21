@@ -54,9 +54,6 @@ else{
     
     return (
         <div className={props.darkMode?"w-[650px] mb-10 bg-inherit mx-auto  h-auto shadow-xl rounded-xl sm:mx-4 px-6":"w-[650px] mx-auto sm:mx-4 mb-10 bg-white h-auto shadow-sm rounded-xl px-6"}>
-
-            {/*/!*{finishedPosting && <Modal keepMounted />*!/*/}
-            {/*}*/}
             <div className="w-full border-b-[1.5px]">
                 <p className={props.darkMode?"font-[600] text-[14px] py-2 text-white":"text-[#4F4F4F] font-[600] text-[14px] py-2"}>Tweep something</p>
             </div>

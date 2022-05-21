@@ -71,7 +71,8 @@ let Home = (props) => {
             saves={post.saved.length}
             savesArray={post.saved}
             commentsArray={post.comments}
-            image={`http://localhost:7070/${`${userProfile.profileImage}`}`}
+            // image={`http://localhost:7070/${`${userProfile.profileImage}`}`}
+            image={userProfile.profileImage}
             currentUser={userProfile.userName}
         />
     })

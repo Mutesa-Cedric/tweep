@@ -29,8 +29,8 @@ let WhoToFollow = (props) => {
             bio={person.bio}
             finishedFollowing={finishedFollowing}
             currentUser={props.currentUser}
-            coverPhoto={`http://localhost:7070/${person.coverImage}`}
-            profile={`http://localhost:7070/${person.profileImage}`}
+            coverPhoto={person.coverImage}
+            profile={person.profileImage}
             followers={person.followers.length}
         />
     })

@@ -1,7 +1,7 @@
 
 import Navbar from '../../components/Navbar';
-import React , {useState,useEffect} from "react";
-import {useNavigate} from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import SideSection from '../../components/SideSection';
 import Post from '../../components/Post';
@@ -9,22 +9,24 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditProfile from "./EditProfile";
 import ProcessSuccessful from "../../components/ProcessSuccessful";
 import PreviewImage from "../../components/PreviewImage";
-import {Link} from "react-router-dom";
-const  CurrentProfile=(props)=>{
-    let navigate=useNavigate()
+import backgroundCover from '../../images/background.png'
+import { Link } from "react-router-dom";
+import profileAvatar from "../../images/profileAvatar.png"
+const CurrentProfile = (props) => {
+    let navigate = useNavigate()
     //states
     const [userProfile, setUserProfile] = useState({})
     const [hasProfile, setHasProfile] = useState(false)
-    const [posts,setPosts]=useState([])
-    const [hasNoPost,setHasNoPost]=useState(false)
-    const [isEditing,setIsEditing]=useState(false)
-    const [user,setUser]=useState({})
+    const [posts, setPosts] = useState([])
+    const [hasNoPost, setHasNoPost] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
+    const [user, setUser] = useState({})
 
     const [successStatus, setSuccessStatus] = useState({
-        coverSuccessful:false,
-        profileSuccessful:false,
-        aboutSuccessful:false,
-        allSuccessful:false
+        coverSuccessful: false,
+        profileSuccessful: false,
+        aboutSuccessful: false,
+        allSuccessful: false
     });
     //states
 
@@ -35,44 +37,44 @@ const  CurrentProfile=(props)=>{
 
     // console.log(isEditing)
     //checking if the user is logged in
-    useEffect(()=>{
-        const accessToken=window.localStorage.getItem("accessToken")
-        if(!accessToken){
+    useEffect(() => {
+        const accessToken = window.localStorage.getItem("accessToken")
+        if (!accessToken) {
             navigate('/auth/signup')
-        }else{
+        } else {
             fetch(`http://localhost:7070/auth/verifyToken/${accessToken}`)
-                .then(response=>response.json())
-                .then(data=>{
-                    if(!data.authorized){
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.authorized) {
                         navigate('/auth/login')
-                    }else{
+                    } else {
                         setUser(data.user)
                         // getting a user profile
                         fetch(`http://localhost:7070/profiles/${data.user.userName}`)
-                            .then(response=>response.json())
-                            .then(data=>{
+                            .then(response => response.json())
+                            .then(data => {
                                 setUserProfile(data.profile)
                                 setHasProfile(true)
 
                                 //getting the posts of a user
-                                fetch(`http://localhost:7070/posts/${data.profile.userName}`).then(response=>response.json())
-                                    .then(data=>{
+                                fetch(`http://localhost:7070/posts/${data.profile.userName}`).then(response => response.json())
+                                    .then(data => {
 
-                                        if(data.areFound===false){
+                                        if (data.areFound === false) {
                                             setHasNoPost(true)
-                                        }else{
+                                        } else {
                                             setPosts(data.posts)
                                         }
-                                    }).catch(err=>console.error(err))
+                                    }).catch(err => console.error(err))
 
                                 //getting the posts of a user
 
                             })
                     }
                 })
-                .catch(err=>console.error(err))
+                .catch(err => console.error(err))
         }
-    },[])
+    }, [])
     //checking if the user is logged in
 
     //creating post elements
@@ -84,16 +86,16 @@ const  CurrentProfile=(props)=>{
             postId={post._id}
             darkMode={props.darkMode}
             name={post.postedBy}
-            profile={`http://localhost:7070/${post.postedBy}Profile.png` }
+            profile={`http://localhost:7070/${post.postedBy}Profile.png`}
             createdAt={new Date(post.postedAt).toDateString()} text={post.text}
-            img={post.media?`http://localhost:7070/${post.media}`:undefined} 
+            img={post.media ? `http://localhost:7070/${post.media}` : undefined}
             comments={post.comments.length}
             retweeps={post.retweeps.length}
             retweepsArray={post.retweeps}
             saves={post.saved.length}
             savesArray={post.saved}
             commentsArray={post.comments}
-            image={`http://localhost:7070/${`${userProfile.profileImage}`}`}
+            image={userProfile.profileImage}
             currentUser={userProfile.userName}
         />
     });
@@ -101,7 +103,7 @@ const  CurrentProfile=(props)=>{
 
     //handling profile editing
 
-    const toggleIsEditing=()=>{
+    const toggleIsEditing = () => {
         setIsEditing(prevState => {
             return !prevState;
         })
@@ -109,9 +111,9 @@ const  CurrentProfile=(props)=>{
     //handling profile editing
 
     //handling success message
-    let successProfile=()=>{
+    let successProfile = () => {
         setIsEditing(false)
-        setSuccessStatus(()=>{
+        setSuccessStatus(() => {
             return {
                 profileSuccessful: true,
                 coverSuccessful: false,
@@ -121,9 +123,9 @@ const  CurrentProfile=(props)=>{
         })
     }
 
-    let successCover=()=>{
+    let successCover = () => {
         setIsEditing(false)
-        setSuccessStatus(()=>{
+        setSuccessStatus(() => {
             return {
                 profileSuccessful: false,
                 coverSuccessful: true,
@@ -133,9 +135,9 @@ const  CurrentProfile=(props)=>{
         })
     }
 
-    let successAbout=()=>{
+    let successAbout = () => {
         setIsEditing(false)
-        setSuccessStatus(()=>{
+        setSuccessStatus(() => {
             return {
                 profileSuccessful: false,
                 coverSuccessful: false,
@@ -145,9 +147,11 @@ const  CurrentProfile=(props)=>{
         })
     }
 
-    let successAll=()=>{
+    // console.log(userProfile.profileImage)
+
+    let successAll = () => {
         setIsEditing(false)
-        setSuccessStatus(()=>{})
+        setSuccessStatus(() => { })
         return {
             profileSuccessful: false,
             coverSuccessful: false,
@@ -159,59 +163,83 @@ const  CurrentProfile=(props)=>{
     //handling success message
 
     //auto updating content
-    const updateDom=()=>{
-        fetch(`http://localhost:7070/profiles/${user.userName}`).then(response=>response.json()).then(data=>{
-            if(data.isFound){
+    const updateDom = () => {
+        fetch(`http://localhost:7070/profiles/${user.userName}`).then(response => response.json()).then(data => {
+            if (data.isFound) {
                 // setUserProfile(data.profile)
                 // console.log("updated profile:")
                 // console.log(userProfile)
-                setTimeout(()=>{
+                setTimeout(() => {
                     window.location.reload()
-                },3000)
+                }, 3000)
             }
-        }).catch(err=>console.error(err))
+        }).catch(err => console.error(err))
     }
 
     //auto updating content
 
-    if(hasProfile){
+    if (hasProfile) {
         return (
-            <div className={props.darkMode?"bg-[#252329] h-screen overflow-x-hidden":"relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
-                {isEditing && <EditProfile updateDom={updateDom} successProfile={successProfile} successAll={successAll} successAbout={successAbout} successCover={successCover}  userProfile={userProfile} user={user} toggleIsEditing={toggleIsEditing}/>}
-                {userProfile.profileImage ? <Navbar  darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName}/>:<Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
-                {successStatus.profileSuccessful && <ProcessSuccessful message={'profile image updated successfully!!'}/>}
-                {successStatus.coverSuccessful && <ProcessSuccessful message={'cover image Updated successfully'}/>}
-                {successStatus.aboutSuccessful && <ProcessSuccessful message={'your \" about \" was updated successfully!'}/>}
-                {successStatus.allSuccessful && <ProcessSuccessful message={'your Profile was updated successfully'}/>}
+            <div className={props.darkMode ? "bg-[#252329] h-screen overflow-x-hidden" : "relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
+                {isEditing && <EditProfile updateDom={updateDom} successProfile={successProfile} successAll={successAll} successAbout={successAbout} successCover={successCover} userProfile={userProfile} user={user} toggleIsEditing={toggleIsEditing} />}
+                {userProfile.profileImage ? <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName} /> : <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
+                {successStatus.profileSuccessful && <ProcessSuccessful message={'profile image updated successfully!!'} />}
+                {successStatus.coverSuccessful && <ProcessSuccessful message={'cover image Updated successfully'} />}
+                {successStatus.aboutSuccessful && <ProcessSuccessful message={'your \" about \" was updated successfully!'} />}
+                {successStatus.allSuccessful && <ProcessSuccessful message={'your Profile was updated successfully'} />}
                 <div >
-                    <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{backgroundImage:`url(http://localhost:7070/${userProfile.coverImage})`}} >
-                        <div className={props.darkMode?"bg-[#23212b] mb-4 flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]":"bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4"}>
+                    {userProfile.coverImage ? <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(http://localhost:7070/${userProfile.coverImage})` }} >
+                        <div className={props.darkMode ? "bg-[#23212b] mb-4 flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]" : "bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4"}>
                             <div className="flex">
-                                <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{backgroundImage:`url(http://localhost:7070/${userProfile.profileImage})`}}>
-                                </div>
+
+                                {userProfile.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(http://localhost:7070/${userProfile.profileImage})` }}>
+                                </div> : <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${profileAvatar})` }}>
+                                </div>}
                                 <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
                                     <div className="flex items-center justify-between  mb-4">
-                                        <h1 className={props.darkMode?"text-2xl font-[600] text-gray-300":"text-2xl font-[600]"}>{userProfile.userName}</h1>
-                                        <p className={props.darkMode?"text-[#828282] text-[14px] font-[600]":"text-[#828282] text-[14px]"}><span className={props.darkMode?"font-[600] text-gray-300":"font-[600] text-black"}>{userProfile.following.length}</span> following</p>
-                                        <p className={props.darkMode?"text-[#828282] text-[14px] font-[600]":"text-[#828282] text-[14px]"}><span className={props.darkMode?"font-[600] text-gray-300":"font-[600] text-black"}>{userProfile.followers.length}</span>  followers</p>
+                                        <h1 className={props.darkMode ? "text-2xl font-[600] text-gray-300" : "text-2xl font-[600]"}>{userProfile.userName}</h1>
+                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}><span className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{userProfile.following.length}</span> following</p>
+                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}><span className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{userProfile.followers.length}</span>  followers</p>
                                     </div>
                                     <div>
-                                        <p className={props.darkMode?"text-[#828282] font-[600]":"text-[#828282]"}>{userProfile.bio?userProfile.bio:"You have no bio yet!"}</p>
+                                        <p className={props.darkMode ? "text-[#828282] font-[600]" : "text-[#828282]"}>{userProfile.bio ? userProfile.bio : "You have no bio yet!"}</p>
                                     </div>
                                 </div>
                             </div>
                             <button className="bg-[#2F80ED] text-white h-max flex items-center justify-between py-1 px-5 capitalize rounded-sm mt-5 mx-10" onClick={toggleIsEditing}>
-                                <EditOutlinedIcon fontSize="small" className="mr-2"/> edit Profile
+                                <EditOutlinedIcon fontSize="small" className="mr-2" /> edit Profile
                             </button>
                         </div>
-                    </div>
+                    </div> : <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(${backgroundCover})`}} >
+                        <div className={props.darkMode ? "bg-[#23212b] mb-4 flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]" : "bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4"}>
+                            <div className="flex">
+
+                                {userProfile.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(http://localhost:7070/${userProfile.profileImage})` }}>
+                                </div> : <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${profileAvatar})` }}>
+                                </div>}
+                                <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
+                                    <div className="flex items-center justify-between  mb-4">
+                                        <h1 className={props.darkMode ? "text-2xl font-[600] text-gray-300" : "text-2xl font-[600]"}>{userProfile.userName}</h1>
+                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}><span className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{userProfile.following.length}</span> following</p>
+                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}><span className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{userProfile.followers.length}</span>  followers</p>
+                                    </div>
+                                    <div>
+                                        <p className={props.darkMode ? "text-[#828282] font-[600]" : "text-[#828282]"}>{userProfile.bio ? userProfile.bio : "You have no bio yet!"}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button className="bg-[#2F80ED] text-white h-max flex items-center justify-between py-1 px-5 capitalize rounded-sm mt-5 mx-10" onClick={toggleIsEditing}>
+                                <EditOutlinedIcon fontSize="small" className="mr-2" /> edit Profile
+                            </button>
+                        </div>
+                    </div>}
                     <div className=" mt-28 flex justify-between  xl:px-52  ">
                         <div>
-                            <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch}/>
+                            <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch} />
                         </div>
                         {hasNoPost ?
-                            <div className={props.darkMode?"bg-inherit border-2 border-gray-500 w-full flex flex-col items-center shadow-xl justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200":"bg-gray-100 border-2 w-full flex flex-col items-center justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200"}>
-                                    <span className={'text-xl'}>you have no posts yet!</span>
+                            <div className={props.darkMode ? "bg-inherit border-2 w-full flex flex-col items-center shadow-xl justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200" : "bg-gray-100 border-2 w-full flex flex-col items-center justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200"}>
+                                <span className={'text-xl'}>you have no posts yet!</span>
                                 <Link to={"/"}>
                                     <button className={'text-white shadow-md text-[16px] bg-blue-500 px-4 py-1 my-4 rounded-sm'}>
                                         <span>
@@ -231,10 +259,10 @@ const  CurrentProfile=(props)=>{
 
             </div>
         )
-    }else{
+    } else {
         return (
-            <div className={props.darkMode?"w-full bg-[#252329] h-screen flex items-center justify-center":"w-full h-screen flex items-center justify-center"}>
-                <CircularProgress/>
+            <div className={props.darkMode ? "w-full bg-[#252329] h-screen flex items-center justify-center" : "w-full h-screen flex items-center justify-center"}>
+                <CircularProgress />
             </div>
         )
     }

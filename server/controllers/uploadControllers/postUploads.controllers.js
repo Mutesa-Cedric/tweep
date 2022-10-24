@@ -1,8 +1,6 @@
 const multer=require('multer');
 const path=require('path');
 
- // let time=new Date().getTime();
- // console.log(time)
  //multer storage for media
  let storage=multer.diskStorage({
      destination:path.join(__dirname,'../../uploads/posts/'),

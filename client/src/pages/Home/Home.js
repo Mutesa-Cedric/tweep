@@ -19,6 +19,7 @@ let Home = (props) => {
     const [posts, setPosts] = useState([])
     const [finishedPosting, setFinishedPosting] = useState(false);
     const [hasNoPost, setHasNoPost] = useState(false);
+
     // console.log(postData)
     //checking if the user is logged in 
     useEffect(() => {
@@ -26,7 +27,7 @@ let Home = (props) => {
         if (!accessToken) {
             navigate('/auth/signup')
         } else {
-            fetch(`http://localhost:7070/auth/verifyToken/${accessToken}`)
+            fetch(`https://mc-tweep.herokuapp.com/auth/verifyToken/${accessToken}`)
                 .then(response => response.json())
                 .then(data => {
                     if (!data.authorized) {
@@ -34,12 +35,12 @@ let Home = (props) => {
                     } else if (!data.user.verified) {
                         navigate('/verifyEmail')
                     } else {
-                        fetch(`http://localhost:7070/profiles/${data.user.userName}`)
+                        fetch(`https://mc-tweep.herokuapp.com/profiles/${data.user.userName}`)
                             .then(response => response.json())
                             .then(data => {
                                 setUserProfile(data.profile)
                                 setHasProfile(true)
-                                fetch("http://localhost:7070/posts/")
+                                fetch(`https://mc-tweep.herokuapp.com/posts/`)
                                     .then(response => response.json()).then(data => {
                                         if (data.areFound === false) {
                                             return setHasNoPost(true)
@@ -62,16 +63,14 @@ let Home = (props) => {
             postId={post._id}
             darkMode={props.darkMode}
             name={post.postedBy}
-            profile={`http://localhost:7070/${post.postedBy}Profile.png`}
             createdAt={new Date(post.postedAt).toDateString()} text={post.text}
-            img={post.media ? `http://localhost:7070/${post.media}` : undefined}
+            img={post.media ? `${post.media}` : undefined}
             comments={post.comments.length}
             retweeps={post.retweeps.length}
             retweepsArray={post.retweeps}
             saves={post.saved.length}
             savesArray={post.saved}
             commentsArray={post.comments}
-            // image={`http://localhost:7070/${`${userProfile.profileImage}`}`}
             image={userProfile.profileImage}
             currentUser={userProfile.userName}
         />
@@ -94,7 +93,6 @@ let Home = (props) => {
                 setHasFile(true)
             };
             reader.readAsDataURL(file);
-
             // reader.readAsText(file);
         }
     }
@@ -124,7 +122,7 @@ let Home = (props) => {
 
     //updating dom after new post
     const updateDomPost = () => {
-        fetch('http://localhost:7070/posts').then(response => response.json()).then(data => {
+        fetch(`https://mc-tweep.herokuapp.com/posts`).then(response => response.json()).then(data => {
             setPosts(data.posts)
             setHasFile(false)
         })
@@ -144,13 +142,12 @@ let Home = (props) => {
             <div className={props.darkMode ? "bg-[#252329] h-auto overflow-x-hidden" : "bg-[#F2F2F2] h-auto overflow-x-hidden"}>
                 {finishedPosting && <ProcessSuccessful message={'Your post was successfully uploaded!'} />}
                 <PreviewImage aspect={4 / 3} message={"post"} hasFile={hasFile} image={image} hideEditPic={hideEditPic} finishEditing={finishEditing} />
-                {userProfile.profileImage ? <Navbar toHome={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName} /> : <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
+                {userProfile.profileImage ? <Navbar toHome={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode}  userName={userProfile.userName} /> : <Navbar toHome={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
                 <div className=" mt-20   xl:px-52 ">
                     <div className=" h-auto flex  justify-between">
                         {/* main */}
                         <div className="mx-auto" >
-                            {userProfile.profileImage ? <TweepSomething cancelImage={cancelImage} finishPosting={finishPosting} updateDomPost={updateDomPost} finalPostEdit={finalPostEdit} image={image} userName={userProfile.userName} handleImage={handleImage} darkMode={props.darkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} /> : <TweepSomething updateDomPost={updateDomPost} darkMode={props.darkMode} />}
-
+                            {<TweepSomething cancelImage={cancelImage} finishEditing={finishEditing} finalPostEdit={finalPostEdit} handleImage={handleImage} updateDomPost={updateDomPost} darkMode={props.darkMode} userName={userProfile.userName} finishPosting={finishPosting} image={image} />}
                             {hasNoPost ? <p className={'text-2xl font-bold text-gray-'}>no posts yet!</p> : postElements}
                         </div>
                         {/* main */}

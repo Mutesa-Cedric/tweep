@@ -9,6 +9,19 @@ import PersonIcon from '@mui/icons-material/Person';
 
 import '../App.css';
 let Navbar=(props)=>{
+    const [profileImage, setProfileImage] = useState('')
+    const [hasProfileImage, setHasProfileImage] = useState(false)
+
+    //getting profile of a user
+    fetch(`https://mc-tweep.herokuapp.com/profiles/${props.userName}`).then(res => res.json()).then(data => {
+        // console.log(data.profile)
+        if(data.profile.profileImage){
+            setProfileImage(data.profile.profileImage)
+            setHasProfileImage(true)
+        }
+    },[])
+    
+    //getting profile of a user
 
     //showing or hiding dropdown
     let navigate=useNavigate()
@@ -57,7 +70,7 @@ let Navbar=(props)=>{
                 <div className="flex items-center"> 
                     <Link to="/currentProfile" className="flex items-center relative">
 
-                        {props.profileImg ? <img src={props.profileImg} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4"/>:<PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{fill:"#808080"}}/>}
+                        {hasProfileImage ? <img src={profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4"/>:<PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{fill:"#808080"}}/>}
                         <p className={props.darkMode?"font-[700] text-[14px] text-white":"font-[700] text-[14px] text-[#333333]"} id="userName">{props.userName}</p>
                     </Link>
                     <ArrowDropDownOutlinedIcon id="dropdown" fontSize="medium" className="mx-4 cursor-pointer" onClick={toggleDropDown} style={props.darkMode?{fill:"white"}:{}}/>

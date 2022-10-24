@@ -18,7 +18,9 @@ let Login=(props)=>{
     }
     function submitForm(event) {
         event.preventDefault()
-        fetch("http://localhost:7070/login", {
+        console.log(formData)
+        console.log(`backend server ${process.env.REACT_APP_SERVER_URL}`)
+        fetch(`https://mc-tweep.herokuapp.com/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -111,7 +113,7 @@ let Login=(props)=>{
                     </svg>
                 </div>
                 <div>
-                    <p className="text-[#828282]">already a member?
+                    <p className="text-[#828282]">don have account ?
                         <Link to="/auth/signup"><span className="text-[#2F80ED] px-1">Signup</span></Link> 
                     </p>
                 </div>

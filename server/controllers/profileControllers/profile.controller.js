@@ -1,36 +1,36 @@
-const {profileSchema}=require("../../model/userProfile.schema")
-
+const { profileSchema } = require("../../model/userProfile.schema")
+const { cloudinary } = require("../../utils/cloudinary")
 //new profile
 
-const newProfile=async(req,res,next) => {
+const newProfile = async (req, res, next) => {
     try {
-        const {userName} = req.body;
+        const { userName } = req.body;
 
-        const existingProfile=profileSchema.find({userName: userName},async(err,profile) =>{
-            if(err) return next(err)
-            else{
-                if(profile.length === 0){
-                    let profile=new profileSchema({
+        const existingProfile = profileSchema.find({ userName: userName }, async (err, profile) => {
+            if (err) return next(err)
+            else {
+                if (profile.length === 0) {
+                    let profile = new profileSchema({
                         userName: userName
                     })
-               
-                    await profile.save((err,profile) => {
+
+                    await profile.save((err, profile) => {
                         if (err) {
                             return console.error(err)
                         } else {
-                            console.log(profile)
+                            // console.log(profile)
                             next()
                         }
                     });
-                }else{
+                } else {
                     res.json({
-                        status:400,
-                        isCreated:false,
-                        message:"the profile has already been created"
+                        status: 400,
+                        isCreated: false,
+                        message: "the profile has already been created"
                     })
                 }
             }
-        })       
+        })
     } catch (error) {
 
     }
@@ -40,24 +40,24 @@ const newProfile=async(req,res,next) => {
 
 // getting all profiles
 
-const getAllProfiles= async(req,res)=>{
+const getAllProfiles = async (req, res) => {
     try {
-        await profileSchema.find((err,profiles)=>{
+        await profileSchema.find((err, profiles) => {
             if (err) {
                 return console.error(err)
             } else {
-                if(profiles.length===0){
+                if (profiles.length === 0) {
                     res.json({
-                        status:400,
-                        success:false,
-                        message:"no profiles found!"
+                        status: 400,
+                        success: false,
+                        message: "no profiles found!"
                     })
-                }else{
+                } else {
                     res.json({
-                        status:200,
-                        success:true,
-                        numberOfProfiles:profiles.length,
-                        profiles:profiles
+                        status: 200,
+                        success: true,
+                        numberOfProfiles: profiles.length,
+                        profiles: profiles
                     })
                 }
             }
@@ -72,30 +72,30 @@ const getAllProfiles= async(req,res)=>{
 
 // getting a profile by username
 
-const getProfileByUsername =async(req,res) => {
+const getProfileByUsername = async (req, res) => {
     try {
-        let userName=req.params.userName
-        await profileSchema.findOne({userName:userName},(err,profile) => {
+        let userName = req.params.userName
+        await profileSchema.findOne({ userName: userName }, (err, profile) => {
             if (err) {
                 return console.error(err)
-            } else if(!profile) {
+            } else if (!profile) {
                 res.json({
-                    status:404,
-                    isFound:false,
-                    message:"profile not found"
-                })   
-            }else{
+                    status: 404,
+                    isFound: false,
+                    message: "profile not found"
+                })
+            } else {
                 res.json({
-                    status:200,
-                    isFound:true,
-                    profile:profile
+                    status: 200,
+                    isFound: true,
+                    profile: profile
                 })
             }
-        }) 
+        })
     } catch (error) {
 
     }
-    
+
 }
 
 
@@ -103,31 +103,31 @@ const getProfileByUsername =async(req,res) => {
 
 
 // getting profile by id
-const getProfileById = async(req,res)=>{
+const getProfileById = async (req, res) => {
 
     try {
-        const id=req.params.id;
-        await profileSchema.findById(id,(err,profile)=>{
-            if(err){
+        const id = req.params.id;
+        await profileSchema.findById(id, (err, profile) => {
+            if (err) {
                 return res.json({
-                    status:404,
-                    message:"invalid id"
+                    status: 404,
+                    message: "invalid id"
                 })
-            }else if(!profile){
+            } else if (!profile) {
                 res.json({
-                    status:200,
-                    isFound:false,
-                    message:"profile not found"
+                    status: 200,
+                    isFound: false,
+                    message: "profile not found"
                 })
-            }else{
+            } else {
                 res.json({
-                    status:200,
-                    isFound:true,
-                    profile:profile
+                    status: 200,
+                    isFound: true,
+                    profile: profile
                 })
             }
         });
-        
+
     } catch (error) {
 
     }
@@ -138,11 +138,11 @@ const getProfileById = async(req,res)=>{
 
 // updating a profile
 
-const updateProfile= async(req,res)=>{
+const updateProfile = async (req, res) => {
     try {
-        const userName=req.params.userName
-        const updates=req.body;
-        await  profileSchema.findOneAndUpdate({userName: userName},updates,{new:true},(err,updatedProfile)=>{
+        const userName = req.params.userName
+        const updates = req.body;
+        await profileSchema.findOneAndUpdate({ userName: userName }, updates, { new: true }, (err, updatedProfile) => {
             if (err) {
                 return console.error(err)
             } else {
@@ -154,54 +154,74 @@ const updateProfile= async(req,res)=>{
     } catch (error) {
 
     }
-    
+
 }
 // updating a profile
 
 
 // update profile with coverpic
 
-const updateProfileWithCover=async(req,res)=>{
+const updateProfileWithCover = async (req, res) => {
     try {
-        const userName=req.params.userName;
-        const coverImage=req.file.filename;
-        await profileSchema.findOneAndUpdate({userName: userName},{coverImage: coverImage},{new:true},(err,profile)=>{
-        if(err){
-            return console.error(err)
-        }else{
-            res.json({
-                status:200,
-                updated:true,
-                newProfile:profile
+        const userName = req.params.userName;
+        const { coverString } = req.body;
+        // console.log(coverString)
+        let result = await cloudinary.uploader.upload(coverString, {
+            upload_preset: "tweep_covers"
+        })
+
+        let coverImage = result.secure_url
+
+        coverImage ?
+            await profileSchema.findOneAndUpdate({ userName: userName }, { coverImage: coverImage }, { new: true }, (err, profile) => {
+                if (err) {
+                    return console.error(err)
+                } else {
+                    res.json({
+                        status: 200,
+                        updated: true,
+                        newProfile: profile
+                    })
+                }
+            }) : res.status(500).json({
+                success:false,
+                message:"failed to upload cover image"
             })
-        }
-      })
+            
     } catch (error) {
 
     }
-    
+
 }
 
 // update profile with coverpic
 
 // update profile with profile image
 
-const updateProfileWithProfileImage =async(req,res)=>{
+const updateProfileWithProfileImage = async (req, res) => {
     try {
         const userName = req.params.userName;
-        profileImage =req.file.filename;
-
-        await profileSchema.findOneAndUpdate({userName:userName},{profileImage:profileImage},{new:true},(err,profile)=>{
-            if (err) {
-                return console.error(err)
-            } else {
-                res.json({
-                    status:201,
-                    updated:true,
-                    newProfile:profile
-                })
-            }
+        const { profileString } = req.body;
+        let result = await cloudinary.uploader.upload(profileString, {
+            upload_preset: 'tweep_profiles'
         })
+
+        const profileImage = result.secure_url;
+        profileImage ?
+            profileSchema.findOneAndUpdate({ userName: userName }, { profileImage: profileImage }, { new: true }, (err, profile) => {
+                if (err) {
+                    return console.error(err)
+                } else {
+                    res.json({
+                        status: 201,
+                        updated: true,
+                        newProfile: profile
+                    })
+                }
+            }) : res.status(500).json({
+                success: false,
+                message: "failed to upload an image"
+            })
     } catch (error) {
         return console.error(error)
     }
@@ -211,53 +231,53 @@ const updateProfileWithProfileImage =async(req,res)=>{
 
 //updating followers
 
-const updateFollowers=(req,res)=>{
+const updateFollowers = (req, res) => {
     try {
         //follower is the one who is going to follow another
         //while following is the one who is going to be followed
-        let {follower,following}=req.body;
+        let { follower, following } = req.body;
 
-        profileSchema.findOne({userName:following},(err,followingProfile)=>{
-            if(err){
+        profileSchema.findOne({ userName: following }, (err, followingProfile) => {
+            if (err) {
                 res.json({
-                    status:404,
-                    message:"profile not found"
+                    status: 404,
+                    message: "profile not found"
                 })
-            }else{
-                let followers=followingProfile.followers;
-                if(followers.includes(follower)){
-                    let followerIndex=followers.indexOf(follower);
-                    followers.splice(followerIndex,1);
-                    profileSchema.updateOne({userName:following},{$set:{followers:followers}},(err,updatedPost)=>{
-                        if(err){
+            } else {
+                let followers = followingProfile.followers;
+                if (followers.includes(follower)) {
+                    let followerIndex = followers.indexOf(follower);
+                    followers.splice(followerIndex, 1);
+                    profileSchema.updateOne({ userName: following }, { $set: { followers: followers } }, (err, updatedPost) => {
+                        if (err) {
                             res.json({
-                                status:404,
-                                updated:false,
-                                message:err
+                                status: 404,
+                                updated: false,
+                                message: err
                             })
-                        }else{
-                           //here, the follower is removed from the followers array of the following profile
+                        } else {
+                            //here, the follower is removed from the followers array of the following profile
                             //the next step is to remove the following profile from the followers array of the follower
-                            profileSchema.findOne({userName:follower},(err,followerProfile)=>{
-                                if(err){
+                            profileSchema.findOne({ userName: follower }, (err, followerProfile) => {
+                                if (err) {
                                     res.json({
-                                        message:"no profile found"
+                                        message: "no profile found"
                                     })
-                                }else{
-                                    let followingArray=followerProfile.following;
-                                    let followingIndex=following.indexOf(following);
-                                    followingArray.splice(followingIndex,1)
-                                    profileSchema.updateOne({userName:follower},{$set:{following:followingArray}},(err,updatedPost)=>{
-                                        if(err){
+                                } else {
+                                    let followingArray = followerProfile.following;
+                                    let followingIndex = following.indexOf(following);
+                                    followingArray.splice(followingIndex, 1)
+                                    profileSchema.updateOne({ userName: follower }, { $set: { following: followingArray } }, (err, updatedPost) => {
+                                        if (err) {
                                             res.json({
-                                                status:404,
-                                                message:"profile not updated successfully"
+                                                status: 404,
+                                                message: "profile not updated successfully"
                                             })
-                                        }else{
+                                        } else {
                                             res.json({
-                                                status:201,
-                                                updated:true,
-                                                message:"both follower and following were removed successfully!"
+                                                status: 201,
+                                                updated: true,
+                                                message: "both follower and following were removed successfully!"
                                             })
                                         }
                                     })
@@ -265,31 +285,31 @@ const updateFollowers=(req,res)=>{
                             })
                         }
                     })
-                }else {
-                    profileSchema.updateOne({userName:following},{$push:{followers:follower}},(err,profile) => {
-                        if(err){
+                } else {
+                    profileSchema.updateOne({ userName: following }, { $push: { followers: follower } }, (err, profile) => {
+                        if (err) {
                             res.json({
                                 status: 404,
-                                updated:false,
-                                message:"profile not found"
+                                updated: false,
+                                message: "profile not found"
                             })
-                        }else {
-                            profileSchema.updateOne({userName:follower},{$push:{following:following}},(err,followersProfile)=>{
-                                if(err){
+                        } else {
+                            profileSchema.updateOne({ userName: follower }, { $push: { following: following } }, (err, followersProfile) => {
+                                if (err) {
                                     res.json({
                                         status: 404,
-                                        updated:false,
-                                        message:"profile not found"
+                                        updated: false,
+                                        message: "profile not found"
                                     })
-                                }else {
+                                } else {
 
                                     res.json({
 
-                                        status:200,
-                                        updated:true,
-                                        message:"both profiles were updated successfully",
-                                        followersProfile:followersProfile,
-                                        followingProfile:profile
+                                        status: 200,
+                                        updated: true,
+                                        message: "both profiles were updated successfully",
+                                        followersProfile: followersProfile,
+                                        followingProfile: profile
                                     })
                                 }
                             })
@@ -298,7 +318,7 @@ const updateFollowers=(req,res)=>{
                 }
             }
         })
-    }catch (e) {
+    } catch (e) {
         // console.log(err)
     }
 }
@@ -306,42 +326,42 @@ const updateFollowers=(req,res)=>{
 //updating followers
 
 //getting two most followed users
-const getMostFollowedUsers =async(req,res)=>{
-    try{
-     let userName=req.params.userName;
+const getMostFollowedUsers = async (req, res) => {
+    try {
+        let userName = req.params.userName;
 
-        await profileSchema.find((err,profiles)=>{
+        await profileSchema.find((err, profiles) => {
             if (err) {
                 return console.error(err)
             } else {
-                if(profiles.length===0){
+                if (profiles.length === 0) {
                     res.json({
-                        status:400,
-                        success:false,
-                        message:"no profiles found!"
+                        status: 400,
+                        success: false,
+                        message: "no profiles found!"
                     })
-                }else{
-                    let twoProfilesToFollow=[];
-                    profiles.map(profile=>{
-                        if(!profile.followers.includes(userName) && profile.userName!==userName){
+                } else {
+                    let twoProfilesToFollow = [];
+                    profiles.map(profile => {
+                        if (!profile.followers.includes(userName) && profile.userName !== userName) {
                             twoProfilesToFollow.push(profile)
                         }
                     })
 
-                    let sortedProfilesToFollow=twoProfilesToFollow.sort((a,b)=>{
-                        return b.followers.length-a.followers.length
-                    }).slice(0,2)
+                    let sortedProfilesToFollow = twoProfilesToFollow.sort((a, b) => {
+                        return b.followers.length - a.followers.length
+                    }).slice(0, 2)
 
                     res.json({
-                        status:200,
-                        success:true,
-                        numberOfProfiles:sortedProfilesToFollow.length,
-                        profiles:sortedProfilesToFollow
+                        status: 200,
+                        success: true,
+                        numberOfProfiles: sortedProfilesToFollow.length,
+                        profiles: sortedProfilesToFollow
                     })
                 }
             }
         })
-    }catch(err){}
+    } catch (err) { }
 
 }
 
@@ -350,11 +370,11 @@ const getMostFollowedUsers =async(req,res)=>{
 
 
 module.exports.newProfile = newProfile;
-module.exports.getAllProfiles=getAllProfiles;
+module.exports.getAllProfiles = getAllProfiles;
 module.exports.updateProfile = updateProfile;
-module.exports.getProfileByUsername=getProfileByUsername;
-module.exports.getProfileById=getProfileById;
-module.exports.updateProfileWithCover=updateProfileWithCover;
-module.exports.updateProfileWithProfileImage=updateProfileWithProfileImage;
-module.exports.updateFollowers=updateFollowers
-module.exports.getMostFollowedUsers=getMostFollowedUsers;
+module.exports.getProfileByUsername = getProfileByUsername;
+module.exports.getProfileById = getProfileById;
+module.exports.updateProfileWithCover = updateProfileWithCover;
+module.exports.updateProfileWithProfileImage = updateProfileWithProfileImage;
+module.exports.updateFollowers = updateFollowers
+module.exports.getMostFollowedUsers = getMostFollowedUsers;

@@ -24,7 +24,22 @@ let Post = (props) => {
     const [isRetweeped, setIsRetweeped] = useState(false);
     const [retweeps, setRetweeps] = useState(props.retweeps);
     const [retweepsArray, setRetweepsArray] = useState(props.retweepsArray);
+    const [profileImage, setProfileImage] = useState('')
+    const [hasProfileImage, setHasProfileImage] = useState(false)
     // console.log(likes)
+
+
+    //getting the profile image of the user who posted the post
+
+    fetch(`https://mc-tweep.herokuapp.com/profiles/${props.name}`).then(res => res.json()).then(data => {
+        // console.log(data.profile)
+        if(data.profile.profileImage){
+            setProfileImage(data.profile.profileImage)
+            setHasProfileImage(true)
+        }
+    },[])
+    //getting the profile image of the user who posted the post
+
 
     const toggleShowComments = () => {
         setShowComments(prevState => {
@@ -34,12 +49,12 @@ let Post = (props) => {
     }
 
 
+    // const [profileImage,setProfileImage]=useState('')
     let commentElements = comments.map(comment => {
-        // console.log(comment)
-        return <Comment
+        
+         return <Comment
             key={comment.commentedAt}
             darkMode={props.darkMode}
-            profileImg={`http://localhost:7070/${comment.commentedBy}Profile.png`}
             name={comment.commentedBy}
             createdAt={new Date(comment.commentedAt).toDateString()}
             body={comment.body}
@@ -81,7 +96,7 @@ let Post = (props) => {
 
     //posting a comment
     const postComment = () => {
-        fetch(`http://localhost:7070/posts/updateComments/${props.postId}`, {
+        fetch(`https://mc-tweep.herokuapp.com/posts/updateComments/${props.postId}`, {
             method: "PATCH",
             headers: {
                 "content-type": "application/json"
@@ -96,7 +111,7 @@ let Post = (props) => {
         }).then(response => response.json()).then(data => {
             // console.log(data)
             if (data.success) {
-                fetch(`http://localhost:7070/posts/byid/${props.postId}`, {
+                fetch(`https://mc-tweep.herokuapp.com/posts/byid/${props.postId}`, {
                     method: "GET"
                 }).then(response => response.json()).then(data => {
                     // console.log(data.post.comments)
@@ -121,6 +136,7 @@ let Post = (props) => {
 
 
     useEffect(() => {
+        
         if (savesArray.includes(props.currentUser)) {
             setIsSaving(true)
         }
@@ -135,7 +151,7 @@ let Post = (props) => {
     const likePost = () => {
         setIsLiking(true)
         setLikes(prevLikes => prevLikes + 1)
-        fetch(`http://localhost:7070/posts/updateLikes/${props.postId}`, {
+        fetch(`https://mc-tweep.herokuapp.com/posts/updateLikes/${props.postId}`, {
             method: `PATCH`,
             headers: {
                 "content-type": "application/json"
@@ -151,7 +167,7 @@ let Post = (props) => {
     const dislikePost = () => {
         setIsLiking(false)
         setLikes(prevLikes => prevLikes - 1)
-        fetch(`http://localhost:7070/posts/updateLikes/${props.postId}`, {
+        fetch(`https://mc-tweep.herokuapp.com/posts/updateLikes/${props.postId}`, {
             method: `PATCH`,
             headers: {
                 "content-type": "application/json"
@@ -169,7 +185,7 @@ let Post = (props) => {
     const savePost = () => {
         setIsSaving(true);
         setSaves(prevSaves => prevSaves + 1);
-        fetch(`http://localhost:7070/posts/updateSaved/${props.postId}`, {
+        fetch(`https://mc-tweep.herokuapp.com/posts/updateSaved/${props.postId}`, {
             method: `PATCH`,
             headers: {
                 'content-type': "application/json"
@@ -185,7 +201,7 @@ let Post = (props) => {
     const unSavePost = () => {
         setIsSaving(false);
         setSaves(prevSaves => prevSaves - 1);
-        fetch(`http://localhost:7070/posts/updateSaved/${props.postId}`, {
+        fetch(`https://mc-tweep.herokuapp.com/posts/updateSaved/${props.postId}`, {
             method: `PATCH`,
             headers: {
                 'content-type': "application/json"
@@ -205,7 +221,7 @@ let Post = (props) => {
     const retweepPost = () => {
         setIsRetweeped(true)
         setRetweeps(prevRetweeps => prevRetweeps + 1)
-        fetch(`http://localhost:7070/posts/updateRetweeps/${props.postId}`, {
+        fetch(`https://mc-tweep.herokuapp.com/posts/updateRetweeps/${props.postId}`, {
             method: `PATCH`,
             headers: {
                 'content-type': 'application/json'
@@ -221,7 +237,7 @@ let Post = (props) => {
     const unRetweepPost = () => {
         setIsRetweeped(false)
         setRetweeps(prevRetweeps => prevRetweeps - 1)
-        fetch(`http://localhost:7070/posts/updateRetweeps/${props.postId}`, {
+        fetch(`https://mc-tweep.herokuapp.com/posts/updateRetweeps/${props.postId}`, {
             method: `PATCH`,
             headers: {
                 'content-type': 'application/json'
@@ -236,14 +252,16 @@ let Post = (props) => {
 
     //retweeping
 
+
     return <div
         className={props.darkMode ? "bg-inherit shadow-xl  border-[0.2px] border-gray-700 sm:mx-4  w-[650px]    h-auto flex flex-col justify-between  mb-8 rounded-md pl-4 pr-6  py-4 " : "bg-white border-[1px] w-[650px] h-auto flex flex-col justify-between sm:mx-4  mb-8 rounded-md pl-4 pr-6  py-4 "}>
         <div className="flex items-center justify-start my-2">
-            {props.profile !== undefined &&
-                <img src={props.profile} alt="tweeper" className="w-[36px] h-[36px] rounded-md mr-4" />}
-            {props.profile === undefined &&
+            {hasProfileImage ?
+                <img src={profileImage} alt="tweeper" className="w-[36px] h-[36px] rounded-md mr-4" />
+                 :
                 <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200"
-                    style={{ fill: "#808080" }} />}
+                    style={{ fill: "#808080" }} />
+            }
             <div className="flex flex-col">
                 <Link to={`/profile/?user=${props.name}`}>
                     <h1 className={props.darkMode ? "font-medium capitalize text-white cursor-pointer" : "font-medium capitalize text-black cursor-pointer"}>{props.name}</h1>
@@ -255,7 +273,7 @@ let Post = (props) => {
             <p className={props.darkMode ? "text-[#BDBDBD]" : "text-[#4F4F4F]"}>{props.text}</p>
         </div>
         {props.img !== undefined && <div className="flex object-cover h-[328px] ">
-            <img src={props.img} alt="post" className="rounded-md text-[#4F4F4F] w-full " />
+            <img src={props.img} alt="post" className="rounded-md text-[#4F4F4F] object-cover w-full " />
         </div>}
         <div
             className="flex text-[#BDBDBD] text-[13px] float-right border-b-[1.3px] items-center py-[6px] justify-end px-2">
@@ -327,7 +345,7 @@ let Post = (props) => {
         <div className={props.darkMode ? "flex items-center my-3 z-10" : "flex items-center my-3"}>
             {
                 props.image ?
-                    <img src={`http://localhost:7070/${`${props.image}`}`} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" />
+                    <img src={`${`${props.image}`}`} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" />
                     : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />
             }
             <textarea

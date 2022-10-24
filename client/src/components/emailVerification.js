@@ -19,7 +19,7 @@ const VerifyAccount = (props) => {
     useEffect(() => {
         const accessToken = window.localStorage.getItem("accessToken")
         accessToken ?
-            fetch(`http://localhost:7070/auth/verifyToken/${accessToken}`)
+            fetch(`https://mc-tweep.herokuapp.com/auth/verifyToken/${accessToken}`)
                 .then(response => response.json())
                 .then(data => {
                     if (!data.authorized) {
@@ -32,7 +32,7 @@ const VerifyAccount = (props) => {
     useEffect(() => {
         if (verificationCode.length === 6) {
             setFullCode(true)
-            fetch('http://localhost:7070/verification/verifyEmail', {
+            fetch(`https://mc-tweep.herokuapp.com/verification/verifyEmail`, {
                 method: "POST",
                 headers: {
                     "content-type": "application/json"
@@ -72,7 +72,7 @@ const VerifyAccount = (props) => {
     }, [verificationCode])
 
     const resendCode=()=>{
-        fetch('http://localhost:7070/verification/resendCode',{
+        fetch(`https://mc-tweep.herokuapp.com/verification/resendCode`,{
             method:"POST",
             headers:{
                 "content-type":"application/json"

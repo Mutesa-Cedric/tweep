@@ -24,7 +24,7 @@ const EditProfile = (props) => {
     const [coverToCrop, setCoverToCrop] = useState(null);
     const [finishedProfile, setFinishedProfile] = useState(false);
     const [finishedCover, setFinishedCover] = useState(false);
-
+    const [profileString, setProfileString] = useState('')
 
     //states
 
@@ -42,12 +42,17 @@ const EditProfile = (props) => {
 
     //profile image
     function postProfile(profileImage) {
-        let profileImageForm = document.getElementById("profileImageForm")
-        let formData = new FormData(profileImageForm)
-        formData.append("profileImg", profileImage)
-        fetch(`http://localhost:7070/profiles/profileImg/${props.userProfile.userName}`, {
+
+        fetch(`https://mc-tweep.herokuapp.com/profiles/profileImg/${props.userProfile.userName}`, {
             method: "POST",
-            body: formData
+            // body: formData
+            headers:{
+                "content-type": "application/json"
+            },
+            body:JSON.stringify({
+                profileString:profileToCrop
+            })
+
         }).then(response => response.json()).then(data => {
             // console.log(data)
         }).catch(err => console.log(err))
@@ -58,14 +63,16 @@ const EditProfile = (props) => {
     //post image
     // console.log(typeof(coverImageForm))
     function postCover(coverImage) {
-        let coverImageForm = document.getElementById('coverImageForm');
-        let formData = new FormData(coverImageForm)
-        formData.append('coverImg', coverImage)
-        fetch(`http://localhost:7070/profiles/cover/${props.userProfile.userName}`, {
+        fetch(`https://mc-tweep.herokuapp.com/profiles/cover/${props.userProfile.userName}`, {
             method: "POST",
-            body: formData
+            headers:{
+                "content-type":"application/json"
+            },
+            body:JSON.stringify({
+                coverString:coverToCrop
+            })
         }).then(response => response.json()).then(data => {
-            // console.log(data)
+            console.log(data)
         }).catch(err => console.log(err))
     }
 
@@ -73,9 +80,7 @@ const EditProfile = (props) => {
 
     //posting form data
     function postForm(data) {
-        // console.log(data)
-        // console.log("uploading a form")
-        fetch(`http://localhost:7070/profiles/updateProfile/${props.userProfile.userName}`, {
+        fetch(`https://mc-tweep.herokuapp.com/profiles/updateProfile/${props.userProfile.userName}`, {
             method: 'PATCH',
             headers: {
                 'content-type': "application/json"
@@ -86,7 +91,7 @@ const EditProfile = (props) => {
                 bio: data.bio
             })
         }).then(response => response.json()).then(data => {
-            // console.log(data)
+            console.log(data)
         }).catch(err => console.log(err))
     }
 
@@ -94,6 +99,7 @@ const EditProfile = (props) => {
 
     //controlling posting process
 
+    console.log(coverToCrop)
     let myTestString = /^\s*$/
     console.log(myTestString.test(profileData.bio))
 
@@ -192,6 +198,8 @@ const EditProfile = (props) => {
         setFinishedCover(true)
     }
 
+    // console.log(`profile to send to back: ${profileToCrop}`);
+
     //cancel editing
 
     const cancelEditing = () => {
@@ -228,25 +236,9 @@ const EditProfile = (props) => {
                         aria-hidden="true">
                         <div
                             className={"border-2 border-gray-400  bg-gray-800 shadow-xl flex flex-col w-2/6 h-[75%] mx-auto my-24 rounded-xl"}>
-                            {/*{finishedCover ?*/}
-                            {/*    <div className={"bg-cover bg-no-repeat bg-center rounded-t-xl h-56 relative"}>*/}
-                            {/*        <img src={coverToCrop} alt="cover" className="w-full h-full"/>*/}
-                            {/*        <div*/}
-                            {/*            className={'absolute px-4 w-full flex  items-center justify-between top-2 font-bold text-white z-10'}>*/}
-                            {/*            <KeyboardBackspaceIcon fontSize={'large'}*/}
-                            {/*                                   className={'cursor-pointer hover:bg-white hover:text-gray-800 rounded-2xl text-gray-200'}*/}
-                            {/*                                   onClick={props.toggleIsEditing}/>*/}
-                            {/*            <button*/}
-                            {/*                className={'bg-white text-gray-900 text-xl px-4 py-[2px] rounded-2xl z-10 hover:text-white hover:bg-gray-800 flex items-center'}*/}
-                            {/*                onClick={controlPosting}>*/}
-                            {/*                <span>Save</span>*/}
-                            {/*            </button>*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
-                                {/*:*/}
                                 <div className={"bg-cover bg-no-repeat bg-center rounded-t-xl h-56 relative"}
                                      id={"coverImageHolder"}
-                                     style={{backgroundImage:finishedCover?`url(${coverToCrop})`: `url(http://localhost:7070/${props.userProfile.coverImage})`}}>
+                                     style={{backgroundImage:finishedCover?`url(${coverToCrop})`: `url(${props.userProfile.coverImage})`}}>
                                     <div
                                         className={'absolute px-4 w-full flex  items-center justify-between top-2 font-bold text-white z-10'}>
                                         <KeyboardBackspaceIcon fontSize={'large'}
@@ -271,20 +263,10 @@ const EditProfile = (props) => {
                                         </form>
                                     </div>
                                 </div>
-                            {/*}*/}
-                            {/*{finishedProfile ?*/}
-
-                            {/*    <div*/}
-                            {/*        className={'h-24 w-24 rounded-[50%] absolute top-[36%] left-[46.5%] shadow-xl bg-center bg-no-repeat bg-cover'}>*/}
-                            {/*        <img src={`${profileToCrop}`} alt="profile"*/}
-                            {/*             className="w-full h-full rounded-[50%]"/>*/}
-                            {/*    </div>*/}
-
-                            {/*    :*/}
 
                                 <div
                                     className={'h-24 w-24 rounded-[50%] absolute top-[36%] left-[46.5%] shadow-xl bg-center bg-no-repeat bg-cover'}
-                                    style={{backgroundImage: finishedProfile?`url(${profileToCrop})`:`url(http://localhost:7070/${props.userProfile.profileImage})`,backgroundPosition:"center"}}>
+                                    style={{backgroundImage: finishedProfile?`url(${profileToCrop})`:`url(${props.userProfile.profileImage})`,backgroundPosition:"center"}}>
                                     <div
                                         className={'cursor-pointer w-full h-full flex flex-col text-white rounded-[50%] relative font-medium items-center justify-center bg-gray-700 opacity-80'}>
                                         <CameraAltIcon fontSize={'large'} style={{fill: "white"}}

@@ -1,35 +1,45 @@
-const {postsSchema} = require('../../model/posts.schema')
-const {indexOf} = require("lodash/array");
+const { postsSchema } = require('../../model/posts.schema')
+const { indexOf } = require("lodash/array");
+const { cloudinary } = require('../../utils/cloudinary')
 //new post
 const newPost = async (req, res) => {
-    // console.log(`posted at ${req.body.postedAt}`)
     try {
-        const {postedBy, text} = req.body;
+        console.log(req.body)
+        const { postedBy, text, media } = req.body;
         const postedAt = req.body.postedAt
-
-        const post = new postsSchema({
-            postedBy: postedBy,
-            text: text,
-            postedAt: postedAt,
-            media: req.file.filename
-            // media:req.file
-        })
-        await post.save((err, post) => {
+        await cloudinary.uploader.upload(media, {
+            upload_preset: "tweep_posts"
+        }, (err, result) => {
             if (err) {
-                return res.json({
-                    status: 500,
-                    success: false,
-                    message: "post not saved!"
+                console.log(err)
+            }
+            else {
+                // console.log(result)
+                const post = new postsSchema({
+                    postedBy: postedBy,
+                    text: text,
+                    postedAt: postedAt,
+                    media: result.secure_url
                 })
-            } else {
-                res.json({
-                    status: 201,
-                    saved: true,
-                    post: post,
-                    message: "post saved successfully"
+                post.save((err, post) => {
+                    if (err) {
+                        return res.json({
+                            status: 500,
+                            success: false,
+                            message: "post not saved!"
+                        })
+                    } else {
+                        res.json({
+                            status: 201,
+                            saved: true,
+                            post: post,
+                            message: "post saved successfully"
+                        })
+                    }
                 })
             }
         })
+
     } catch (error) {
         return console.error(error)
     }
@@ -40,7 +50,7 @@ const newPost = async (req, res) => {
 
 const newPostWithoutImage = async (req, res) => {
     try {
-        const {postedBy, text} = req.body;
+        const { postedBy, text } = req.body;
         const postedAt = req.body.postedAt
 
         const post = new postsSchema({
@@ -93,7 +103,7 @@ const getAllPosts = async (req, res) => {
                     })
                 }
             }
-        }).sort({postedAt: -1})
+        }).sort({ postedAt: -1 })
     } catch (error) {
         // return console.error(error)
     }
@@ -106,7 +116,7 @@ const getAllPosts = async (req, res) => {
 const getPostsByUsername = async (req, res) => {
     try {
         let userName = req.params.userName;
-        await postsSchema.find({postedBy: userName}, (err, posts) => {
+        await postsSchema.find({ postedBy: userName }, (err, posts) => {
             if (err) {
                 return console.error(err)
             } else {
@@ -125,7 +135,7 @@ const getPostsByUsername = async (req, res) => {
                     })
                 }
             }
-        }).sort({postedAt: -1})
+        }).sort({ postedAt: -1 })
     } catch (error) {
         // return console.error(error)
     }
@@ -168,7 +178,7 @@ const updatePost = async (req, res) => {
         let postId = req.params.id;
         let updates = req.body;
 
-        if (!await postsSchema.updateOne({_id: postId}, updates, (err, post) => {
+        if (!await postsSchema.updateOne({ _id: postId }, updates, (err, post) => {
             if (err) {
                 res.json({
                     status: 404,
@@ -203,8 +213,8 @@ const updatePost = async (req, res) => {
 const updateComments = async (req, res) => {
     try {
         let postId = req.params.id
-        let {comments} = req.body
-        if (await postsSchema.updateOne({_id: postId}, {$push: {comments: comments}})) {
+        let { comments } = req.body
+        if (await postsSchema.updateOne({ _id: postId }, { $push: { comments: comments } })) {
             res.json({
                 status: 203,
                 message: "updated!",
@@ -226,7 +236,7 @@ const updateLikesOfComment = (req, res) => {
     let commentedAt = req.params.commentedAt;
     let like = req.body.like;
     try {
-        postsSchema.findOne({_id: postId}, (err, post) => {
+        postsSchema.findOne({ _id: postId }, (err, post) => {
             if (err) {
                 res.json({
                     status: 404,
@@ -254,7 +264,7 @@ const updateLikesOfComment = (req, res) => {
                         if (comments[index].likes.includes(like)) {
                             let likeIndex = comments[index].likes.indexOf(like)
                             comments[index].likes.splice(likeIndex, 1)
-                            postsSchema.updateOne({_id: postId}, {$set: {comments: comments}}, (err, updatedPost) => {
+                            postsSchema.updateOne({ _id: postId }, { $set: { comments: comments } }, (err, updatedPost) => {
                                 if (err) {
                                     res.json({
                                         status: 404,
@@ -273,7 +283,7 @@ const updateLikesOfComment = (req, res) => {
 
                         } else {
                             comments[index].likes.push(like);
-                            postsSchema.updateOne({_id: postId}, {$set: {comments: comments}}, (err, updatedPost) => {
+                            postsSchema.updateOne({ _id: postId }, { $set: { comments: comments } }, (err, updatedPost) => {
                                 if (err) {
                                     res.json({
                                         status: 404,
@@ -304,9 +314,9 @@ const updateLikesOfComment = (req, res) => {
 const updateRetweeps = async (req, res) => {
     try {
         let postId = req.params.id;
-        let {retweep} = req.body;
+        let { retweep } = req.body;
 
-        await postsSchema.findOne({_id: postId}, (err, post) => {
+        await postsSchema.findOne({ _id: postId }, (err, post) => {
             if (err) {
                 res.json({
                     status: 404,
@@ -334,7 +344,7 @@ const updateRetweeps = async (req, res) => {
                         }
                     })
                 } else {
-                    postsSchema.updateOne({_id: postId}, {$push: {retweeps: retweep}}, (err, post) => {
+                    postsSchema.updateOne({ _id: postId }, { $push: { retweeps: retweep } }, (err, post) => {
                         if (err) {
                             return res.json({
                                 status: 404,
@@ -363,9 +373,9 @@ const updateLikes = async (req, res) => {
     try {
 
         let postId = req.params.id;
-        let {like} = req.body;
+        let { like } = req.body;
 
-        await postsSchema.findOne({_id: postId}, (err, post) => {
+        await postsSchema.findOne({ _id: postId }, (err, post) => {
             if (err) {
                 res.json({
                     status: 404,
@@ -394,7 +404,7 @@ const updateLikes = async (req, res) => {
                         }
                     })
                 } else {
-                    postsSchema.updateOne({_id: postId}, {$push: {likes: like}}, (err, post) => {
+                    postsSchema.updateOne({ _id: postId }, { $push: { likes: like } }, (err, post) => {
                         if (err) {
                             return res.json({
                                 status: 404,
@@ -420,9 +430,9 @@ const updateLikes = async (req, res) => {
 const updateSaved = async (req, res) => {
     try {
         let postId = req.params.id;
-        let {save} = req.body;
+        let { save } = req.body;
 
-        await postsSchema.findOne({_id: postId}, (err, post) => {
+        await postsSchema.findOne({ _id: postId }, (err, post) => {
             if (err) {
                 res.json({
                     status: 404,
@@ -450,7 +460,7 @@ const updateSaved = async (req, res) => {
                         }
                     })
                 } else {
-                    postsSchema.updateOne({_id: postId}, {$push: {saved: save}}, (err, post) => {
+                    postsSchema.updateOne({ _id: postId }, { $push: { saved: save } }, (err, post) => {
                         if (err) {
                             return res.json({
                                 status: 404,
@@ -562,7 +572,7 @@ const getTopPosts = async (req, res) => {
                     })
                 }
             }
-        }).sort({likes: -1}).exec()
+        }).sort({ likes: -1 }).exec()
     } catch (error) {
         // return console.error(error)
     }
@@ -627,7 +637,7 @@ const getMostCommentedPosts = async (req, res) => {
                     })
                 }
             }
-        }).sort({comments: -1})
+        }).sort({ comments: -1 })
     } catch (error) {
         // return console.error(error)
     }
@@ -651,7 +661,7 @@ module.exports.getSavedTweeps = getSavedTweeps;
 module.exports.getTopPosts = getTopPosts;
 module.exports.getMostRetweepedPosts = getMostRetweepedPosts;
 module.exports.getMostCommentedPosts = getMostCommentedPosts;
-module.exports.newPostWithoutImage=newPostWithoutImage;
+module.exports.newPostWithoutImage = newPostWithoutImage;
 //exporting functions
 
 

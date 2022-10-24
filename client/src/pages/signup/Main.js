@@ -1,6 +1,9 @@
 import React, {useState,useEffect} from "react";
 import Signup from './Signup';
 import {useNavigate} from 'react-router-dom'
+import TooManyRequests from "../../components/tooManyRequests";
+import swal from 'sweetalert';
+
 let SignupMain=(props)=>{
     let navigate = useNavigate()
     const [errorMessages, setErrorMessages] = useState({
@@ -14,6 +17,8 @@ let SignupMain=(props)=>{
         email:"",
         password:""
     })
+
+    const [tooManyRequests,setTooManyRequests] = useState(false)
 
     const handleChange=(event)=>{
         let {name,value} = event.target
@@ -35,7 +40,7 @@ let SignupMain=(props)=>{
                 }
             })
         }else{
-            fetch("http://localhost:7070/register",{
+            fetch(`https://mc-tweep.herokuapp.com/register`,{
                 method: "POST",
                 headers:{
                     "content-type": "application/json"
@@ -48,12 +53,19 @@ let SignupMain=(props)=>{
             })
             .then(response=>response.json())
             .then(data=>{
-            console.log(data)
                 if(data.success){
                     window.localStorage.setItem("accessToken",data.accessToken)
                     window.localStorage.setItem("email",formData.email)
                     navigate('/verifyEmail')
-                }else if(data.existingUserName){
+                }
+                
+                else if(data.Status===500){
+                    console.log(data.message)
+                    swal("sorry, our server is receiving too many requests. Please try after some time", {
+                        buttons: [true],
+                      });
+                }
+                else if(data.existingUserName){
                     setErrorMessages(prevMessages=>{
                             return {
                                 ...prevMessages,
@@ -84,8 +96,10 @@ let SignupMain=(props)=>{
       }
     }, [formData])
     
+    console.log(`tooManyRequests: ${tooManyRequests}`)
     return (
         <div>
+            {tooManyRequests && <TooManyRequests/>} 
             <Signup darkMode={props.darkMode} formData={formData} errorMessages={errorMessages} submitForm={submitForm} handleChange={handleChange} setDarkMode={props.setDarkMode}/>
         </div>
      

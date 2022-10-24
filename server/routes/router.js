@@ -31,9 +31,9 @@ router.get("/getMostFollowedUsers/:userName",getMostFollowedUsers);
 //post routes
 router.post("/register",newProfile,register)
 router.post("/login",login) 
-router.post("/posts/newPost",uploadMedia,newPost)
-router.post("/profiles/cover/:userName",uploadCover,updateProfileWithCover)
-router.post("/profiles/profileImg/:userName",uploadProfile,updateProfileWithProfileImage);
+router.post("/posts/newPost",newPost)
+router.post("/profiles/cover/:userName",updateProfileWithCover)
+router.post("/profiles/profileImg/:userName",updateProfileWithProfileImage);
 router.post('/posts/newPostWithoutImage',newPostWithoutImage);
 router.post('/verification/verifyEmail',verifyEmail);
 router.post("/verification/resendCode",resendEmailVerificationCode)

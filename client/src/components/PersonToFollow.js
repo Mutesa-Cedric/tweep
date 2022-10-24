@@ -5,7 +5,7 @@ import profileAvatar from "../images/profileAvatar.png"
 let PersonToFollow=(props)=>{
     console.log(props.currentUser)
     const followUser=()=>{
-        fetch("http://localhost:7070/profiles/updateFollowers/", {
+        fetch(`https://mc-tweep.herokuapp.com/profiles/updateFollowers/`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
@@ -24,7 +24,7 @@ let PersonToFollow=(props)=>{
         <div>
             <div className="flex border-t-[1.3px] pt-4 items-center my-4 justify-between">
                 <div className="flex items-center">
-                  {props.profile?  <img src={`http://localhost:7070/${props.profile}`} alt="woman" className="rounded-md mr-4  h-10 w-10"/>:<img src={profileAvatar} alt="woman" className="rounded-md mr-4  h-10 w-10"/>}
+                  {props.profile?  <img src={`${props.profile}`} alt="woman" className="rounded-md mr-4  h-10 w-10"/>:<img src={profileAvatar} alt="woman" className="rounded-md mr-4  h-10 w-10"/>}
                     <div className="flex flex-col">
                         <h1 className={props.darkMode?"font-medium text-white":"font-medium"}>{props.name}</h1>
                         <p className="text-gray-300  text-[14px]">{props.followers} followers</p>
@@ -41,7 +41,7 @@ let PersonToFollow=(props)=>{
                 <p className={props.darkMode?"text-gray-300 text-[14px]":"text-[#828282] text-[14px]"}>{props.bio}</p>
             </div>
             <div className={props.isFirst ? "border-b-2":""}>
-                {props.coverPhoto?<img src={`http://localhost:7070/${props.coverPhoto}`}  alt="cover" className="rounded-[8px] my-4 w-[265px] h-32 "/>:<img src={backgroundCover}  alt="cover" className="rounded-[8px] my-4 w-[265px] h-32 "/>}
+                {props.coverPhoto?<img src={`${props.coverPhoto}`}  alt="cover" className="rounded-[8px] my-4 w-[265px] h-32 "/>:<img src={backgroundCover}  alt="cover" className="rounded-[8px] my-4 w-[265px] h-32 "/>}
             </div>
         </div>
     )

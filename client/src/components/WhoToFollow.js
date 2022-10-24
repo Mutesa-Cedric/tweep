@@ -6,7 +6,7 @@ let WhoToFollow = (props) => {
     const [hasNoOneToFollow, setHasNoOneToFollow] = useState(false)
     const [peopleToFollow, setPeopleToFollow] = useState([]);
     useEffect(() => {
-        fetch(`http://localhost:7070/getMostFollowedUsers/${props.currentUser}`).then(response => response.json()).then(data => {
+        fetch(`https://mc-tweep.herokuapp.com/getMostFollowedUsers/${props.currentUser}`).then(response => response.json()).then(data => {
             if(data.profiles.length===0) return setHasNoOneToFollow(true)
             setPeopleToFollow(data.profiles)
         }).catch(err => {
@@ -14,7 +14,7 @@ let WhoToFollow = (props) => {
     }, [])
 
     const finishedFollowing = () => {
-        fetch(`http://localhost:7070/getMostFollowedUsers/${props.currentUser}`).then(response => response.json()).then(data => {
+        fetch(`https://mc-tweep.herokuapp.com/getMostFollowedUsers/${props.currentUser}`).then(response => response.json()).then(data => {
             console.log(data)
             setPeopleToFollow(data.profiles)
         }).catch(err => {

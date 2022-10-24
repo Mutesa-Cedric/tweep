@@ -1,10 +1,10 @@
 import Navbar from '../../components/Navbar';
-import React, {useState, useEffect} from "react";
-import {useNavigate} from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import SideSection from '../../components/SideSection';
 import Post from '../../components/Post';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 let Bookmarks = (props) => {
 
@@ -21,13 +21,13 @@ let Bookmarks = (props) => {
         if (!accessToken) {
             navigate('/auth/signup')
         } else {
-            fetch(`http://localhost:7070/auth/verifyToken/${accessToken}`)
+            fetch(`https://mc-tweep.herokuapp.com/auth/verifyToken/${accessToken}`)
                 .then(response => response.json())
                 .then(data => {
                     if (!data.authorized) {
                         navigate('/auth/login')
                     } else {
-                        fetch(`http://localhost:7070/profiles/${data.user.userName}`)
+                        fetch(`https://mc-tweep.herokuapp.com/profiles/${data.user.userName}`)
                             .then(response => response.json())
                             .then(data => {
                                 setUserProfile(data.profile)
@@ -41,7 +41,7 @@ let Bookmarks = (props) => {
 
     useEffect(() => {
         if (hasProfile) {
-            fetch(`http://localhost:7070/posts/getSavedTweeps/${userProfile.userName}`).then(response => response.json()).then(data => {
+            fetch(`https://mc-tweep.herokuapp.com/posts/getSavedTweeps/${userProfile.userName}`).then(response => response.json()).then(data => {
                 if (data.posts.length === 0) {
                     setHasNoSavedPosts(true)
                 } else {
@@ -60,16 +60,15 @@ let Bookmarks = (props) => {
             postId={post._id}
             darkMode={props.darkMode}
             name={post.postedBy}
-            profile={`http://localhost:7070/${post.postedBy}Profile.png`}
             createdAt={new Date(post.postedAt).toDateString()} text={post.text}
-            img={post.media?`http://localhost:7070/${post.media}`:undefined} 
+            img={post.media ? `${post.media}` : undefined}
             comments={post.comments.length}
             retweeps={post.retweeps.length}
             retweepsArray={post.retweeps}
             saves={post.saved.length}
             savesArray={post.saved}
             commentsArray={post.comments}
-            image={`http://localhost:7070/${`${userProfile.profileImage}`}`}
+            image={userProfile.profileImage}
             currentUser={userProfile.userName}
         />
     })
@@ -80,23 +79,23 @@ let Bookmarks = (props) => {
                 className={props.darkMode ? "bg-[#252329] h-screen overflow-x-hidden" : "bg-[#F2F2F2] h-screen overflow-x-hidden"}>
                 {userProfile.profileImage ?
                     <Navbar toBookmarks={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode}
-                            profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`}
-                            userName={userProfile.userName}/> :
-                    <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName}/>}
+                        profileImg={`https://mc-tweep.herokuapp.com/${`${userProfile.profileImage}`}`}
+                        userName={userProfile.userName} /> :
+                    <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
                 <div className=" mt-32 flex justify-between xl:px-52 ">
                     <div className={'mr-24'}>
-                        <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch}/>
+                        <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch} />
                     </div>
                     <div className="w-[745px]">
 
                         {hasNoSavedPosts ?
-                             <div className={props.darkMode?"w-full h-full border-[1px] bg-inherit shadow-md flex items-center flex-col justify-center":'w-full h-full border-2 bg-gray-100 flex items-center flex-col justify-center'}>
+                            <div className={props.darkMode ? "w-full h-full border-[1px] bg-inherit shadow-md flex items-center flex-col justify-center" : 'w-full h-full border-2 bg-gray-100 flex items-center flex-col justify-center'}>
                                 <span className={'text-gray-500 text-lg capitalize'}>You have no saved Tweeps.</span>
-                                 <Link to={'/'}>
-                                     <button className={'bg-blue-400 hover:bg-blue-500 my-4 text-white px-4 py-1 rounded-sm'}>
-                                         <span className={'capitalize '}>go save one</span>
-                                     </button>
-                                 </Link>
+                                <Link to={'/'}>
+                                    <button className={'bg-blue-400 hover:bg-blue-500 my-4 text-white px-4 py-1 rounded-sm'}>
+                                        <span className={'capitalize '}>go save one</span>
+                                    </button>
+                                </Link>
 
                             </div> : postElements}
                     </div>
@@ -107,7 +106,7 @@ let Bookmarks = (props) => {
         return (
             <div
                 className={props.darkMode ? "w-full bg-[#252329] h-screen flex items-center justify-center" : "w-full h-screen flex items-center justify-center"}>
-                <CircularProgress/>
+                <CircularProgress />
             </div>
         )
     }

@@ -30,11 +30,6 @@ const CurrentProfile = (props) => {
     });
     //states
 
-    console.log("actual profile:")
-    console.log(userProfile)
-
-    console.log(`has no post: ${hasNoPost}`)
-
     // console.log(isEditing)
     //checking if the user is logged in
     useEffect(() => {
@@ -42,7 +37,7 @@ const CurrentProfile = (props) => {
         if (!accessToken) {
             navigate('/auth/signup')
         } else {
-            fetch(`http://localhost:7070/auth/verifyToken/${accessToken}`)
+            fetch(`https://mc-tweep.herokuapp.com/auth/verifyToken/${accessToken}`)
                 .then(response => response.json())
                 .then(data => {
                     if (!data.authorized) {
@@ -50,14 +45,14 @@ const CurrentProfile = (props) => {
                     } else {
                         setUser(data.user)
                         // getting a user profile
-                        fetch(`http://localhost:7070/profiles/${data.user.userName}`)
+                        fetch(`https://mc-tweep.herokuapp.com/profiles/${data.user.userName}`)
                             .then(response => response.json())
                             .then(data => {
                                 setUserProfile(data.profile)
                                 setHasProfile(true)
 
                                 //getting the posts of a user
-                                fetch(`http://localhost:7070/posts/${data.profile.userName}`).then(response => response.json())
+                                fetch(`https://mc-tweep.herokuapp.com/posts/${data.profile.userName}`).then(response => response.json())
                                     .then(data => {
 
                                         if (data.areFound === false) {
@@ -86,9 +81,9 @@ const CurrentProfile = (props) => {
             postId={post._id}
             darkMode={props.darkMode}
             name={post.postedBy}
-            profile={`http://localhost:7070/${post.postedBy}Profile.png`}
-            createdAt={new Date(post.postedAt).toDateString()} text={post.text}
-            img={post.media ? `http://localhost:7070/${post.media}` : undefined}
+            createdAt={new Date(post.postedAt).toDateString()}
+            text={post.text}
+            img={post.media ? `${post.media}` : undefined}
             comments={post.comments.length}
             retweeps={post.retweeps.length}
             retweepsArray={post.retweeps}
@@ -164,35 +159,33 @@ const CurrentProfile = (props) => {
 
     //auto updating content
     const updateDom = () => {
-        fetch(`http://localhost:7070/profiles/${user.userName}`).then(response => response.json()).then(data => {
+        fetch(`https://mc-tweep.herokuapp.com/profiles/${user.userName}`).then(response => response.json()).then(data => {
+            console.log(data)
             if (data.isFound) {
-                // setUserProfile(data.profile)
-                // console.log("updated profile:")
-                // console.log(userProfile)
-                setTimeout(() => {
-                    window.location.reload()
-                }, 3000)
+                setUserProfile(data.profile)
+                setHasProfile(true)
             }
         }).catch(err => console.error(err))
     }
 
+    
     //auto updating content
 
     if (hasProfile) {
         return (
             <div className={props.darkMode ? "bg-[#252329] h-screen overflow-x-hidden" : "relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
                 {isEditing && <EditProfile updateDom={updateDom} successProfile={successProfile} successAll={successAll} successAbout={successAbout} successCover={successCover} userProfile={userProfile} user={user} toggleIsEditing={toggleIsEditing} />}
-                {userProfile.profileImage ? <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`http://localhost:7070/${`${userProfile.profileImage}`}`} userName={userProfile.userName} /> : <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
-                {successStatus.profileSuccessful && <ProcessSuccessful message={'profile image updated successfully!!'} />}
-                {successStatus.coverSuccessful && <ProcessSuccessful message={'cover image Updated successfully'} />}
-                {successStatus.aboutSuccessful && <ProcessSuccessful message={'your \" about \" was updated successfully!'} />}
-                {successStatus.allSuccessful && <ProcessSuccessful message={'your Profile was updated successfully'} />}
+                {userProfile.profileImage ? <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`${`${userProfile.profileImage}`}`} userName={userProfile.userName} /> : <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
+                {successStatus.profileSuccessful && <ProcessSuccessful message={'profile image updated successfully!! reload to view changes'} />}
+                {successStatus.coverSuccessful && <ProcessSuccessful message={'cover image Updated successfully reload to view changes'} />}
+                {successStatus.aboutSuccessful && <ProcessSuccessful message={'your \" about \" was updated successfully! reload to view changes'} />}
+                {successStatus.allSuccessful && <ProcessSuccessful message={'your Profile was updated successfully reload to view changes'} />}
                 <div >
-                    {userProfile.coverImage ? <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(http://localhost:7070/${userProfile.coverImage})` }} >
+                    {userProfile.coverImage ? <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(${userProfile.coverImage})` }} >
                         <div className={props.darkMode ? "bg-[#23212b] mb-4 flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]" : "bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4"}>
                             <div className="flex">
 
-                                {userProfile.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(http://localhost:7070/${userProfile.profileImage})` }}>
+                                {userProfile.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${userProfile.profileImage})` }}>
                                 </div> : <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${profileAvatar})` }}>
                                 </div>}
                                 <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
@@ -210,11 +203,11 @@ const CurrentProfile = (props) => {
                                 <EditOutlinedIcon fontSize="small" className="mr-2" /> edit Profile
                             </button>
                         </div>
-                    </div> : <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(${backgroundCover})`}} >
+                    </div> : <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(${backgroundCover})` }} >
                         <div className={props.darkMode ? "bg-[#23212b] mb-4 flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]" : "bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4"}>
                             <div className="flex">
 
-                                {userProfile.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(http://localhost:7070/${userProfile.profileImage})` }}>
+                                {userProfile.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${userProfile.profileImage})` }}>
                                 </div> : <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${profileAvatar})` }}>
                                 </div>}
                                 <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">

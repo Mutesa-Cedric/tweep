@@ -32,7 +32,7 @@
 
 ## Overview
 
-![screenshot](https://user-images.githubusercontent.com/16707738/92399059-5716eb00-f132-11ea-8b14-bcacdc8ec97b.png)
+![screenshot](https://media-exp1.licdn.com/dms/image/C4D22AQHjWa0OiINM8w/feedshare-shrink_800/0/1653399358010?e=1669248000&v=beta&t=HIKwo0YKnFuZlml7cOJUWD4mQJ9VIqW-7M2YXWH-Qr0)
 
 
 ### Built With

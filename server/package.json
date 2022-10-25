@@ -1,37 +1,36 @@
 {
-    "name": "tweep-backend",
-    "version": "1.0.0",
-    "description": "this is a tweep project similar to tweeter",
-    "main": "index.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "node index.js"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/Mutesa-Cedric/tweep.git"
-    },
-    "author": "mutesa cedric",
-    "license": "ISC",
-    "bugs": {
-      "url": "https://github.com/Mutesa-Cedric/tweep-backend/issues"
-    },
-    "homepage": "https://github.com/Mutesa-Cedric/tweep-backend#readme",
-    "dependencies": {
-      "bcrypt": "^5.0.1",
-      "body-parser": "^1.20.0",
-      "cloudinary": "^1.29.1",
-      "cors": "^2.8.5",
-      "dotenv": "^16.0.0",
-      "express": "^4.17.3",
-      "express-handlebars": "^6.0.5",
-      "jsonwebtoken": "^8.5.1",
-      "lodash": "^4.17.21",
-      "moment": "^2.29.2",
-      "mongoose": "^6.3.0",
-      "multer": "^1.4.4",
-      "nodemailer": "^6.7.3",
-      "twilio": "^3.77.0"
-    }
+  "name": "tweep-backend",
+  "version": "1.0.0",
+  "description": "this is a tweep project similar to tweeter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mutesa-Cedric/tweep.git"
+  },
+  "author": "mutesa cedric",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mutesa-Cedric/tweep-backend/issues"
+  },
+  "homepage": "https://github.com/Mutesa-Cedric/tweep-backend#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "cloudinary": "^1.29.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-handlebars": "^6.0.5",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.2",
+    "mongoose": "^6.3.0",
+    "multer": "^1.4.4",
+    "nodemailer": "^6.7.3",
+    "twilio": "^3.77.0"
   }
-  
+}

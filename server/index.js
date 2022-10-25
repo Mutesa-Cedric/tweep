@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 require("dotenv").config()
 const mongoose=require("mongoose")
 const {Router}=require("./routes/router")
-const path=require("path")
 //libraries and modules
 
 //use
@@ -20,7 +19,7 @@ app.use("/",Router)
 //database connection
 const databaseUrl=process.env.DATABASE_URL
 mongoose.connect(databaseUrl,(err)=>{
-    err?console.log(err):console.log("database connection established!")
+    err?console.log(err.message):console.log("database connection established!")
 })
 //database connection
 

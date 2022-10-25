@@ -11,6 +11,10 @@ import React, { useState, useEffect } from 'react';
 import CurrentProfile from "./pages/profile/currentProfile";
 import SimpleSnackbar from "./components/ProcessSuccessful";
 import VerifyAccount from "./components/emailVerification";
+import { AuthProvider } from "./hooks/useAuth";
+import { ThemeProvider } from "./hooks/useDarkMode"
+
+
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   const toggleDarkMode = () => {
@@ -44,6 +48,7 @@ function App() {
 
 
   return (
+
     <Router>
       <div>
         <Routes>

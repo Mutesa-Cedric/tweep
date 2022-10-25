@@ -58,19 +58,20 @@ const register = async (req, res) => {
                                     to: email,
                                     channel: "email"
                                 }).then(() => {
-                                  user.save((err, user) => {
+                                    user.save((err, user) => {
                                         console.log(err)
                                         console.log(user)
-                                        if(err){
+                                        if (err) {
                                             console.log(err)
-                                            res.status(500).json({ message: err})
-                                        }  else{
+                                            res.status(500).json({ message: err })
+                                        } else {
                                             res.status(201).json({
                                                 success: true,
                                                 message: "user created, profile saved and verification code is sent to email",
-                                                accessToken: accessToken
+                                                accessToken: accessToken,
+                                                user: user
                                             })
-                                        } 
+                                        }
                                     })
                                 }).catch(err => {
                                     res.status(500).json({

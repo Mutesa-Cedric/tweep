@@ -125,8 +125,6 @@ const VerifyAccount = (props) => {
 
                             </div>
                     }
-
-
                 </div>}
             </div>
 

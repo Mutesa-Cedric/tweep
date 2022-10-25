@@ -56,7 +56,6 @@ const PreviewImage=(props)=>{
                     </div>   
                  </div>
             </div>
-
         </div>
     )
 }

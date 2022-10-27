@@ -16,12 +16,6 @@ import { ThemeProvider } from "./hooks/useDarkMode"
 
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false)
-  const toggleDarkMode = () => {
-    setDarkMode(prevMode => {
-      return !prevMode
-    });
-  }
   const [fixSide, setFixSide] = useState(false)
   const [fixSideSearch, setFixSideSearch] = useState(false)
   useEffect(() => {
@@ -52,16 +46,16 @@ function App() {
     <Router>
       <div>
         <Routes>
-          <Route path='/auth/login' exact element={<Login darkMode={darkMode} setDarkMode={toggleDarkMode} />} />
-          <Route path='/auth/signup' exact element={<SignupMain darkMode={darkMode} setDarkMode={toggleDarkMode} />} />
-          <Route path='/bookmarks' exact element={<Bookmarks darkMode={darkMode} setDarkMode={toggleDarkMode} />} />
-          <Route path='/explore' exact element={<Explore darkMode={darkMode} setDarkMode={toggleDarkMode} />} />
-          <Route path='/' exact element={<Home darkMode={darkMode} setDarkMode={toggleDarkMode} fixSide={fixSide} />} />
-          <Route path='/chat' element={<Chat darkMode={darkMode} setDarkMode={toggleDarkMode} />} />
-          <Route path='/profile/' element={<Profile darkMode={darkMode} setDarkMode={toggleDarkMode} fixSideSearch={fixSideSearch} />} />
+          <Route path='/auth/login' exact element={<Login />} />
+          <Route path='/auth/signup' exact element={<SignupMain />} />
+          <Route path='/bookmarks' exact element={<Bookmarks />} />
+          <Route path='/explore' exact element={<Explore />} />
+          <Route path='/' exact element={<Home fixSide={fixSide} />} />
+          <Route path='/chat' element={<Chat />} />
+          <Route path='/profile/' element={<Profile fixSideSearch={fixSideSearch} />} />
           <Route path={'/simple'} element={<SimpleSnackbar />} />
-          <Route path='/currentProfile' element={<CurrentProfile darkMode={darkMode} setDarkMode={toggleDarkMode} />} />
-          <Route path={'/verifyEmail'} element={<VerifyAccount darkMode={darkMode} setDarkMode={toggleDarkMode} />} />
+          <Route path='/currentProfile' element={<CurrentProfile />} />
+          <Route path={'/verifyEmail'} element={<VerifyAccount />} />
         </Routes>
       </div>
     </Router>

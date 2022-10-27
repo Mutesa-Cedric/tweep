@@ -7,6 +7,7 @@ const AuthContext = createContext({
     user: null,
     login: (email, password) => { },
     signup: (username, email, password) => { },
+    logout: () => { },
     error: null,
     loading: null,
 });
@@ -40,9 +41,15 @@ export const AuthProvider = ({ children }) => {
             .finally(() => setLoading(false))
     }
 
+    async function logout() {
+        setLoading(true);
+        window.localStorage.removeItem('accessToken')
+        navigate('/auth/login')
+    }
+
 
     const memoedValue = useMemo(() => ({
-        user, login, signup, error, loading
+        user, login, signup, error, loading, logout
     }), [loading, login, signup, error, user])
     return (
         <AuthContext.Provider value={memoedValue}>

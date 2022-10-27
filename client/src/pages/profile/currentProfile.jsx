@@ -79,7 +79,6 @@ const CurrentProfile = (props) => {
             likesArray={post.likes}
             likes={post.likes.length}
             postId={post._id}
-            darkMode={props.darkMode}
             name={post.postedBy}
             createdAt={new Date(post.postedAt).toDateString()}
             text={post.text}
@@ -168,21 +167,21 @@ const CurrentProfile = (props) => {
         }).catch(err => console.error(err))
     }
 
-    
+
     //auto updating content
 
     if (hasProfile) {
         return (
-            <div className={props.darkMode ? "bg-[#252329] h-screen overflow-x-hidden" : "relative bg-[#F2F2F2] h-screen overflow-x-hidden"}>
+            <div className={"relative bg-[#F2F2F2] h-screen overflow-x-hidden dark:bg-[#252329]"}>
                 {isEditing && <EditProfile updateDom={updateDom} successProfile={successProfile} successAll={successAll} successAbout={successAbout} successCover={successCover} userProfile={userProfile} user={user} toggleIsEditing={toggleIsEditing} />}
-                {userProfile.profileImage ? <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} profileImg={`${`${userProfile.profileImage}`}`} userName={userProfile.userName} /> : <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
+                {userProfile.profileImage ? <Navbar profileImg={`${`${userProfile.profileImage}`}`} userName={userProfile.userName} /> : <Navbar userName={userProfile.userName} />}
                 {successStatus.profileSuccessful && <ProcessSuccessful message={'profile image updated successfully!! reload to view changes'} />}
                 {successStatus.coverSuccessful && <ProcessSuccessful message={'cover image Updated successfully reload to view changes'} />}
                 {successStatus.aboutSuccessful && <ProcessSuccessful message={'your \" about \" was updated successfully! reload to view changes'} />}
                 {successStatus.allSuccessful && <ProcessSuccessful message={'your Profile was updated successfully reload to view changes'} />}
                 <div >
                     {userProfile.coverImage ? <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(${userProfile.coverImage})` }} >
-                        <div className={props.darkMode ? "bg-[#23212b] mb-4 flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]" : "bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4"}>
+                        <div className={"bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4 dark:bg-[#23212b]"}>
                             <div className="flex">
 
                                 {userProfile.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${userProfile.profileImage})` }}>
@@ -190,12 +189,12 @@ const CurrentProfile = (props) => {
                                 </div>}
                                 <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
                                     <div className="flex items-center justify-between  mb-4">
-                                        <h1 className={props.darkMode ? "text-2xl font-[600] text-gray-300" : "text-2xl font-[600]"}>{userProfile.userName}</h1>
-                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}><span className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{userProfile.following.length}</span> following</p>
-                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}><span className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{userProfile.followers.length}</span>  followers</p>
+                                        <h1 className={"text-2xl font-[600] dark:text-gray-300"}>{userProfile.userName}</h1>
+                                        <p className={"text-[#828282] text-[14px] dark:text-[#828282]"}><span className={"font-[600] text-black dark:text-gray-300"}>{userProfile.following.length}</span> following</p>
+                                        <p className={"text-[#828282] text-[14px] dark:text-[#828282]"}><span className={"font-[600] text-black dark:text-gray-300"}>{userProfile.followers.length}</span>  followers</p>
                                     </div>
                                     <div>
-                                        <p className={props.darkMode ? "text-[#828282] font-[600]" : "text-[#828282]"}>{userProfile.bio ? userProfile.bio : "You have no bio yet!"}</p>
+                                        <p className={"text-[#828282] dark:font-medium"}>{userProfile.bio ? userProfile.bio : "You have no bio yet!"}</p>
                                     </div>
                                 </div>
                             </div>
@@ -204,7 +203,7 @@ const CurrentProfile = (props) => {
                             </button>
                         </div>
                     </div> : <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(${backgroundCover})` }} >
-                        <div className={props.darkMode ? "bg-[#23212b] mb-4 flex justify-between  w-full rounded-xl relative top-24  shadow-md mr-4 h-[163px]" : "bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4"}>
+                        <div className={"bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4 dark:bg-[#23212b] dark:shadow-md"}>
                             <div className="flex">
 
                                 {userProfile.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${userProfile.profileImage})` }}>
@@ -212,12 +211,12 @@ const CurrentProfile = (props) => {
                                 </div>}
                                 <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
                                     <div className="flex items-center justify-between  mb-4">
-                                        <h1 className={props.darkMode ? "text-2xl font-[600] text-gray-300" : "text-2xl font-[600]"}>{userProfile.userName}</h1>
-                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}><span className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{userProfile.following.length}</span> following</p>
-                                        <p className={props.darkMode ? "text-[#828282] text-[14px] font-[600]" : "text-[#828282] text-[14px]"}><span className={props.darkMode ? "font-[600] text-gray-300" : "font-[600] text-black"}>{userProfile.followers.length}</span>  followers</p>
+                                        <h1 className={"text-2xl font-medium dark:text-gray-300"}>{userProfile.userName}</h1>
+                                        <p className={"text-[#828282] text-[14px] dark:font-medium"}><span className={"font-medium text-black dark:text-gray-300"}>{userProfile.following.length}</span> following</p>
+                                        <p className={"text-[#828282] text-[14px] dark:font-medium"}><span className={"font-medium text-black dark:text-gray-300"}>{userProfile.followers.length}</span>  followers</p>
                                     </div>
                                     <div>
-                                        <p className={props.darkMode ? "text-[#828282] font-[600]" : "text-[#828282]"}>{userProfile.bio ? userProfile.bio : "You have no bio yet!"}</p>
+                                        <p className={"text-[#828282] dark:font-medium"}>{userProfile.bio ? userProfile.bio : "You have no bio yet!"}</p>
                                     </div>
                                 </div>
                             </div>
@@ -228,10 +227,10 @@ const CurrentProfile = (props) => {
                     </div>}
                     <div className=" mt-28 flex justify-between  xl:px-52  ">
                         <div>
-                            <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch} />
+                            <SideSection fixLinks={props.fixSideSearch} />
                         </div>
                         {hasNoPost ?
-                            <div className={props.darkMode ? "bg-inherit border-2 w-full flex flex-col items-center shadow-xl justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200" : "bg-gray-100 border-2 w-full flex flex-col items-center justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200"}>
+                            <div className={"bg-gray-100 border-2 w-full flex flex-col items-center justify-center  capitalize text-gray-500 font-[500] mx-4 border-gray-200 dark:bg-inherit dark:border-gray-200 dark:shadow-xl"}>
                                 <span className={'text-xl'}>you have no posts yet!</span>
                                 <Link to={"/"}>
                                     <button className={'text-white shadow-md text-[16px] bg-blue-500 px-4 py-1 my-4 rounded-sm'}>
@@ -254,7 +253,7 @@ const CurrentProfile = (props) => {
         )
     } else {
         return (
-            <div className={props.darkMode ? "w-full bg-[#252329] h-screen flex items-center justify-center" : "w-full h-screen flex items-center justify-center"}>
+            <div className={"w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
                 <CircularProgress />
             </div>
         )

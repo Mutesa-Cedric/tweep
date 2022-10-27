@@ -7,9 +7,8 @@ import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import { Link } from 'react-router-dom';
-
-let Post = (props) => {
-
+import axios from "../../axios.config"
+const Post = (props) => {
     //states
     const [isLiking, setIsLiking] = useState(false)
     const [likesArray, setLikesArray] = useState(props.likesArray);
@@ -33,11 +32,11 @@ let Post = (props) => {
 
     fetch(`https://mc-tweep.herokuapp.com/profiles/${props.name}`).then(res => res.json()).then(data => {
         // console.log(data.profile)
-        if(data.profile.profileImage){
+        if (data.profile.profileImage) {
             setProfileImage(data.profile.profileImage)
             setHasProfileImage(true)
         }
-    },[])
+    }, [])
     //getting the profile image of the user who posted the post
 
 
@@ -51,10 +50,8 @@ let Post = (props) => {
 
     // const [profileImage,setProfileImage]=useState('')
     let commentElements = comments.map(comment => {
-        
-         return <Comment
+        return <Comment
             key={comment.commentedAt}
-            darkMode={props.darkMode}
             name={comment.commentedBy}
             createdAt={new Date(comment.commentedAt).toDateString()}
             body={comment.body}
@@ -136,7 +133,7 @@ let Post = (props) => {
 
 
     useEffect(() => {
-        
+
         if (savesArray.includes(props.currentUser)) {
             setIsSaving(true)
         }
@@ -254,23 +251,23 @@ let Post = (props) => {
 
 
     return <div
-        className={props.darkMode ? "bg-inherit shadow-xl  border-[0.2px] border-gray-700 sm:mx-4  w-[650px]    h-auto flex flex-col justify-between  mb-8 rounded-md pl-4 pr-6  py-4 " : "bg-white border-[1px] w-[650px] h-auto flex flex-col justify-between sm:mx-4  mb-8 rounded-md pl-4 pr-6  py-4 "}>
+        className="bg-white border-[1px] w-[650px] h-auto flex flex-col justify-between sm:mx-4  mb-8 rounded-md pl-4 pr-6  py-4  dark:bg-inherit dark:border-gray-700">
         <div className="flex items-center justify-start my-2">
             {hasProfileImage ?
                 <img src={profileImage} alt="tweeper" className="w-[36px] h-[36px] rounded-md mr-4" />
-                 :
+                :
                 <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200"
                     style={{ fill: "#808080" }} />
             }
             <div className="flex flex-col">
                 <Link to={`/profile/?user=${props.name}`}>
-                    <h1 className={props.darkMode ? "font-medium capitalize text-white cursor-pointer" : "font-medium capitalize text-black cursor-pointer"}>{props.name}</h1>
+                    <h1 className={"font-medium capitalize text-black cursor-pointer dark:text-white"}>{props.name}</h1>
                 </Link>
                 <p className="text-[#BDBDBD] text-[14px]">{props.createdAt}</p>
             </div>
         </div>
         <div className="mb-4 mt-2 flex">
-            <p className={props.darkMode ? "text-[#BDBDBD]" : "text-[#4F4F4F]"}>{props.text}</p>
+            <p className="text-[#4F4F4F] dark:text-[#BDBDBD]">{props.text}</p>
         </div>
         {props.img !== undefined && <div className="flex object-cover h-[328px] ">
             <img src={props.img} alt="post" className="rounded-md text-[#4F4F4F] object-cover w-full " />
@@ -285,7 +282,7 @@ let Post = (props) => {
         </div>
         <div className="w-full flex justify-between items-center py-1 border-b-[1.3px]">
             <button onClick={toggleShowComments}
-                className={props.darkMode ? "text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]" : "text-[#4f4f4f] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}>
+                className="text-[#4f4f4f] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:text-white dark:hover:bg-black dark:bg-inherit">
                 <ChatBubbleOutlineOutlinedIcon fontSize="small" className="mr-2" /> Comment
             </button>
 
@@ -293,7 +290,7 @@ let Post = (props) => {
 
                 <button
                     onClick={unRetweepPost}
-                    className={props.darkMode ? "text-[#EB5757] flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]" : "text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}>
+                    className="text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:hover:text-[#EB5757]  dark:bg-inherit dark:hover:bg-black">
                     <CachedOutlinedIcon fontSize="small" className="mr-2" />Retweeped
                 </button>
 
@@ -301,14 +298,14 @@ let Post = (props) => {
 
                 <button
                     onClick={retweepPost}
-                    className={props.darkMode ? "text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]" : "text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}>
+                    className="text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:text-white dark:hover:bg-black dark:bg-inherit">
                     <CachedOutlinedIcon fontSize="small" className="mr-2" />Retweep
                 </button>}
 
             {isLiking ?
                 <button
                     onClick={dislikePost}
-                    className={props.darkMode ? "text-[#EB5757] flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]" : "text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}>
+                    className={"text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:hover:bg-black dark:shadow-md dark:bg-inherit"}>
                     <FavoriteBorderOutlinedIcon fontSize="small" className="mr-2" />dislike
                 </button>
 
@@ -316,33 +313,32 @@ let Post = (props) => {
 
                 <button
                     onClick={likePost}
-                    className={props.darkMode ? "text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]" : "text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}>
+                    className={"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:text-white dark:shadow-md dark:hover:bg-black bg-inherit"}>
                     <FavoriteBorderOutlinedIcon fontSize="small" className="mr-2" />Like
                 </button>}
             {isSaving ?
                 <button
                     onClick={unSavePost}
-                    className={props.darkMode ? "text-[#EB5757] flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]" : "text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}>
+                    className={"text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:bg-black dark:bg-inherit"}>
                     <BookmarkAddOutlinedIcon fontSize="small" className="mr-2" />Saved
                 </button>
 
                 :
                 <button
                     onClick={savePost}
-                    className={props.darkMode ? "text-white flex hover:bg-black text-[14px] bg-inherit shadow-md px-8 hover: py-2 font-medium rounded-[8px]" : "text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px]"}>
+                    className={"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:text-white dark:hover:bg-black hover:bg-inherit"}>
                     <BookmarkAddOutlinedIcon fontSize="small" className="mr-2" />Save
                 </button>}
         </div>
         {showComments &&
-
             <div
-                className={props.darkMode ? "w-full h-auto border-t-2 overflow-y-scroll max-h-72 flex flex-col " : "w-full h-auto max-h-72 border-t-2 overflow-y-scroll flex flex-col"}>
+                className="w-full h-auto max-h-72 border-t-2 overflow-y-scroll flex flex-col">
                 {commentElements.length !== 0 ? commentElements :
-                    <p className={props.darkMode ? "mx-auto py-6 capitalize text-white" : 'text-gray-600 mx-auto py-6 capitalize'}> no
+                    <p className='text-gray-600 mx-auto py-6 capitalize dark:text-white'> no
                         comments yet! be first to comment</p>}
             </div>
         }
-        <div className={props.darkMode ? "flex items-center my-3 z-10" : "flex items-center my-3"}>
+        <div className="flex items-center my-3 dark:z-10">
             {
                 props.image ?
                     <img src={`${`${props.image}`}`} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" />
@@ -352,7 +348,7 @@ let Post = (props) => {
                 autoFocus={autoFocus}
                 placeholder="Tweep your reply"
                 rows="1"
-                className={props.darkMode ? "bg-inherit shadow-sm  w-full placeholder:text-[#BDBDBD] text-white placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none" : "bg-[#FAFAFA] w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none"}
+                className="bg-[#FAFAFA] w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none dark:bg-inherit dark:shadow-sm dark:placeholder:text-[#BDBDBD] dark:text-white"
                 name="comment"
                 onInput={handleCommentChange}
                 value={commentData.comment}

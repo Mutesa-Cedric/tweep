@@ -58,7 +58,6 @@ let Bookmarks = (props) => {
             likesArray={post.likes}
             likes={post.likes.length}
             postId={post._id}
-            darkMode={props.darkMode}
             name={post.postedBy}
             createdAt={new Date(post.postedAt).toDateString()} text={post.text}
             img={post.media ? `${post.media}` : undefined}
@@ -76,20 +75,20 @@ let Bookmarks = (props) => {
     if (hasProfile) {
         return (
             <div
-                className={props.darkMode ? "bg-[#252329] h-screen overflow-x-hidden" : "bg-[#F2F2F2] h-screen overflow-x-hidden"}>
+                className={"bg-[#F2F2F2] h-screen overflow-x-hidden dark:bg-[#252329]"}>
                 {userProfile.profileImage ?
-                    <Navbar toBookmarks={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode}
+                    <Navbar toBookmarks={true}
                         profileImg={`https://mc-tweep.herokuapp.com/${`${userProfile.profileImage}`}`}
                         userName={userProfile.userName} /> :
-                    <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
+                    <Navbar userName={userProfile.userName} />}
                 <div className=" mt-32 flex justify-between xl:px-52 ">
                     <div className={'mr-24'}>
-                        <SideSection darkMode={props.darkMode} fixLinks={props.fixSideSearch} />
+                        <SideSection fixLinks={props.fixSideSearch} />
                     </div>
                     <div className="w-[745px]">
 
                         {hasNoSavedPosts ?
-                            <div className={props.darkMode ? "w-full h-full border-[1px] bg-inherit shadow-md flex items-center flex-col justify-center" : 'w-full h-full border-2 bg-gray-100 flex items-center flex-col justify-center'}>
+                            <div className={'w-full h-full border-2 bg-gray-100 flex items-center flex-col justify-center dark:shadow-md dark:bg-inherit'}>
                                 <span className={'text-gray-500 text-lg capitalize'}>You have no saved Tweeps.</span>
                                 <Link to={'/'}>
                                     <button className={'bg-blue-400 hover:bg-blue-500 my-4 text-white px-4 py-1 rounded-sm'}>
@@ -105,7 +104,7 @@ let Bookmarks = (props) => {
     } else {
         return (
             <div
-                className={props.darkMode ? "w-full bg-[#252329] h-screen flex items-center justify-center" : "w-full h-screen flex items-center justify-center"}>
+                className={"w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
                 <CircularProgress />
             </div>
         )

@@ -22,7 +22,7 @@ let TweepSomething = (props) => {
             setProfileImage(data.profile.profileImage)
             setHasProfileImage(true)
         }
-    },[])
+    }, [])
 
     //getting profile of a user
 
@@ -36,7 +36,7 @@ let TweepSomething = (props) => {
         if (file.files[0] === undefined) {
             fetch(`https://mc-tweep.herokuapp.com/posts/newPostWithoutImage`, {
                 method: 'POST',
-                headers:{
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -65,7 +65,7 @@ let TweepSomething = (props) => {
             formData.append("media", imageToPost)
             fetch(`https://mc-tweep.herokuapp.com/posts/newPost/`, {
                 method: 'POST',
-                headers:{
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -91,14 +91,14 @@ let TweepSomething = (props) => {
     }
 
     return (
-        <div className={props.darkMode ? "w-[650px] mb-10 bg-inherit mx-auto  h-auto shadow-xl rounded-xl sm:mx-4 px-6" : "w-[650px] mx-auto sm:mx-4 mb-10 bg-white h-auto shadow-sm rounded-xl px-6"}>
+        <div className={"w-[650px] mx-auto sm:mx-4 mb-10 bg-white h-auto shadow-sm rounded-xl px-6 dark:bg-inherit dark:shadow-xl"}>
             <div className="w-full border-b-[1.5px]">
-                <p className={props.darkMode ? "font-[600] text-[14px] py-2 text-white" : "text-[#4F4F4F] font-[600] text-[14px] py-2"}>Tweep something</p>
+                <p className={"text-[#4F4F4F] font-[600] text-[14px] py-2 dark:text-white"}>Tweep something</p>
             </div>
             <form id="postForm" onSubmit={handlePostSubmit} onLoad={(e) => e.preventDefault()} encType="multipart/form-data">
                 <div className="flex items-center mt-3">
-                    {hasProfileImage? <img src={profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
-                    <textarea placeholder="what 's happening?" className={props.darkMode ? "placeholder:text-[#BDBDBD] focus:outline-none text-white border-none w-full h-full bg-inherit" : "placeholder:text-[#BDBDBD] focus:outline-none border-none w-full h-full bg-inherit"}
+                    {hasProfileImage ? <img src={profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
+                    <textarea placeholder="what 's happening?" className={"placeholder:text-[#BDBDBD] focus:outline-none border-none w-full h-full bg-inherit dark:text-white"}
                         name="text"
                         id={"textarea"}
                     />

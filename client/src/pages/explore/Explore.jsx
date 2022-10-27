@@ -73,7 +73,6 @@ let Explore = (props) => {
             likesArray={post.likes}
             likes={post.likes.length}
             postId={post._id}
-            darkMode={props.darkMode}
             name={post.postedBy}
             createdAt={new Date(post.postedAt).toDateString()}
             text={post.text}
@@ -93,25 +92,25 @@ let Explore = (props) => {
     if (hasProfile) {
         return (
             <div
-                className={props.darkMode ? "bg-[#252329] h-screen overflow-x-hidden" : "bg-[#F2F2F2] h-screen overflow-x-hidden"}>
+                className={"bg-[#F2F2F2] h-screen overflow-x-hidden dark:bg-[#252329]"}>
                 {userProfile.profileImage ?
-                    <Navbar toExplore={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode}
+                    <Navbar toExplore={true}
                         profileImg={userProfile.profileImage}
                         userName={userProfile.userName} /> :
-                    <Navbar darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
+                    <Navbar userName={userProfile.userName} />}
                 <div className=" mt-20 flex justify-between xl:px-52 ">
                     <div className=" h-auto flex   justify-between">
-                        <Categories darkMode={props.darkMode} />
+                        <Categories />
                     </div>
                     <div id="expContainer">
                         <div
-                            className='w-full relative  xl:w-auto sm:mx-4 w-[650px]   mb-4 items-center flex'>
+                            className='relative  xl:w-auto sm:mx-4 w-[650px]   mb-4 items-center flex'>
                             <div className="absolute ml-4  rounded-lg">
                                 <SearchOutlinedIcon fontSize="small" style={{ fill: "#BDBDBD" }} />
                             </div>
                             <input type='text'
                                 placeholder='Search'
-                                className={props.darkMode ? "w-[650px] bg-inherit pl-12 py-3 z-index-100 rounded-md border-none focus:outline-none  shadow-lg placeholder:text-gray-300 z-index-100 text-white" : 'bg-white pl-12 py-3 rounded-md border-none focus:outline-none  shadow-sm placeholder:text-[#BDBDBD]'}
+                                className={'bg-white pl-12 py-3 rounded-md border-none focus:outline-none  shadow-sm placeholder:text-[#BDBDBD] dark:bg-inherit dark:text-white'}
                             />
                         </div>
                         <div className="mx-auto w-[745px] ">
@@ -124,7 +123,7 @@ let Explore = (props) => {
     } else {
         return (
             <div
-                className={props.darkMode ? "w-full bg-[#252329] h-screen flex items-center justify-center" : "w-full h-screen flex items-center justify-center"}>
+                className={ "w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
                 <CircularProgress />
             </div>
         )

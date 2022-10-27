@@ -10,7 +10,7 @@ const VerifyAccount = (props) => {
         success: false,
         failed: false
     })
- 
+
     const updateVerificationCode = (e) => {
         setVerificationCode(e.target.value)
     }
@@ -71,57 +71,59 @@ const VerifyAccount = (props) => {
         }
     }, [verificationCode])
 
-    const resendCode=()=>{
-        fetch(`https://mc-tweep.herokuapp.com/verification/resendCode`,{
-            method:"POST",
-            headers:{
-                "content-type":"application/json"
+    const resendCode = () => {
+        fetch(`https://mc-tweep.herokuapp.com/verification/resendCode`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
             },
-            body:JSON.stringify({
-                email:email
+            body: JSON.stringify({
+                email: email
             })
-        }).then(response => response.json()).then(data=>{
-            data.success?SetResponseStatus(prevStatus=>{
+        }).then(response => response.json()).then(data => {
+            data.success ? SetResponseStatus(prevStatus => {
                 return {
                     ...prevStatus,
-                    failed:false
+                    failed: false
                 }
-            }):console.log(data)
+            }) : console.log(data)
         })
     }
 
     return (
-        <div className={props.darkMode ? "w-screen h-screen overflow-hidden flex items-center flex-col justify-center bg-[#252329]" : "w-screen h-screen overflow-hidden flex items-center flex-col justify-center "}>
+        <div className={"w-screen h-screen overflow-hidden flex items-center flex-col justify-center dark:bg-[#252329] "}>
 
             <div className="lg:w-[30%] md:w-[70%] sm:w-[100%] h-auto flex justify-center items-center rounded-3xl border-[1px] border-[#BDBDBD]  px-14 py-10">
-                {fullCode ? <div className={props.darkMode ? "w-full bg-[#252329] h-24 flex items-center justify-center" : "w-full h-24 flex items-center justify-center"}>
+                {fullCode ? <div className={"w-full h-24 flex items-center justify-center dark:bg-[#252329]"}>
                     <CircularProgress />
                 </div> : <div className="w-full flex flex-col justify-center items-center">
                     <div className="flex flex-col items-center justify-center">
-                        <h1 className={props.darkMode ? "font-[600] text-2xl mb-3 text-[#E0E0E0] capitalize" : "font-[600] text-2xl mb-3 text-[#333333] capitalize"}>Verify Your Email</h1>
-                        <p className={props.darkMode ? "text-[#E0E0E0] mt-2 mb-4 font-[500] text-center" : "text-center text-gray-500 mt-2 mb-4 font-[500]"}>Please verify your Email address by entering the code  sent to {email}</p>
+                        <h1 className={"font-[600] text-2xl mb-3 text-[#333333] capitalize dark:text-[#E0E0E0]"}>Verify Your Email</h1>
+                        <p className={"text-center text-gray-500 mt-2 mb-4 font-[500] dark:text-[#E0E0E0]"}>Please verify your Email address by entering the code  sent to {email}</p>
                     </div>
                     {
                         responseStatus.failed ?
-                        <div>
-                            <p className="text-orange-500 text-md mt-3 text-center">the code is incorrect or has expired</p>
-                            <div className="flex">
-                                <button className="rounded-lg hover:bg-blue-500 px-4 mx-3 bg-white text-blue-500 border border-blue-500 mt-4 capitalize py-2 hover:text-white" onClick={()=>{SetResponseStatus((prevStatus)=>{
-                                    return {
-                                        ...prevStatus,
-                                        failed: false
-                                    }
-                                })}}>reenter code</button>
-                                <button className="rounded-lg hover:bg-blue-500 px-4 mx-3 bg-white text-blue-500 border border-blue-500 mt-4 capitalize py-2 hover:text-white" onClick={resendCode}>resend code</button>
-                            </div>
+                            <div>
+                                <p className="text-orange-500 text-md mt-3 text-center">the code is incorrect or has expired</p>
+                                <div className="flex">
+                                    <button className="rounded-lg hover:bg-blue-500 px-4 mx-3 bg-white text-blue-500 border border-blue-500 mt-4 capitalize py-2 hover:text-white" onClick={() => {
+                                        SetResponseStatus((prevStatus) => {
+                                            return {
+                                                ...prevStatus,
+                                                failed: false
+                                            }
+                                        })
+                                    }}>reenter code</button>
+                                    <button className="rounded-lg hover:bg-blue-500 px-4 mx-3 bg-white text-blue-500 border border-blue-500 mt-4 capitalize py-2 hover:text-white" onClick={resendCode}>resend code</button>
+                                </div>
                             </div>
                             :
                             <div className="flex flex-col items-center ">
-                                <h1 className={props.darkMode ? "capitalize font-medium my-3 text-gray-200" : "capitalize font-medium my-3"}>enter the code</h1>
+                                <h1 className={"capitalize font-medium my-3 dark:text-gray-200"}>enter the code</h1>
                                 <input type="text"
                                     onInput={updateVerificationCode}
                                     value={verificationCode}
-                                    className={props.darkMode ? "border-2 text-xl px-10 font-medium tracking-[0.5em] text-white border-gray-300 bg-[#252329] h-10 w-52 focus:border-2 focus:border-gray-300 focus:outline-none" : "border-2 text-xl px-10 font-medium tracking-[0.5em] border-gray-300 h-10 w-52 focus:border-2 focus:border-gray-300 focus:outline-none"} max="6" />
+                                    className={"border-2 text-xl px-10 font-medium tracking-[0.5em] border-gray-300 h-10 w-52 focus:border-2 focus:border-gray-300 focus:outline-none dark:bg-[#252329] dark:text-white"} max="6" />
 
                             </div>
                     }

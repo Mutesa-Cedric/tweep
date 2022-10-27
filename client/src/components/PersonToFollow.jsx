@@ -26,7 +26,7 @@ let PersonToFollow=(props)=>{
                 <div className="flex items-center">
                   {props.profile?  <img src={`${props.profile}`} alt="woman" className="rounded-md mr-4  h-10 w-10"/>:<img src={profileAvatar} alt="woman" className="rounded-md mr-4  h-10 w-10"/>}
                     <div className="flex flex-col">
-                        <h1 className={props.darkMode?"font-medium text-white":"font-medium"}>{props.name}</h1>
+                        <h1 className={"font-medium dark:text-white"}>{props.name}</h1>
                         <p className="text-gray-300  text-[14px]">{props.followers} followers</p>
                     </div>
                 </div>
@@ -38,7 +38,7 @@ let PersonToFollow=(props)=>{
                 </div>
             </div>
             <div className="flex items-center my-2">
-                <p className={props.darkMode?"text-gray-300 text-[14px]":"text-[#828282] text-[14px]"}>{props.bio}</p>
+                <p className={"text-[#828282] text-[14px] dark:text-gray-300"}>{props.bio}</p>
             </div>
             <div className={props.isFirst ? "border-b-2":""}>
                 {props.coverPhoto?<img src={`${props.coverPhoto}`}  alt="cover" className="rounded-[8px] my-4 w-[265px] h-32 "/>:<img src={backgroundCover}  alt="cover" className="rounded-[8px] my-4 w-[265px] h-32 "/>}

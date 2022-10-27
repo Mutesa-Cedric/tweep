@@ -61,7 +61,6 @@ let Home = (props) => {
             likesArray={post.likes}
             likes={post.likes.length}
             postId={post._id}
-            darkMode={props.darkMode}
             name={post.postedBy}
             createdAt={new Date(post.postedAt).toDateString()} text={post.text}
             img={post.media ? `${post.media}` : undefined}
@@ -73,6 +72,7 @@ let Home = (props) => {
             commentsArray={post.comments}
             image={userProfile.profileImage}
             currentUser={userProfile.userName}
+            {...post}
         />
     })
 
@@ -139,22 +139,22 @@ let Home = (props) => {
 
     if (hasProfile) {
         return (
-            <div className={props.darkMode ? "bg-[#252329] h-auto overflow-x-hidden" : "bg-[#F2F2F2] h-auto overflow-x-hidden"}>
+            <div className={"bg-[#F2F2F2] dark:bg-[#252329] h-auto overflow-x-hidden"}>
                 {finishedPosting && <ProcessSuccessful message={'Your post was successfully uploaded!'} />}
                 <PreviewImage aspect={4 / 3} message={"post"} hasFile={hasFile} image={image} hideEditPic={hideEditPic} finishEditing={finishEditing} />
-                {userProfile.profileImage ? <Navbar toHome={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode}  userName={userProfile.userName} /> : <Navbar toHome={true} darkMode={props.darkMode} setDarkMode={props.setDarkMode} userName={userProfile.userName} />}
+                {userProfile.profileImage ? <Navbar toHome={true} userName={userProfile.userName} /> : <Navbar toHome={true} userName={userProfile.userName} />}
                 <div className=" mt-20   xl:px-52 ">
                     <div className=" h-auto flex  justify-between">
                         {/* main */}
                         <div className="mx-auto" >
-                            {<TweepSomething cancelImage={cancelImage} finishEditing={finishEditing} finalPostEdit={finalPostEdit} handleImage={handleImage} updateDomPost={updateDomPost} darkMode={props.darkMode} userName={userProfile.userName} finishPosting={finishPosting} image={image} />}
+                            {<TweepSomething cancelImage={cancelImage} finishEditing={finishEditing} finalPostEdit={finalPostEdit} handleImage={handleImage} updateDomPost={updateDomPost} userName={userProfile.userName} finishPosting={finishPosting} image={image} />}
                             {hasNoPost ? <p className={'text-2xl font-bold text-gray-'}>no posts yet!</p> : postElements}
                         </div>
                         {/* main */}
                         {/* side banners */}
                         <div className="md:ml-4" >
-                            <TrendsForYou darkMode={props.darkMode} />
-                            <WhoToFollow currentUser={userProfile.userName} fixSide={props.fixSide} darkMode={props.darkMode} />
+                            <TrendsForYou />
+                            <WhoToFollow currentUser={userProfile.userName} fixSide={props.fixSide} />
                         </div>
                         {/* side banners */}
                     </div>
@@ -164,7 +164,7 @@ let Home = (props) => {
     }
     else {
         return (
-            <div className={props.darkMode ? "w-full bg-[#252329] h-screen flex items-center justify-center" : "w-full h-screen flex items-center justify-center"}>
+            <div className={"w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
                 <CircularProgress />
             </div>
         )

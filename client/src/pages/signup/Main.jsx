@@ -102,7 +102,6 @@ let SignupMain = (props) => {
 
     return (
         <div>
-            {/* <Signup darkMode={props.darkMode} formData={formData} errorMessages={errorMessages} submitForm={submitForm} handleChange={handleChange} setDarkMode={props.setDarkMode} /> */}
             <div className="w-screen h-screen overflow-hidden flex items-center flex-col justify-center dark:bg-[#252329]">
                 <form method="post" onSubmit={submitForm} className="lg:w-[30%] md:w-[70%] sm:w-[100%] h-auto flex justify-center items-center rounded-3xl border-[1px] border-[#BDBDBD] px-14 py-8">
                     <div className="w-full flex flex-col justify-center items-center">

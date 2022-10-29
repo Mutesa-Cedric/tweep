@@ -3,13 +3,17 @@ import axios from '../../axios.config'
 // do all operations related to post
 const PostContext = createContext({
     postComment: (commentedBy, postId, body) => { },
-    unRetweepPost: (postId) => { },
+    handleRetweep: (username, postid) => { },
+    handleSavePost: (username, postid) => { },
+    handleLikePost: (username, postid) => { },
     postLoading: null
 })
 
 export const PostProvider = ({ children }) => {
     const [postLoading, setPostLoading] = useState(false);
+    const [error, setError] = useState(null);
 
+    // comment on a post
     async function postComment(commentedBy, postId, body) {
         setPostLoading(true);
         await axios.patch(`/posts/updateComments/${postId}`, {
@@ -17,15 +21,34 @@ export const PostProvider = ({ children }) => {
             body: body,
             commentedAt: new Date().getTime(),
             likes: []
+        }).then(data => {
+            console.log(data)
+        }).catch(err => {
+            setError(err.message)
         })
     }
 
-    memoedValues = useMemo(() => ({
-        postComment, postLoading
-    }))
+    // handle  post retweep
+    async function handleRetweep(username, postId) {
+        await axios.patch(`/posts/updateRetweeps/${postId}`, { retweep: username })
+    }
+
+    // handle save post
+    async function handleSavePost(username, postId) {
+        await axios.patch(`/posts/updateSaved/${postId}`, { saved: username })
+    }
+
+    // handle like post
+    async function handleLikePost(username, postId) {
+        await axios.patch(`/posts/updateLikes/${postId}`, { like: username })
+    }
+
+    const memoedValues = useMemo(() => ({
+        postComment, postLoading, handleRetweep, handleSavePost, handleLikePost, postComment
+    }), [])
 
     return <PostContext.Provider value={memoedValues}>
-        {children}
+        {children}  
     </PostContext.Provider>
 }
 

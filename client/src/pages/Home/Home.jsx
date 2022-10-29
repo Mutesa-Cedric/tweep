@@ -19,7 +19,6 @@ const Home = (props) => {
     const { user, loading } = useAuth();
     const { posts, loadingPosts } = useData();
 
-
     let file;
     const [image, setImage] = useState(null)
     let handleImage = (event) => {
@@ -43,7 +42,7 @@ const Home = (props) => {
     }
 
     //canceling image
-    let cancelImage = () => {
+    const cancelImage = () => {
         setImage(null);
         setFinalPostEdit(false);
 

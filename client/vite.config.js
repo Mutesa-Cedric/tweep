@@ -4,7 +4,7 @@ import svgr from 'vite-plugin-svgr'
 import eslint from 'vite-plugin-eslint'
 
 export default defineConfig({
-    plugins: [react(), svgr(),eslint()],
+    plugins: [react(), svgr()],
     server:{
         port:3000
     }

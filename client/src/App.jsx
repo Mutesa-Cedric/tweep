@@ -14,6 +14,7 @@ import VerifyAccount from "./components/emailVerification";
 import { AuthProvider } from "./hooks/useAuth";
 import { ThemeProvider } from "./hooks/useDarkMode";
 import { DataProvider } from "./hooks/useData";
+import { PostProvider } from './hooks/usePost';
 
 function App() {
   const [fixSide, setFixSide] = useState(false)
@@ -46,20 +47,23 @@ function App() {
       <AuthProvider>
         <DataProvider>
           <ThemeProvider>
-            <div>
-              <Routes>
-                <Route path='/auth/login' exact element={<Login />} />
-                <Route path='/auth/signup' exact element={<SignupMain />} />
-                <Route path='/bookmarks' exact element={<Bookmarks />} />
-                <Route path='/explore' exact element={<Explore />} />
-                <Route path='/' exact element={<Home fixSide={fixSide} />} />
-                <Route path='/chat' element={<Chat />} />
-                <Route path='/profile/' element={<Profile fixSideSearch={fixSideSearch} />} />
-                <Route path={'/simple'} element={<SimpleSnackbar />} />
-                <Route path='/currentProfile' element={<CurrentProfile />} />
-                <Route path={'/verifyEmail'} element={<VerifyAccount />} />
-              </Routes>
-            </div>
+            <PostProvider>
+              <div>
+                <Routes>
+                  <Route path='/auth/login' exact element={<Login />} />
+                  <Route path='/auth/signup' exact element={<SignupMain />} />
+                  <Route path='/bookmarks' exact element={<Bookmarks />} />
+                  <Route path='/explore' exact element={<Explore />} />
+                  <Route path='/' exact element={<Home fixSide={fixSide} />} />
+                  <Route path='/chat' element={<Chat />} />
+                  <Route path='/profile/' element={<Profile fixSideSearch={fixSideSearch} />} />
+                  <Route path={'/simple'} element={<SimpleSnackbar />} />
+                  <Route path='/currentProfile' element={<CurrentProfile />} />
+                  <Route path={'/verifyEmail'} element={<VerifyAccount />} />
+                </Routes>
+              </div>
+            </PostProvider>
+
           </ThemeProvider>
         </DataProvider>
       </AuthProvider>

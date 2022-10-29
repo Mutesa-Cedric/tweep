@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useMemo, useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useContext, useMemo, useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import axios from "../../axios.config"
 
 
@@ -15,6 +16,8 @@ const AuthContext = createContext({
 
 export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
+    const { pathname } = useLocation();
+
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -25,7 +28,10 @@ export const AuthProvider = ({ children }) => {
         await axios.post('/login', {
             email: email,
             password: password
-        }).then(data => console.log(data))
+        }).then(data => {
+            window.localStorage.setItem("accessToken", data.accessToken);
+            navigate('/');
+        })
             .catch(err => setError(err.message))
             .finally(setLoading(false))
     }
@@ -67,7 +73,8 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         setLoading(true);
         const accessToken = window.localStorage.getItem("accessToken");
-        // when there is an accessToken in the local storage
+
+        if (pathname === "/auth/signup" || pathname === "/auth/login") return;
         if (accessToken) return axios.get(`/auth/verifyToken/${accessToken}`)
             .then(({ data }) => {
                 if (data.authorized && data.user.verified) return getProfile(data.user.userName)
@@ -78,7 +85,6 @@ export const AuthProvider = ({ children }) => {
                 setError(err.message);
             })
             .finally(() => setLoading(false))
-        // when there is no accessToken in the local storage
         navigate("/auth/signup");
     }, []);
     const memoedValue = useMemo(() => ({

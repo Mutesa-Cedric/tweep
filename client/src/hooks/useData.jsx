@@ -17,8 +17,7 @@ export function DataProvider({ children }) {
 
     const fetchPosts = async () => {
         setLoading(true);
-        const res = await axios.get('/posts');
-        const data = await res.json();
+        const data = await axios.get('/posts');
         setPosts(data.posts);
         setLoadingPosts(false);
         setLoading(false);

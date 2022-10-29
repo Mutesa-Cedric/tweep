@@ -78,7 +78,7 @@ let Bookmarks = (props) => {
                 className={"bg-[#F2F2F2] h-screen overflow-x-hidden dark:bg-[#252329]"}>
                 {userProfile.profileImage ?
                     <Navbar toBookmarks={true}
-                        profileImg={`https://mc-tweep.herokuapp.com/${`${userProfile.profileImage}`}`}
+                        profileImg={`https://tweep1.herokuapp.com/${`${userProfile.profileImage}`}`}
                         userName={userProfile.userName} /> :
                     <Navbar userName={userProfile.userName} />}
                 <div className=" mt-32 flex justify-between xl:px-52 ">

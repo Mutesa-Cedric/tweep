@@ -9,7 +9,6 @@ import ThemeToggler from "../../components/ThemeToggler";
 let SignupMain = (props) => {
     const { signup, loading, error } = useAuth();
     const { theme, toggleTheme } = useDarkMode();
-    console.log(theme);
     let navigate = useNavigate()
     const [errorMessages, setErrorMessages] = useState({
         userNameMessage: "",

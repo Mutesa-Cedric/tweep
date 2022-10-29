@@ -111,39 +111,6 @@ const getAllPosts = async (req, res) => {
 
 //getting all posts
 
-//getting posts by username
-
-const getPostsByUsername = async (req, res) => {
-    try {
-        let userName = req.params.userName;
-        await postsSchema.find({ postedBy: userName }, (err, posts) => {
-            if (err) {
-                return console.error(err)
-            } else {
-                if (posts.length === 0) {
-                    res.json({
-                        status: 404,
-                        areFound: false,
-                        message: "no posts found!"
-                    })
-                } else {
-                    res.json({
-                        status: 200,
-                        success: true,
-                        numberOfPosts: posts.length,
-                        posts: posts
-                    })
-                }
-            }
-        }).sort({ postedAt: -1 })
-    } catch (error) {
-        // return console.error(error)
-    }
-    let userName = req.params.userName
-}
-
-//getting posts by username
-
 //getting a post by _id
 
 let getPostById = async (req, res) => {
@@ -511,139 +478,6 @@ const deletePost = async (req, res) => {
 
 //deleting a post
 
-//getting saved tweeps
-
-
-const getSavedTweeps = async (req, res) => {
-    try {
-        const userName = req.params.userName;
-        await postsSchema.find((err, posts) => {
-            if (err) {
-                res.json({
-                    status: 500,
-                    message: "there was an error retrieving posts"
-                })
-            } else {
-                let savedPosts = [];
-                posts.map((post) => {
-                    if (post.saved.includes(userName)) {
-                        savedPosts.push(post);
-                    }
-                })
-                res.json({
-                    status: 200,
-                    success: true,
-                    message: "saved posts retrieved successfully",
-                    posts: savedPosts
-                })
-            }
-        })
-    } catch (err) {
-    }
-
-}
-
-//getting saved tweeps
-
-//getting top posts
-
-const getTopPosts = async (req, res) => {
-
-    try {
-        await postsSchema.find((err, posts) => {
-            if (err) {
-                throw err
-            } else {
-                if (posts.length === 0) {
-                    res.json({
-                        status: 404,
-                        areFound: false,
-                        message: "no posts found!"
-                    })
-                } else {
-                    let topPosts = posts.sort((a, b) => {
-                        return b.likes.length - a.likes.length
-                    })
-                    res.json({
-                        status: 200,
-                        success: true,
-                        numberOfPosts: posts.length,
-                        posts: topPosts
-                    })
-                }
-            }
-        }).sort({ likes: -1 }).exec()
-    } catch (error) {
-        // return console.error(error)
-    }
-}
-//getting top posts
-
-//getting the most retweeped posts
-
-const getMostRetweepedPosts = async (req, res) => {
-    try {
-        await postsSchema.find((err, posts) => {
-            if (err) {
-                throw err
-            } else {
-                if (posts.length === 0) {
-                    res.json({
-                        status: 404,
-                        areFound: false,
-                        message: "no posts found!"
-                    })
-                } else {
-                    let mostRetweepedPosts = posts.sort((a, b) => {
-                        return b.retweeps.length - a.retweeps.length
-                    })  //sort by retweets
-                    res.json({
-                        status: 200,
-                        success: true,
-                        numberOfPosts: posts.length,
-                        posts: mostRetweepedPosts
-                    })
-                }
-            }
-        }).sort('retweeps DESC').exec()
-    } catch (error) {
-        // return console.error(error)
-    }
-}
-//getting the most retweeped  posts
-
-//getting most commented posts
-const getMostCommentedPosts = async (req, res) => {
-    try {
-        await postsSchema.find((err, posts) => {
-            if (err) {
-                throw err
-            } else {
-                if (posts.length === 0) {
-                    res.json({
-                        status: 404,
-                        areFound: false,
-                        message: "no posts found!"
-                    })
-                } else {
-                    let mostCommentedPosts = posts.sort((a, b) => {
-                        return b.comments.length - a.comments.length
-                    }) //sort by comments                 }
-                    res.json({
-                        status: 200,
-                        success: true,
-                        numberOfPosts: posts.length,
-                        posts: mostCommentedPosts
-                    })
-                }
-            }
-        }).sort({ comments: -1 })
-    } catch (error) {
-        // return console.error(error)
-    }
-}
-//getting most commented posts
-
 
 //exporting functions
 module.exports.getPostById = getPostById;
@@ -657,11 +491,5 @@ module.exports.updateRetweeps = updateRetweeps;
 module.exports.updateLikes = updateLikes;
 module.exports.updateSaved = updateSaved;
 module.exports.updateLikesOfComment = updateLikesOfComment;
-module.exports.getSavedTweeps = getSavedTweeps;
-module.exports.getTopPosts = getTopPosts;
-module.exports.getMostRetweepedPosts = getMostRetweepedPosts;
-module.exports.getMostCommentedPosts = getMostCommentedPosts;
 module.exports.newPostWithoutImage = newPostWithoutImage;
 //exporting functions
-
-

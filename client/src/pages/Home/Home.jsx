@@ -5,80 +5,20 @@ import Post from "../../components/Post";
 import TrendsForYou from "../../components/TrendsForYou";
 import WhoToFollow from "../../components/WhoToFollow";
 import TweepSomething from "../../components/TweepSomething";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
-import { useNavigate } from "react-router-dom";
 import ProcessSuccessful from "../../components/ProcessSuccessful";
+import useAuth from "../../hooks/useAuth";
+import useData from "../../hooks/useData";
 
-let Home = (props) => {
-    let navigate = useNavigate()
-    const [userProfile, setUserProfile] = useState({})
-    const [hasProfile, setHasProfile] = useState(false);
+
+const Home = (props) => {
     const [hasFile, setHasFile] = useState(false)
     const [finalPostEdit, setFinalPostEdit] = useState(false)
-    const [posts, setPosts] = useState([])
     const [finishedPosting, setFinishedPosting] = useState(false);
-    const [hasNoPost, setHasNoPost] = useState(false);
+    const { user, loading } = useAuth();
+    const { posts, loadingPosts } = useData();
 
-    // console.log(postData)
-    //checking if the user is logged in 
-    useEffect(() => {
-        const accessToken = window.localStorage.getItem("accessToken")
-        if (!accessToken) {
-            navigate('/auth/signup')
-        } else {
-            fetch(`https://mc-tweep.herokuapp.com/auth/verifyToken/${accessToken}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.authorized) {
-                        navigate('/auth/login')
-                    } else if (!data.user.verified) {
-                        navigate('/verifyEmail')
-                    } else {
-                        fetch(`https://mc-tweep.herokuapp.com/profiles/${data.user.userName}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                setUserProfile(data.profile)
-                                setHasProfile(true)
-                                fetch(`https://mc-tweep.herokuapp.com/posts/`)
-                                    .then(response => response.json()).then(data => {
-                                        if (data.areFound === false) {
-                                            return setHasNoPost(true)
-                                        }
-                                        setPosts(data.posts)
-                                        setHasNoPost(false)
-                                    })
-                            })
-                    }
-                })
-                .catch(err => console.error(err))
-        }
-    }, [])
-
-    let postElements = posts.map(post => {
-        return <Post
-            key={post._id}
-            likesArray={post.likes}
-            likes={post.likes.length}
-            postId={post._id}
-            name={post.postedBy}
-            createdAt={new Date(post.postedAt).toDateString()} text={post.text}
-            img={post.media ? `${post.media}` : undefined}
-            comments={post.comments.length}
-            retweeps={post.retweeps.length}
-            retweepsArray={post.retweeps}
-            saves={post.saved.length}
-            savesArray={post.saved}
-            commentsArray={post.comments}
-            image={userProfile.profileImage}
-            currentUser={userProfile.userName}
-            {...post}
-        />
-    })
-
-    //checking if the user is logged in
-
-    //handling image
 
     let file;
     const [image, setImage] = useState(null)
@@ -110,7 +50,6 @@ let Home = (props) => {
     }
     //canceling image
 
-
     //finish editing
 
     const finishEditing = () => {
@@ -136,39 +75,33 @@ let Home = (props) => {
         setFinishedPosting(true)
     }
 
-
-    if (hasProfile) {
-        return (
-            <div className={"bg-[#F2F2F2] dark:bg-[#252329] h-auto overflow-x-hidden"}>
-                {finishedPosting && <ProcessSuccessful message={'Your post was successfully uploaded!'} />}
-                <PreviewImage aspect={4 / 3} message={"post"} hasFile={hasFile} image={image} hideEditPic={hideEditPic} finishEditing={finishEditing} />
-                {userProfile.profileImage ? <Navbar toHome={true} userName={userProfile.userName} /> : <Navbar toHome={true} userName={userProfile.userName} />}
-                <div className=" mt-20   xl:px-52 ">
-                    <div className=" h-auto flex  justify-between">
-                        {/* main */}
-                        <div className="mx-auto" >
-                            {<TweepSomething cancelImage={cancelImage} finishEditing={finishEditing} finalPostEdit={finalPostEdit} handleImage={handleImage} updateDomPost={updateDomPost} userName={userProfile.userName} finishPosting={finishPosting} image={image} />}
-                            {hasNoPost ? <p className={'text-2xl font-bold text-gray-'}>no posts yet!</p> : postElements}
-                        </div>
-                        {/* main */}
-                        {/* side banners */}
-                        <div className="md:ml-4" >
-                            <TrendsForYou />
-                            <WhoToFollow currentUser={userProfile.userName} fixSide={props.fixSide} />
-                        </div>
-                        {/* side banners */}
+    loading ?
+        <div className={"bg-[#F2F2F2] dark:bg-[#252329] h-auto overflow-x-hidden"}>
+            {finishedPosting && <ProcessSuccessful message={'Your post was successfully uploaded!'} />}
+            <PreviewImage aspect={4 / 3} message={"post"} hasFile={hasFile} image={image} hideEditPic={hideEditPic} finishEditing={finishEditing} />
+            {user.profileImage ? <Navbar toHome={true} userName={user.userName} /> : <Navbar toHome={true} userName={user.userName} />}
+            <div className=" mt-20   xl:px-52 ">
+                <div className=" h-auto flex  justify-between">
+                    {/* main */}
+                    <div className="mx-auto" >
+                        {<TweepSomething cancelImage={cancelImage} finishEditing={finishEditing} finalPostEdit={finalPostEdit} handleImage={handleImage} updateDomPost={updateDomPost} userName={user.userName} finishPosting={finishPosting} image={image} />}
+                        {loadingPosts ? <CircularProgress /> :
+                            posts.map(post =>
+                                <Post key={post._id} post={post} />
+                            )
+                        }
                     </div>
+                    <div className="md:ml-4" >
+                        <TrendsForYou />
+                        <WhoToFollow currentUser={user.userName} fixSide={props.fixSide} />
+                    </div>
+                    {/* side banners */}
                 </div>
             </div>
-        )
-    }
-    else {
-        return (
-            <div className={"w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
-                <CircularProgress />
-            </div>
-        )
-    }
+        </div> :
+        <div className={"w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
+            <CircularProgress />
+        </div>
 }
 
 export default Home

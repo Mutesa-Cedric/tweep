@@ -7,7 +7,8 @@ import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import { Link } from 'react-router-dom';
-import axios from "../../axios.config"
+import useAuth from '../hooks/useAuth'
+
 const Post = (props) => {
     //states
     const [isLiking, setIsLiking] = useState(false)
@@ -24,21 +25,7 @@ const Post = (props) => {
     const [retweeps, setRetweeps] = useState(props.retweeps);
     const [retweepsArray, setRetweepsArray] = useState(props.retweepsArray);
     const [profileImage, setProfileImage] = useState('')
-    const [hasProfileImage, setHasProfileImage] = useState(false)
-    // console.log(likes)
-
-
-    //getting the profile image of the user who posted the post
-
-    fetch(`https://mc-tweep.herokuapp.com/profiles/${props.name}`).then(res => res.json()).then(data => {
-        // console.log(data.profile)
-        if (data.profile.profileImage) {
-            setProfileImage(data.profile.profileImage)
-            setHasProfileImage(true)
-        }
-    }, [])
-    //getting the profile image of the user who posted the post
-
+    const { user } = useAuth();
 
     const toggleShowComments = () => {
         setShowComments(prevState => {
@@ -125,15 +112,8 @@ const Post = (props) => {
             }
         }).catch(err => console.log(err))
     }
-    //posting a comment
-
-    //commenting on a post
-
-    //liking and disliking a post
-
 
     useEffect(() => {
-
         if (savesArray.includes(props.currentUser)) {
             setIsSaving(true)
         }

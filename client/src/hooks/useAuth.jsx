@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../axios.config"
 
@@ -14,6 +14,7 @@ const AuthContext = createContext({
 
 
 export const AuthProvider = ({ children }) => {
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -29,25 +30,57 @@ export const AuthProvider = ({ children }) => {
             .finally(setLoading(false))
     }
 
+    // signup function
     async function signup(username, email, password) {
-        console.log("called!")
         setLoading(true);
         await axios.post('/register', {
             userName: username,
             email: email,
             password: password
-        }).then(res => console.log(res.data))
+        }).then(({ data }) => {
+            console.log(data)
+        })
             .catch(err => setError(err.message))
             .finally(() => setLoading(false))
     }
 
+    // logout function
     async function logout() {
         setLoading(true);
         window.localStorage.removeItem('accessToken')
         navigate('/auth/login')
     }
 
+    // getProfile function
 
+    async function getProfile(username) {
+        setLoading(true);
+        await axios.get(`/profiles/${username}`)
+            .then(({ data }) => {
+                setUser(data.profile)
+            })
+            .catch(err => setError(err.message))
+            .finally(() => setLoading(false))
+    }
+
+
+    useEffect(() => {
+        setLoading(true);
+        const accessToken = window.localStorage.getItem("accessToken");
+        // when there is an accessToken in the local storage
+        if (accessToken) return axios.get(`/auth/verifyToken/${accessToken}`)
+            .then(({ data }) => {
+                if (data.authorized && data.user.verified) return getProfile(data.user.userName)
+                if (data.authorized && !data.user.verified) return navigate('/verifyEmail')
+                if (!data.authorized) return navigate('/auth/login')
+            })
+            .catch(err => {
+                setError(err.message);
+            })
+            .finally(() => setLoading(false))
+        // when there is no accessToken in the local storage
+        navigate("/auth/signup");
+    }, []);
     const memoedValue = useMemo(() => ({
         user, login, signup, error, loading, logout
     }), [loading, login, signup, error, user])

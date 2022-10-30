@@ -9,24 +9,21 @@ import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth'
 import usePost from "../hooks/usePost";
+import axios from "../../axios.config";
 
 const Post = (props) => {
     //states
     const [isLiking, setIsLiking] = useState(false)
-    const [likesArray, setLikesArray] = useState(props.likesArray);
     const [showComments, setShowComments] = useState(false)
     const [autoFocus, setAutoFocus] = useState(false);
-    const [numberOfComments, setNumberOfComments] = useState(props.comments);
     const [likes, setLikes] = useState(props.likes);
-    const [saves, setSaves] = useState(props.saves);
+    const [saves, setSaves] = useState(props.saved);
     const [isSaving, setIsSaving] = useState(false);
-    const [savesArray, setSavesArray] = useState(props.savesArray)
     const [isRetweeped, setIsRetweeped] = useState(false);
     const [retweeps, setRetweeps] = useState(props.retweeps);
-    const [retweepsArray, setRetweepsArray] = useState(props.retweepsArray);
     const { user } = useAuth();
     const { postComment, handleLikePost, handleRetweep, handleSavePost } = usePost()
-
+    const [postedBy, setPostedBy] = useState(null);
     const toggleShowComments = () => {
         setShowComments(prevState => {
             return !prevState
@@ -65,16 +62,23 @@ const Post = (props) => {
         postComment(user.name, props.postId, commentData.comment);
     }
 
+    const getPostedBy = async (userName) => {
+        const { data } = await axios.get(`/profiles/${userName}`)
+        setPostedBy(data.profile)
+    }
+
     useEffect(() => {
-        if (savesArray.includes(props.currentUser)) {
+        if (saves.includes(user.userName)) {
             setIsSaving(true)
         }
-        if (likesArray.includes(props.currentUser)) {
+        if (likes.includes(user.userName)) {
             setIsLiking(true)
         }
-        if (retweepsArray.includes(props.currentUser)) {
+        if (retweeps.includes(user.userName)) {
             setIsRetweeped(true)
         }
+        // // get a person who posted a post
+        getPostedBy(props.postedBy);
     }, [])
 
     // update likes
@@ -104,8 +108,8 @@ const Post = (props) => {
     return <div
         className="bg-white border-[1px] w-[650px] h-auto flex flex-col justify-between sm:mx-4  mb-8 rounded-md pl-4 pr-6  py-4  dark:bg-inherit dark:border-gray-700">
         <div className="flex items-center justify-start my-2">
-            {user.profileImage ?
-                <img src={user.profileImage} alt="tweeper" className="w-[36px] h-[36px] rounded-md mr-4" />
+            {postedBy && postedBy.profileImage ?
+                <img src={postedBy.profileImage} alt="tweeper" className="w-[36px] h-[36px] rounded-md mr-4" />
                 :
                 <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200"
                     style={{ fill: "#808080" }} />
@@ -120,16 +124,16 @@ const Post = (props) => {
         <div className="mb-4 mt-2 flex">
             <p className="text-[#4F4F4F] dark:text-[#BDBDBD]">{props.text}</p>
         </div>
-        {props.img !== undefined && <div className="flex object-cover h-[328px] ">
-            <img src={props.img} alt="post" className="rounded-md text-[#4F4F4F] object-cover w-full " />
+        {props.media && <div className="flex object-cover h-[328px] ">
+            <img src={props.media} alt="post" className="rounded-md text-[#4F4F4F] object-cover w-full " />
         </div>}
         <div
             className="flex text-[#BDBDBD] text-[13px] float-right border-b-[1.3px] items-center py-[6px] justify-end px-2">
-            <p className="cursor-pointer ">{likes} Likes</p>
-            <p className="cursor-pointer mx-4" onClick={toggleShowComments}>{numberOfComments} Comments</p>
+            <p className="cursor-pointer ">{likes.length} Likes</p>
+            <p className="cursor-pointer mx-4" onClick={toggleShowComments}>{props.comments.length} Comments</p>
 
-            <p className="cursor-pointer mx-4">{retweeps} Retweeps</p>
-            <p className="cursor-pointer ">{saves} Saved</p>
+            <p className="cursor-pointer mx-4">{retweeps.length} Retweeps</p>
+            <p className="cursor-pointer ">{saves.length} Saved</p>
         </div>
         <div className="w-full flex justify-between items-center py-1 border-b-[1.3px]">
             <button onClick={toggleShowComments}
@@ -159,37 +163,30 @@ const Post = (props) => {
                     className={"text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:hover:bg-black dark:shadow-md dark:bg-inherit"}>
                     <FavoriteBorderOutlinedIcon fontSize="small" className="mr-2" />dislike
                 </button>
-
                 :
-
                 <button
-                    onClick={updateLikes
-
-
-
-
-                    }
+                    onClick={updateLikes}
                     className={"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:text-white dark:shadow-md dark:hover:bg-black bg-inherit"}>
                     <FavoriteBorderOutlinedIcon fontSize="small" className="mr-2" />Like
                 </button>}
             {isSaving ?
                 <button
                     onClick={updateSaves}
-                    className={"text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:bg-black dark:bg-inherit"}>
-                    <BookmarkAddOutlinedIcon fontSize="small" className="mr-2" />Saved
+                    className={"text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:hover:bg-black dark:shadow-md dark:bg-inherit"}>
+                    <BookmarkAddOutlinedIcon fontSize="small" className="mr-2" />unsave
                 </button>
 
                 :
                 <button
                     onClick={updateSaves}
-                    className={"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:text-white dark:hover:bg-black hover:bg-inherit"}>
+                    className={"text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:text-white dark:shadow-md dark:hover:bg-black bg-inherit"}>
                     <BookmarkAddOutlinedIcon fontSize="small" className="mr-2" />Save
                 </button>}
         </div>
         {showComments &&
             <div
                 className="w-full h-auto max-h-72 border-t-2 overflow-y-scroll flex flex-col">
-                {commentElements.length !== 0 ? props.comments.map((comment, i) => (
+                {props.comments.length !== 0 ? props.comments.map((comment, i) => (
                     <Comment key={i} {...comment} postId={props.postId} createdAt={new Date(comment.commentedAt).toDateString()} />
                 )) :
                     <p className='text-gray-600 mx-auto py-6 capitalize dark:text-white'> no
@@ -198,8 +195,8 @@ const Post = (props) => {
         }
         <div className="flex items-center my-3 dark:z-10">
             {
-                props.image ?
-                    <img src={`${`${props.image}`}`} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" />
+                user.profileImage ?
+                    <img src={user.profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" />
                     : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />
             }
             <textarea

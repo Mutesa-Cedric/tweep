@@ -1,39 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import PersonToFollow from "./PersonToFollow";
+import axios from "../../axios.config"
+import useAuth from '../hooks/useAuth';
 
 let WhoToFollow = (props) => {
-
-    const [hasNoOneToFollow, setHasNoOneToFollow] = useState(false)
     const [peopleToFollow, setPeopleToFollow] = useState([]);
-    useEffect(() => {
-        fetch(`https://mc-tweep.herokuapp.com/getMostFollowedUsers/${props.currentUser}`).then(response => response.json()).then(data => {
-            if (data.profiles.length === 0) return setHasNoOneToFollow(true)
-            setPeopleToFollow(data.profiles)
-        }).catch(err => {
-        })
-    }, [])
+    const { user } = useAuth();
 
-    const finishedFollowing = () => {
-        fetch(`https://mc-tweep.herokuapp.com/getMostFollowedUsers/${props.currentUser}`).then(response => response.json()).then(data => {
-            console.log(data)
-            setPeopleToFollow(data.profiles)
-        }).catch(err => {
+    const getPeopleToFollow = async () => {
+        await axios.get(`/getMostFollowedUsers/${user.userName}`).then(({ data }) => {
+            setPeopleToFollow(data.profiles);
         })
     }
 
-    let profileElements = peopleToFollow.map(person => {
-        return <PersonToFollow
-            key={person._id}
-            name={person.userName}
-            bio={person.bio}
-            finishedFollowing={finishedFollowing}
-            currentUser={props.currentUser}
-            coverPhoto={person.coverImage}
-            profile={person.profileImage}
-            followers={person.followers.length}
-        />
-    })
+    useEffect(() => {
+        getPeopleToFollow();
+    }, [])
 
+    const finishedFollowing = () => {
+        getPeopleToFollow();
+    }
 
     return (
         <div className="mt-3">
@@ -45,14 +31,19 @@ let WhoToFollow = (props) => {
                         <p className={"mb-2  font-[600] text-[14px] dark:text-white"}>Who
                             to follow</p>
                     </div>
-                    {hasNoOneToFollow ?
+                    {peopleToFollow.length > 0 ?
+                        peopleToFollow.map(person => (
+                            <PersonToFollow finishedFollowing={finishedFollowing} key={person._id} {...person} />
+                        ))
+                        :
                         <div>
-                            <p className={ "text-[#828282] py-24 border-t-2 text-xl dark:text-gray-500"}>No one left to follow</p>
+                            <p className={"text-[#828282] py-24 border-t-2 text-xl dark:text-gray-500"}>No one left to follow</p>
                         </div>
-                        : profileElements}
+                    }
                 </div>
             </div>
         </div>
     )
 }
+
 export default WhoToFollow

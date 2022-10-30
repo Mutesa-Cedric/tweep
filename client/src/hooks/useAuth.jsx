@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     const { pathname } = useLocation();
 
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(null);
     const [error, setError] = useState(null);
 
     /** this is a login function which receives email and password of the user */
@@ -28,11 +28,17 @@ export const AuthProvider = ({ children }) => {
         await axios.post('/login', {
             email: email,
             password: password
-        }).then(data => {
-            window.localStorage.setItem("accessToken", data.accessToken);
-            navigate('/');
+        }).then(({ data }) => {
+            if (data.loggedIn) {
+                window.localStorage.setItem("accessToken", data.accessToken);
+                navigate('/');
+            } else {
+                setError(data.message);
+            }
         })
-            .catch(err => setError(err.message))
+            .catch(err => {
+                setError(err.message)
+            })
             .finally(setLoading(false))
     }
 
@@ -57,8 +63,6 @@ export const AuthProvider = ({ children }) => {
         navigate('/auth/login')
     }
 
-    // getProfile function
-
     async function getProfile(username) {
         setLoading(true);
         await axios.get(`/profiles/${username}`)
@@ -68,24 +72,35 @@ export const AuthProvider = ({ children }) => {
             .catch(err => setError(err.message))
             .finally(() => setLoading(false))
     }
+    // getProfile function
 
 
     useEffect(() => {
         setLoading(true);
         const accessToken = window.localStorage.getItem("accessToken");
 
-        if (pathname === "/auth/signup" || pathname === "/auth/login") return;
-        if (accessToken) return axios.get(`/auth/verifyToken/${accessToken}`)
-            .then(({ data }) => {
-                if (data.authorized && data.user.verified) return getProfile(data.user.userName)
-                if (data.authorized && !data.user.verified) return navigate('/verifyEmail')
-                if (!data.authorized) return navigate('/auth/login')
-            })
-            .catch(err => {
-                setError(err.message);
-            })
-            .finally(() => setLoading(false))
-        navigate("/auth/signup");
+        if (pathname === "/auth/signup" || pathname === "/auth/login") {
+            setLoading(false);
+        } else {
+            if (accessToken) {
+                axios.get(`/auth/verifyToken/${accessToken}`)
+                    .then(({ data }) => {
+                        if (data.authorized && data.user.verified) {
+                            getProfile(data.user.userName)
+                        }
+                        else if (data.authorized && !data.user.verified) {
+                            navigate('/verifyEmail')
+                        }
+                        else { navigate('/auth/login') }
+                    })
+                    .catch(err => {
+                        setError(err.message);
+                    })
+                    .finally(() => setLoading(false))
+            } else { navigate("/auth/signup") }
+        }
+
+        setLoading(false);
     }, []);
     const memoedValue = useMemo(() => ({
         user, login, signup, error, loading, logout

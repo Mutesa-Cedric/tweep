@@ -6,19 +6,19 @@ import SideSection from '../../components/SideSection';
 import Post from '../../components/Post';
 import backgroundCover from '../../images/background.png'
 import profileAvatar from "../../images/profileAvatar.png"
-// import cover from '../../images/cover2.jpg';
-
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import PersonRemoveAlt1OutlinedIcon from '@mui/icons-material/PersonRemoveAlt1Outlined';
-let Profile = (props) => {
+import useAuth from '../../hooks/useAuth';
 
+
+const Profile = (props) => {
+    const { user } = useAuth();
     //getting a search parameter from the url
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
     const username = urlParams.get('user');
     //getting a search parameter from the url
 
-    //states
     const [isFollowing, setIsFollowing] = useState(false)
     const [hasProfile, setHasProfile] = useState(false)
     const [posts, setPosts] = useState([])
@@ -28,8 +28,9 @@ let Profile = (props) => {
     const [searchedUserFound, setSearchedUserFound] = useState(false);
     const [searchedUserFollowers, setSetSearchedUserFollowers] = useState(0);
     const [allSet, setAllSet] = useState(false);
-    // console.log(currentUserProfile)
-    console.log(isFollowing)
+
+    //states
+
     //checking if the user is logged in
     let navigate = useNavigate()
 

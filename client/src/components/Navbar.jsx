@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import React, { useState, useEffect } from 'react'
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -9,28 +9,14 @@ import PersonIcon from '@mui/icons-material/Person';
 import ThemeToggler from "./ThemeToggler";
 import useDarkMode from "../hooks/useDarkMode"
 import '../App.css';
+import useAuth from "../hooks/useAuth";
 
 
 let Navbar = (props) => {
     const { theme, _setTheme } = useDarkMode();
-
-    const [profileImage, setProfileImage] = useState('')
-    const [hasProfileImage, setHasProfileImage] = useState(false)
-
-    //getting profile of a user
-    fetch(`https://mc-tweep.herokuapp.com/profiles/${props.userName}`).then(res => res.json()).then(data => {
-        // console.log(data.profile)
-        if (data.profile.profileImage) {
-            setProfileImage(data.profile.profileImage)
-            setHasProfileImage(true)
-        }
-    }, [])
-
-    //getting profile of a user
-
-    //showing or hiding dropdown
-    let navigate = useNavigate()
-    const [showDropDown, setShowDropDown] = useState(false)
+    const { logout, user } = useAuth();
+    const [showDropDown, setShowDropDown] = useState(false);
+    
     const toggleDropDown = () => {
         setShowDropDown(prevState => {
             return !prevState
@@ -44,11 +30,6 @@ let Navbar = (props) => {
             })
         })
     })
-
-    const logout = () => {
-        window.localStorage.removeItem('accessToken')
-        navigate('/auth/login')
-    }
 
     return (
         <div id="nav" className={"w-full h-16 lg:px-[72px] md:px-7 px-3 bg-white fixed left-0 top-0 z-10 dark:shadow-md dark:bg-inherit"}>
@@ -75,8 +56,8 @@ let Navbar = (props) => {
                 <div className="flex items-center">
                     <Link to="/currentProfile" className="flex items-center relative">
 
-                        {hasProfileImage ? <img src={profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
-                        <p className={"font-[700] text-[14px] text-[#333333] dark:text-white"} id="userName">{props.userName}</p>
+                        {user.profileImage ? <img src={user.profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
+                        <p className={"font-[700] text-[14px] text-[#333333] dark:text-white"} id="userName">{user.username}</p>
                     </Link>
                     <ArrowDropDownOutlinedIcon id="dropdown" fontSize="medium" className="mx-4 cursor-pointer" onClick={toggleDropDown} style={theme === 'dark' ? { fill: "white" } : {}} />
                     <ThemeToggler />

@@ -2,25 +2,23 @@ import React, { useState, useEffect, createContext, useContext, useMemo } from "
 import axios from "../../axios.config"
 const DataContext = createContext({
     posts: null,
-    loading: null,
     loadingPosts: null,
     getSavedPosts: (username) => [],
     getMostRetweepedPosts: () => [],
     getMostCommentedPosts: () => [],
+    getLatestPosts: () => { },
     getTopPosts: () => [],
+    getPostsByUsername: (username) => []
 });
 
 export function DataProvider({ children }) {
-    const [loading, setLoading] = useState(false);
-    const [loadingPosts, setLoadingPosts] = useState(true);
+    const [loadingPosts, setLoadingPosts] = useState(null);
     const [posts, setPosts] = useState(null);
 
     const fetchPosts = async () => {
-        setLoading(true);
-        const data = await axios.get('/posts');
-        setPosts(data.posts);
-        setLoadingPosts(false);
-        setLoading(false);
+        await axios.get('/posts').then(({ data }) => {
+            setPosts(data.posts)
+        })
     }
 
     const getTopPosts = () => {
@@ -39,7 +37,6 @@ export function DataProvider({ children }) {
                 savedPosts.push(post);
             }
         });
-
         setLoading(false);
         return savedPosts;
     }
@@ -64,12 +61,23 @@ export function DataProvider({ children }) {
         return mostCommentedPosts;
     }
 
+    const getLatestPosts = () => {
+        return posts;
+    }
+
+    const getPostsByUsername = (username) => {
+        setLoading(true);
+        return posts.filter(post => post.postedBy === username);
+    }
+
     useEffect(() => {
+        setLoadingPosts(true)
         fetchPosts();
+        setLoadingPosts(false);
     }, []);
 
     const memoedData = useMemo(() => ({
-        posts, loading, getSavedPosts, getMostRetweepedPosts, getMostCommentedPosts, loadingPosts, getTopPosts
+        posts, getSavedPosts, getMostRetweepedPosts, getMostCommentedPosts, loadingPosts, getTopPosts, getLatestPosts, getPostsByUsername
     }), [posts])
 
     return (

@@ -2,28 +2,16 @@ import PublicIcon from '@mui/icons-material/Public';
 import PersonIcon from '@mui/icons-material/Person';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Modal } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import useAuth from '../hooks/useAuth';
 
 let TweepSomething = (props) => {
     let postForm = document.getElementById("postForm")
     let file = document.getElementById("file")
     const [finishedPosting, setFinishedPosting] = useState(false);
     const [noThingToPost, setNoThingToPost] = useState(false);
-    const [profileImage, setProfileImage] = useState('')
-    const [hasProfileImage, setHasProfileImage] = useState(false)
     const [imageToPost, setImageToPost] = useState('')
-    //getting profile of a user
-
-    console.log(props)
-    fetch(`https://mc-tweep.herokuapp.com/profiles/${props.userName}`).then(res => res.json()).then(data => {
-        // console.log(data.profile)
-        if (data.profile.profileImage) {
-            setProfileImage(data.profile.profileImage)
-            setHasProfileImage(true)
-        }
-    }, [])
-
+    const { user } = useAuth();
     //getting profile of a user
 
     const handlePostSubmit = (e) => {
@@ -97,7 +85,7 @@ let TweepSomething = (props) => {
             </div>
             <form id="postForm" onSubmit={handlePostSubmit} onLoad={(e) => e.preventDefault()} encType="multipart/form-data">
                 <div className="flex items-center mt-3">
-                    {hasProfileImage ? <img src={profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
+                    {user.profileImage ? <img src={user.profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
                     <textarea placeholder="what 's happening?" className={"placeholder:text-[#BDBDBD] focus:outline-none border-none w-full h-full bg-inherit dark:text-white"}
                         name="text"
                         id={"textarea"}

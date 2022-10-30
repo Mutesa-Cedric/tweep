@@ -4,15 +4,13 @@ import ThemeToggler from "../../components/ThemeToggler"
 import useAuth from '../../hooks/useAuth';
 
 let Login = (props) => {
-    const [loginError, setLoginError] = useState(false);
-    const { login } = useAuth()
+    const { login, loading, error } = useAuth()
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
     let handleChange = (event) => {
         const { name, value } = event.target;
-        setLoginError(false);
         setFormData(prevData => {
             return {
                 ...prevData,
@@ -22,17 +20,18 @@ let Login = (props) => {
     }
     function submitForm(event) {
         event.preventDefault()
-        login(formData.email, formData.password);
+        login(formData.email, formData.password)
     }
+
     return (
         <div className={"w-screen h-screen overflow-hidden flex items-center flex-col justify-center dark:bg-[#252329]"}>
-            <form method="post" onSubmit={submitForm} className="lg:w-[30%] md:w-[70%] sm:w-[100%] h-auto flex justify-center items-center rounded-3xl border-[1px] border-[#BDBDBD] px-10 py-8">
+            <form onSubmit={submitForm} className="lg:w-[30%] md:w-[70%] sm:w-[100%] h-auto flex justify-center items-center rounded-3xl border-[1px] border-[#BDBDBD] px-10 py-8">
                 <div className="w-full flex flex-col justify-center items-center">
                     <div className="flex justify-between items-center w-full">
                         <div className="flex items-center mb-4">
                             <svg width="41" height="30" viewBox="0 0 41 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clipRule="evenodd" d="M36.1752 23.5172L31.1324 14.7828C30.7713 14.1574 29.8686 14.1574 29.5075 14.7828L24.4647 23.5172C24.1036 24.1426 24.555 24.9244 25.2771 24.9244H35.3628C36.0849 24.9244 36.5363 24.1427 36.1752 23.5172ZM35.1947 12.4375C33.0281 8.6849 27.6118 8.68491 25.4452 12.4375L20.4024 21.1719C18.2359 24.9244 20.9441 29.6151 25.2771 29.6151H35.3628C39.6958 29.6151 42.404 24.9244 40.2375 21.1719L35.1947 12.4375Z" fill="#2F80ED" />
-                                <path fill-rule="evenodd" clipRule="evenodd" d="M26.6734 23.3664L16.5616 5.85216C16.2005 5.22674 15.2978 5.22673 14.9367 5.85217L4.82479 23.3664C4.46371 23.9918 4.91507 24.7736 5.63725 24.7736H25.861C26.5832 24.7736 27.0345 23.9919 26.6734 23.3664ZM20.6238 3.50681C18.4573 -0.245762 13.0409 -0.245757 10.8744 3.50681L0.76252 21.0211C-1.40403 24.7736 1.30416 29.4644 5.63725 29.4644H25.861C30.1941 29.4644 32.9023 24.7736 30.7357 21.0211L20.6238 3.50681Z" fill="#2F80ED" />
+                                <path fillRule="evenodd" clipRule="evenodd" d="M36.1752 23.5172L31.1324 14.7828C30.7713 14.1574 29.8686 14.1574 29.5075 14.7828L24.4647 23.5172C24.1036 24.1426 24.555 24.9244 25.2771 24.9244H35.3628C36.0849 24.9244 36.5363 24.1427 36.1752 23.5172ZM35.1947 12.4375C33.0281 8.6849 27.6118 8.68491 25.4452 12.4375L20.4024 21.1719C18.2359 24.9244 20.9441 29.6151 25.2771 29.6151H35.3628C39.6958 29.6151 42.404 24.9244 40.2375 21.1719L35.1947 12.4375Z" fill="#2F80ED" />
+                                <path fillRule="evenodd" clipRule="evenodd" d="M26.6734 23.3664L16.5616 5.85216C16.2005 5.22674 15.2978 5.22673 14.9367 5.85217L4.82479 23.3664C4.46371 23.9918 4.91507 24.7736 5.63725 24.7736H25.861C26.5832 24.7736 27.0345 23.9919 26.6734 23.3664ZM20.6238 3.50681C18.4573 -0.245762 13.0409 -0.245757 10.8744 3.50681L0.76252 21.0211C-1.40403 24.7736 1.30416 29.4644 5.63725 29.4644H25.861C30.1941 29.4644 32.9023 24.7736 30.7357 21.0211L20.6238 3.50681Z" fill="#2F80ED" />
                             </svg>
                             <h1 className={"mx-2 font-medium text-xl dark:text-[#E0E0E0]"}>Tweep</h1>
                         </div>
@@ -60,14 +59,24 @@ let Login = (props) => {
                         />
                     </div>
                     {
-                        loginError &&
+                        error &&
                         <div className="w-full flex items-center">
-                            <p className='text-xl text-orange-500 py-2 font-semibold'>Invalid email or password!</p>
+                            <p className='text-orange-500 py-2 font-semibold'>Invalid email or password!</p>
                         </div>
                     }
-                    <div className="w-full my-3">
-                        <button className="bg-[#2F80ED] text-white w-full py-2 rounded-[8px] text-lg">Login</button>
-                    </div>
+                    {loading ?
+                        <button disabled type="button" className="text-white bg-[#2F80ED] font-medium rounded-lg px-5 py-2.5 text-center mr-2 cursor-not-allowed  inline-flex items-center w-full my-3">
+                            <svg role="status" className="inline mr-3 w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB" />
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor" />
+                            </svg>
+                            Loading...
+                        </button> :
+                        <div className="w-full my-3">
+                            <button className="bg-[#2F80ED] text-white w-full py-2 rounded-[8px] text-lg">Login</button>
+                        </div>
+                    }
+
                     <div>
                         <p className="text-[#828282] my-4">or continue with these social profiles</p>
                     </div>
@@ -92,7 +101,7 @@ let Login = (props) => {
                         </svg>
                     </div>
                     <div>
-                        <p className="text-[#828282]">don have account ?
+                        <p className="text-[#828282]">don&apos;t have account?
                             <Link to="/auth/signup"><span className="text-[#2F80ED] px-1">Signup</span></Link>
                         </p>
                     </div>

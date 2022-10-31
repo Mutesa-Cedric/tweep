@@ -32,6 +32,7 @@ let Navbar = (props) => {
     })
 
     return (
+        
         <div id="nav" className={"w-full h-16 lg:px-[72px] md:px-7 px-3 bg-white fixed left-0 top-0 z-10 dark:shadow-md dark:bg-inherit"}>
             <div className="w-full h-full flex items-center justify-between relative">
                 {/* logo */}

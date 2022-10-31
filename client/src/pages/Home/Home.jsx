@@ -74,7 +74,7 @@ const Home = (props) => {
                             {/* main */}
                             <div className="mx-auto" >
                                 {<TweepSomething cancelImage={cancelImage} finishEditing={finishEditing} finalPostEdit={finalPostEdit} handleImage={handleImage} userName={user.userName} finishPosting={finishPosting} image={image} />}
-                                {loadingPosts && posts ? <CircularProgress /> :
+                                {loadingPosts  ? <CircularProgress /> :
                                     posts.map(post => (
                                         <Post key={post._id} {...post} />
                                     ))
@@ -89,7 +89,6 @@ const Home = (props) => {
                     </div>
                 </>
             }
-
         </div>
     )
 }

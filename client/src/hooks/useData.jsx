@@ -2,34 +2,29 @@ import React, { useState, useEffect, createContext, useContext, useMemo } from "
 import axios from "../../axios.config"
 const DataContext = createContext({
     posts: null,
+    dataError: null,
     loadingPosts: null,
     getSavedPosts: (username) => [],
     getMostRetweepedPosts: () => [],
     getMostCommentedPosts: () => [],
-    getLatestPosts: () => { },
-    getTopPosts: () => [],
     getPostsByUsername: (username) => []
 });
 
 export function DataProvider({ children }) {
     const [loadingPosts, setLoadingPosts] = useState(null);
     const [posts, setPosts] = useState(null);
+    const [dataError, setDataError] = useState(null);
 
     const fetchPosts = async () => {
         await axios.get('/posts').then(({ data }) => {
             setPosts(data.posts)
+        }).catch(err => {
+            setDataError(err.code)
         })
     }
 
-    const getTopPosts = () => {
-        setLoading(true);
-        const posts = posts.sort((a, b) => b.likes.length - a.likes.length);
-        setLoading(false);
-
-    }
-
     const getSavedPosts = (username) => {
-        setLoading(true);
+        setLoadingPosts(true);
         let savedPosts = [];
 
         posts.forEach(post => {
@@ -37,37 +32,17 @@ export function DataProvider({ children }) {
                 savedPosts.push(post);
             }
         });
-        setLoading(false);
+        setLoadingPosts(false);
         return savedPosts;
     }
 
-    const getMostRetweepedPosts = () => {
-        setLoading(true);
-        let mostRetweepedPosts = posts.sort((a, b) => {
-            return b.retweeps.length - a.retweeps.length
-        });
-        setLoading(false);
-        return mostRetweepedPosts;
-    }
-
-    const getMostCommentedPosts = () => {
-        setLoading(true);
-
-        let mostCommentedPosts = posts.sort((a, b) => {
-            return b.comments.length - a.comments.length
-        });
-
-        setLoading(false);
-        return mostCommentedPosts;
-    }
-
-    const getLatestPosts = () => {
-        return posts;
-    }
 
     const getPostsByUsername = (username) => {
-        setLoading(true);
-        return posts.filter(post => post.postedBy === username);
+        setLoadingPosts(true);
+        let postsOfUser = [];
+        postsOfUser = posts.filter(post => post.postedBy === username);
+        setLoadingPosts(false);
+        return postsOfUser;
     }
 
     useEffect(() => {
@@ -77,7 +52,7 @@ export function DataProvider({ children }) {
     }, []);
 
     const memoedData = useMemo(() => ({
-        posts, getSavedPosts, getMostRetweepedPosts, getMostCommentedPosts, loadingPosts, getTopPosts, getLatestPosts, getPostsByUsername
+        posts, getSavedPosts, dataError, getMostRetweepedPosts, getMostCommentedPosts, loadingPosts, getPostsByUsername
     }), [posts])
 
     return (

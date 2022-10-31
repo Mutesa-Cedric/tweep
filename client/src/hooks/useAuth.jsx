@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
             }
         })
             .catch(err => {
-                setError(err.message)
+                setError(err.code)
             })
             .finally(setLoading(false))
     }
@@ -99,7 +99,6 @@ export const AuthProvider = ({ children }) => {
                     .finally(() => setLoading(false))
             } else { navigate("/auth/signup") }
         }
-
         setLoading(false);
     }, []);
     const memoedValue = useMemo(() => ({

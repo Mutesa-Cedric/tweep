@@ -115,8 +115,8 @@ const Post = (props) => {
                     style={{ fill: "#808080" }} />
             }
             <div className="flex flex-col">
-                <Link to={`/profile/?user=${user.name}`}>
-                    <h1 className={"font-medium capitalize text-black cursor-pointer dark:text-white"}>{props.name}</h1>
+                <Link to={`/profile/?user=${props.postedBy}`}>
+                    <h1 className={"font-medium capitalize text-black cursor-pointer dark:text-white"}>{props.postedBy}</h1>
                 </Link>
                 <p className="text-[#BDBDBD] text-[14px]">{props.createdAt}</p>
             </div>

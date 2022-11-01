@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
 import swal from 'sweetalert';
-const VerifyAccount = (props) => {
+import axios from "../../axios.config"
+const VerifyAccount = () => {
 
     const [verificationCode, setVerificationCode] = useState("")
     const [fullCode, setFullCode] = useState(false)
@@ -19,9 +20,8 @@ const VerifyAccount = (props) => {
     useEffect(() => {
         const accessToken = window.localStorage.getItem("accessToken")
         accessToken ?
-            fetch(`https://mc-tweep.herokuapp.com/auth/verifyToken/${accessToken}`)
-                .then(response => response.json())
-                .then(data => {
+           axios.get(`/auth/verifyToken/${accessToken}`)
+                .then(({data}) => {
                     if (!data.authorized) {
                         navigate('/auth/login')
                     } else if (data.user.verified) {
@@ -32,18 +32,10 @@ const VerifyAccount = (props) => {
     useEffect(() => {
         if (verificationCode.length === 6) {
             setFullCode(true)
-            fetch(`https://mc-tweep.herokuapp.com/verification/verifyEmail`, {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json"
-                },
-                body: JSON.stringify({
+            axios.post(`/verification/verifyEmail`, {
                     email: email,
                     verificationCode: verificationCode
-                })
-            }).then(response =>
-                response.json()
-            ).then(data => {
+                }).then(({data}) => {
                 if (data.success) {
                     swal({
                         title: "Good job!",
@@ -71,16 +63,10 @@ const VerifyAccount = (props) => {
         }
     }, [verificationCode])
 
-    const resendCode = () => {
-        fetch(`https://mc-tweep.herokuapp.com/verification/resendCode`, {
-            method: "POST",
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email
-            })
-        }).then(response => response.json()).then(data => {
+    const resendCode = async () => {
+        await axios.post(`/verification/resendCode`, {
+            email: email
+        }).then(({data}) => {
             data.success ? SetResponseStatus(prevStatus => {
                 return {
                     ...prevStatus,

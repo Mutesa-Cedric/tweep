@@ -4,43 +4,36 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
 import React, { useState, useEffect } from "react";
 import useAuth from '../hooks/useAuth';
+import useData from "../hooks/useData";
+import axios from "../../axios.config"
 
 let TweepSomething = (props) => {
     let postForm = document.getElementById("postForm")
     let file = document.getElementById("file")
-    const [finishedPosting, setFinishedPosting] = useState(false);
-    const [noThingToPost, setNoThingToPost] = useState(false);
     const [imageToPost, setImageToPost] = useState('')
     const { user } = useAuth();
+    const { fetchPosts } = useData();
     //getting profile of a user
 
-    const handlePostSubmit = (e) => {
+    const handlePostSubmit = async (e) => {
         e.preventDefault()
         let formData = new FormData(postForm)
         formData.append('postedAt', `${new Date().getTime()}`)
         formData.append('postedBy', props.userName);
-        // formData.append("media", file.files[0])
 
         if (file.files[0] === undefined) {
-            fetch(`https://mc-tweep.herokuapp.com/posts/newPostWithoutImage`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    text: formData.get('text'),
-                    postedAt: formData.get('postedAt'),
-                    postedBy: formData.get('postedBy')
-                })
-            }).then(response => response.json()).then(data => {
+            await axios.post(`/posts/newPostWithoutImage`, {
+                text: formData.get('text'),
+                postedAt: formData.get('postedAt'),
+                postedBy: formData.get('postedBy')
+            }).then(({ data }) => {
                 if (data.saved === true) {
-                    props.updateDomPost()
+                    fetchPosts();
                     let textArea = document.getElementById('textarea')
                     textArea.textContent = null
                     textArea.value = null
                     props.cancelImage()
                     props.finishPosting()
-                    window.location.reload()
                 }
             }).catch(err => console.error(err))
         }
@@ -51,42 +44,34 @@ let TweepSomething = (props) => {
             };
             reader.readAsDataURL(file.files[0]);
             formData.append("media", imageToPost)
-            fetch(`https://mc-tweep.herokuapp.com/posts/newPost/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    postedAt: `${new Date().getTime()}`,
-                    postedBy: props.userName,
-                    media: props.image,
-                    text: formData.get('text')
-                })
-            }).then(response => response.json())
-                .then(data => {
-                    if (data.saved === true) {
-                        props.updateDomPost()
-                        let textArea = document.getElementById('textarea')
-                        textArea.textContent = null
-                        textArea.value = null
-                        props.cancelImage()
-                        props.finishPosting()
-                        props.updateDomPost()
-                        window.location.reload()
-                    }
-                }).catch(err => console.log(err))
+            await axios.post(`/posts/newPost/`, {
+                postedAt: `${new Date().getTime()}`,
+                postedBy: props.userName,
+                media: props.image,
+                text: formData.get('text')
+            }).then((data) => {
+                if (data.saved === true) {
+                    fetchPosts();
+                    let textArea = document.getElementById('textarea')
+                    textArea.textContent = null
+                    textArea.value = null
+                    props.cancelImage()
+                    props.finishPosting()
+                    props.updateDomPost()
+                }
+            }).catch(err => console.log(err))
         }
     }
 
     return (
-        <div className={"w-[650px] mx-auto sm:mx-4 mb-10 bg-white h-auto shadow-sm rounded-xl px-6 dark:bg-inherit dark:shadow-xl"}>
+        <div className={"w-[650px] mx-auto sm:mx-4 mb-10 bg-white h-auto shadow-sm rounded-xl px-6 dark:bg-inherit dark:shadow-xl dark:border dark:border-gray-600 py-2"}>
             <div className="w-full border-b-[1.5px]">
                 <p className={"text-[#4F4F4F] font-[600] text-[14px] py-2 dark:text-white"}>Tweep something</p>
             </div>
             <form id="postForm" onSubmit={handlePostSubmit} onLoad={(e) => e.preventDefault()} encType="multipart/form-data">
                 <div className="flex items-center mt-3">
-                    {user.profileImage ? <img src={user.profileImage} alt="profile" className="w-[36px] h-[36px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
-                    <textarea placeholder="what 's happening?" className={"placeholder:text-[#BDBDBD] focus:outline-none border-none w-full h-full bg-inherit dark:text-white"}
+                    {user.profileImage ? <img src={user.profileImage} alt="profile" className="w-[36px] h-[40px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
+                    <textarea placeholder="what 's happening?" className={"placeholder:text-[#BDBDBD] focus:outline-none border-none w-full h-full bg-inherit dark:text-white dark:bg-[#322f37] px-4 placeholder:pt-2  bg-gray-100  rounded"}
                         name="text"
                         id={"textarea"}
                     />
@@ -114,7 +99,6 @@ let TweepSomething = (props) => {
                     </div>
                 </div>
             </form>
-
         </div>
     )
 }

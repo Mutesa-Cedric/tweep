@@ -6,21 +6,20 @@ import Navbar from './Navbar';
 
 
 const MainLayout = ({ children }) => {
-    const { user, loading,error } = useAuth();
+    const { user, loading, error } = useAuth();
     const { posts, dataError, loadingPosts } = useData();
 
     return (
         <div className={"bg-[#F2F2F2] dark:bg-[#252329] h-auto overflow-x-hidden min-h-screen"}>
-            {children}
             {
-                loading || !user ?
+                loading || !user || loadingPosts || !posts ?
                     <div className={"w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
                         <CircularProgress />
                     </div> :
-                    <div>
+                    <>
                         <Navbar />
                         {children}
-                    </div>
+                    </>
             }
         </div>
     )

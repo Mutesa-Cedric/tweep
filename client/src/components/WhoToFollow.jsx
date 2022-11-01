@@ -22,11 +22,11 @@ const WhoToFollow = (props) => {
     }
 
     return (
-        <div className="mt-3">
+        <div className="mt-5">
             <div
                 className={"bg-white rounded-xl shadow-sm lg:flex lg:flex-col sm:hidden  dark:bg-inherit"}>
                 <div
-                    className={props.fixSide ? "w-[320px] h-auto top-[64px]  fixed  bg-inherit mt-6 rounded-xl shadow-md  px-6 py-2" : "w-[320px] h-auto  bg-inherit  mt-6 rounded-xl  px-6 py-2"}>
+                    className={props.fixSide ? "w-[320px] h-auto top-[64px]  fixed  bg-inherit mt-6 rounded-xl shadow-md  px-6 py-2  dark:border dark:border-gray-600" : "w-[320px] h-auto  bg-inherit  mt-6 rounded-xl  px-6 py-2  dark:border dark:border-gray-600"}>
                     <div className="w-full flex">
                         <p className={"mb-2  font-[600] text-[14px] dark:text-white"}>Who
                             to follow</p>

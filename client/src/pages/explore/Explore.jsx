@@ -1,11 +1,8 @@
-import Navbar from '../../components/Navbar';
 import React, { useEffect, useState } from "react";
-import CircularProgress from '@mui/material/CircularProgress';
 import Categories from './Categories';
 import Post from "../../components/Post";
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import useData from '../../hooks/useData';
-import useAuth from '../../hooks/useAuth';
 import axios from "../../../axios.config"
 
 const Explore = () => {
@@ -13,9 +10,8 @@ const Explore = () => {
     let urlParams = new URLSearchParams(queryString);
     const filter = urlParams.get('filter');
 
-    const { loadingPosts, posts } = useData();
+    const { posts } = useData();
     const [postsData, setPostsData] = useState(posts);
-    const { user } = useAuth();
 
     // top posts
     async function getTopPosts() {
@@ -72,63 +68,43 @@ const Explore = () => {
 
     useEffect(() => {
         switch (filter) {
-            case 'top':
-                getTopPosts()
+            case 'top': getTopPosts()
                 break;
-            case 'latest':
-                getLatestPosts()
+            case 'latest': getLatestPosts()
                 break;
-            case 'people':
-                getMostRetweetedPosts();
+            case 'people': getMostRetweetedPosts();
                 break;
-            case 'media':
-                getMostCommentedPosts();
+            case 'media': getMostCommentedPosts();
                 break;
             default:
         }
-
     }, [filter])
+
     return (
-
-        <div
-            className={"bg-[#F2F2F2] h-screen overflow-x-hidden dark:bg-[#252329]"}>
-            {
-                loadingPosts || !posts || !user ?
+        <>
+            <div className=" mt-20 flex justify-between xl:px-52 ">
+                <div className=" h-auto flex   justify-between">
+                    <Categories />
+                </div>
+                <div id="expContainer">
                     <div
-                        className={"w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
-                        <CircularProgress />
-                    </div> :
-                    <>
-                        <Navbar toExplore={true} />
-                        <div className=" mt-20 flex justify-between xl:px-52 ">
-                            <div className=" h-auto flex   justify-between">
-                                <Categories />
-                            </div>
-                            <div id="expContainer">
-                                <div
-                                    className='relative  sm:mx-4 w-[650px]   mb-4 items-center flex'>
-                                    <div className="absolute ml-4 rounded-lg">
-                                        <SearchOutlinedIcon fontSize="small" style={{ fill: "#BDBDBD" }} />
-                                    </div>
-                                    <input type='text'
-                                        placeholder=' Find a Tweeper'
-                                        className={'bg-white w-full pl-12 py-3 rounded-md border-none focus:outline-none  shadow-sm placeholder:text-[#BDBDBD] dark:border-solid dark:bg-inherit dark:border dark:border-gray-600 dark:focus:border-gray-400  dark:text-white'}
-                                    />
-                                </div>
-                                <div className="mx-auto w-[745px] ">
-                                    {postsData && postsData.map(post => (
-                                        <Post key={post._id} {...post} />
-                                    )
-                                    )}
-                                </div>
-                            </div>
+                        className='relative  sm:mx-4 w-[650px]   mb-4 items-center flex'>
+                        <div className="absolute ml-4 rounded-lg">
+                            <SearchOutlinedIcon fontSize="small" style={{ fill: "#BDBDBD" }} />
                         </div>
-                    </>
-
-
-            }
-
-        </div >
+                        <input type='text'
+                            placeholder=' Find a Tweeper'
+                            className={'bg-white w-full pl-12 py-3 rounded-md border-none focus:outline-none  shadow-sm placeholder:text-[#BDBDBD] dark:border-solid dark:bg-inherit dark:border dark:border-gray-600 dark:focus:border-gray-400  dark:text-white'}
+                        />
+                    </div>
+                    <div className="mx-auto w-[745px] ">
+                        {postsData && postsData.map(post => (
+                            <Post key={post._id} {...post} />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </>
     )
 
 }

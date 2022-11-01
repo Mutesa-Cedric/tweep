@@ -49,7 +49,7 @@ let Navbar = (props) => {
                 {/* links */}
                 <div id="links" className={"md:flex lg:flex w-96 sm:hidden  items-center justify-between text-[#828282] dark:text-white"}>
                     <Link className="hover:text-[#2f80ed]" to="/"><p className={props.toHome ? "text-[#2F80ED] font-[600] text-[14px] py-3 px-3 border-b-[3px]   border-[#2F80ED]" : " font-[600] text-[14px] py-3 px-3"} >Home</p></Link>
-                    <Link className="hover:text-[#2f80ed]" to="/explore/?filter=top"><p className={props.toExplore ? "text-[#2F80ED] font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]" : "font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] "} >Explore</p></Link>
+                    <Link className="hover:text-[#2f80ed]" to="/explore?filter=top"><p className={props.toExplore ? "text-[#2F80ED] font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]" : "font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] "} >Explore</p></Link>
                     <Link className="hover:text-[#2f80ed]" to="/bookmarks"><p className={props.toBookmarks ? " text-[#2F80ED] font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]" : "font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed]"}>Bookmarks</p></Link>
                 </div>
 

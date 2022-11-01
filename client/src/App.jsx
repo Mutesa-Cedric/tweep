@@ -19,29 +19,19 @@ import { RecoilRoot } from 'recoil';
 
 function App() {
   const [fixSide, setFixSide] = useState(false)
-  const [fixSideSearch, setFixSideSearch] = useState(false)
+  const [fixSideSearch, setFixSideSearch] = useState(false);
+
   useEffect(() => {
-    window.addEventListener("scroll", () => {
-
+    const handleScroll = () => {
       // fixing who to follow
-      if (window.scrollY > 510) {
-        setFixSide(true)
-      } else {
-        setFixSide(false)
-      }
-
+      window.scrollY > 510 ? setFixSide(true) : setFixSide(false)
       //  fixing side nav
+      window.scrollY > 50 ? setFixSideSearch(true) : setFixSideSearch(false)
+    }
 
-      if (window.scrollY > 50) {
-        setFixSideSearch(true)
-      } else {
-        setFixSideSearch(false)
-      }
-    })
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   })
-
-  //file handling
-
 
   return (
     <Router>

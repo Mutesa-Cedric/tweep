@@ -3,7 +3,7 @@ import PersonToFollow from "./PersonToFollow";
 import axios from "../../axios.config"
 import useAuth from '../hooks/useAuth';
 
-let WhoToFollow = (props) => {
+const WhoToFollow = (props) => {
     const [peopleToFollow, setPeopleToFollow] = useState([]);
     const { user } = useAuth();
 
@@ -36,9 +36,7 @@ let WhoToFollow = (props) => {
                             <PersonToFollow finishedFollowing={finishedFollowing} key={person._id} {...person} />
                         ))
                         :
-                        <div>
-                            <p className={"text-[#828282] py-24 border-t-2 text-xl dark:text-gray-500"}>No one left to follow</p>
-                        </div>
+                        <p className={"text-[#828282] py-24 border-t-2 text-xl dark:text-gray-500"}>No one left to follow</p>
                     }
                 </div>
             </div>

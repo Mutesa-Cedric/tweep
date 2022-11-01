@@ -2,26 +2,21 @@ import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined
 import useAuth from '../hooks/useAuth';
 import backgroundCover from '../images/background.png'
 import profileAvatar from "../images/profileAvatar.png"
-
-let PersonToFollow = (props) => {
+import axios from "../../axios.config"
+const PersonToFollow = (props) => {
     const { user } = useAuth();
 
-    const followUser = () => {
-        fetch(`https://mc-tweep.herokuapp.com/profiles/updateFollowers/`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                follower: props.currentUser,
-                following: props.name
-            })
+    const followUser = async () => {
+        await axios.patch(`/profiles/updateFollowers/`, {
+            follower: user.userName,
+            following: props.name
         }).then(response => response.json()).then(data => {
             if (data.status === 200) {
                 props.finishedFollowing()
             }
         }).catch(err => console.log(err))
     }
+
     return (
         <div>
             <div className="flex border-t-[1.3px] pt-4 items-center my-4 justify-between">

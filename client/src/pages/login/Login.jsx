@@ -1,9 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link,  } from 'react-router-dom'
 import React, { useState } from 'react';
 import ThemeToggler from "../../components/ThemeToggler"
 import useAuth from '../../hooks/useAuth';
 
-let Login = (props) => {
+const Login = () => {
     const { login, loading, error } = useAuth()
     const [formData, setFormData] = useState({
         email: '',

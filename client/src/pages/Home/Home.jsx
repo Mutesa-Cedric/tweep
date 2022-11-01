@@ -62,7 +62,7 @@ const Home = (props) => {
 
     return (
         <div className={"bg-[#F2F2F2] dark:bg-[#252329] h-auto overflow-x-hidden min-h-screen"}>
-            {loading || !user ?
+            {loading || !user||!posts ?
                 <div className={"w-full h-screen flex items-center justify-center dark:bg-[#252329]"}>
                     <CircularProgress />
                 </div> :

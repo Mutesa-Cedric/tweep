@@ -6,7 +6,7 @@ import useDarkMode from "../../hooks/useDarkMode";
 import { Link } from 'react-router-dom'
 import ThemeToggler from "../../components/ThemeToggler";
 
-let SignupMain = (props) => {
+const SignupMain = (props) => {
     const { signup, loading, error } = useAuth();
     const { theme, toggleTheme } = useDarkMode();
     let navigate = useNavigate()
@@ -43,48 +43,6 @@ let SignupMain = (props) => {
             })
         } else {
             signup(formData.userName, formData.email, formData.password)
-            // fetch(`https://mc-tweep.herokuapp.com/register`, {
-            //     method: "POST",
-            //     headers: {
-            //         "content-type": "application/json"
-            //     },
-            //     body: JSON.stringify({
-            //         userName: formData.userName,
-            //         email: formData.email,
-            //         password: formData.password
-            //     })
-            // })
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         if (data.success) {
-            //             window.localStorage.setItem("accessToken", data.accessToken)
-            //             window.localStorage.setItem("email", formData.email)
-            //             navigate('/verifyEmail')
-            //         }
-
-            //         else if (data.Status === 500) {
-            //             console.log(data.message)
-            //             swal("sorry, our server is receiving too many requests. Please try after some time", {
-            //                 buttons: [true],
-            //             });
-            //         }
-            //         else if (data.existingUserName) {
-            //             setErrorMessages(prevMessages => {
-            //                 return {
-            //                     ...prevMessages,
-            //                     userNameMessage: "username is taken"
-            //                 }
-            //             })
-            //         } else if (data.existingEmail) {
-            //             setErrorMessages(prevMessages => {
-            //                 return {
-            //                     ...prevMessages,
-            //                     emailMessage: "user with this email already exists"
-            //                 }
-            //             })
-            //         }
-            //     })
-            //     .catch(err => console.log(err));
         }
     }
     useEffect(() => {

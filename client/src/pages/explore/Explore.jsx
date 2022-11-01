@@ -8,7 +8,7 @@ import useData from '../../hooks/useData';
 import useAuth from '../../hooks/useAuth';
 import axios from "../../../axios.config"
 
-let Explore = (props) => {
+const Explore = () => {
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
     const filter = urlParams.get('filter');
@@ -87,7 +87,6 @@ let Explore = (props) => {
             default:
         }
 
-        console.log("filter changed")
     }, [filter])
     return (
 

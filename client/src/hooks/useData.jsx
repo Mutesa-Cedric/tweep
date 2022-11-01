@@ -5,8 +5,6 @@ const DataContext = createContext({
     dataError: null,
     loadingPosts: null,
     getSavedPosts: (username) => [],
-    getMostRetweepedPosts: () => [],
-    getMostCommentedPosts: () => [],
     getPostsByUsername: (username) => []
 });
 
@@ -52,7 +50,7 @@ export function DataProvider({ children }) {
     }, []);
 
     const memoedData = useMemo(() => ({
-        posts, getSavedPosts, dataError, getMostRetweepedPosts, getMostCommentedPosts, loadingPosts, getPostsByUsername
+        posts, getSavedPosts, dataError, loadingPosts, getPostsByUsername
     }), [posts])
 
     return (

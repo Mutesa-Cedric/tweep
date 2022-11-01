@@ -60,7 +60,8 @@ export const AuthProvider = ({ children }) => {
     async function logout() {
         setLoading(true);
         window.localStorage.removeItem('accessToken')
-        navigate('/auth/login')
+        navigate('/auth/login');
+        setLoading(false)
     }
 
     async function getProfile(username) {

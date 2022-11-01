@@ -1,31 +1,20 @@
-import { Link,  } from 'react-router-dom'
+import { Link, } from 'react-router-dom'
 import React, { useState } from 'react';
 import ThemeToggler from "../../components/ThemeToggler"
 import useAuth from '../../hooks/useAuth';
+import { useForm } from "react-hook-form";
 
 const Login = () => {
-    const { login, loading, error } = useAuth()
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
-    let handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData(prevData => {
-            return {
-                ...prevData,
-                [name]: value
-            }
-        })
-    }
-    function submitForm(event) {
-        event.preventDefault()
-        login(formData.email, formData.password)
+    const { login, loading, error } = useAuth();
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+
+    const onSubmit = data => {
+        login(data.email, data.password);
     }
 
-    return (
-        <div className={"w-screen h-screen overflow-hidden flex items-center flex-col justify-center dark:bg-[#252329]"}>
-            <form onSubmit={submitForm} className="lg:w-[30%] md:w-[70%] sm:w-[100%] h-auto flex justify-center items-center rounded-3xl border-[1px] border-[#BDBDBD] px-10 py-8">
+return (
+        <div className={"w-full h-screen overflow-hidden flex items-center flex-col justify-center dark:bg-[#252329]"}>
+            <form onSubmit={handleSubmit(onSubmit)} className="lg:w-[30%] md:w-[70%] sm:w-[100%] h-auto flex justify-center items-center rounded-3xl border-[1px] border-[#BDBDBD] px-10 py-8">
                 <div className="w-full flex flex-col justify-center items-center">
                     <div className="flex justify-between items-center w-full">
                         <div className="flex items-center mb-4">
@@ -42,21 +31,16 @@ const Login = () => {
                     </div>
                     <div className="my-2 flex flex-col w-full">
 
-                        <input type="Email" autoComplete="off"
+                        <input type="Email" autoComplete="off" {...register("email", { required: true })}
                             className={"border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-4 placeholder:text-lg px-4 dark:text-white dark:bg-inherit"}
                             placeholder="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-
                         />
-                        <input type="password" autoComplete="off"
+                        {errors?.email && <p className="text-red-300 font-[600] mx-auto animate-pulse">Invalid Email address</p>}
+                        <input type="password" autoComplete="off" {...register("password", { required: true, min: 3, max: 30 })}
                             className={"border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-2 placeholder:text-lg px-4 dark:text-white dark:bg-inherit"}
                             placeholder="Password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
                         />
+                        {errors?.password && <p className="text-red-300 font-[600] mx-auto animate-pulse">Invalid password!</p>}
                     </div>
                     {
                         error &&
@@ -73,7 +57,7 @@ const Login = () => {
                             Loading...
                         </button> :
                         <div className="w-full my-3">
-                            <button className="bg-[#2F80ED] text-white w-full py-2 rounded-[8px] text-lg">Login</button>
+                            <button type="submit" className="bg-[#2F80ED] text-white w-full py-2 rounded-[8px] text-lg">Login</button>
                         </div>
                     }
 

@@ -1,66 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'
-import swal from 'sweetalert';
+import React from "react";
 import useAuth from "../../hooks/useAuth";
-import useDarkMode from "../../hooks/useDarkMode";
 import { Link } from 'react-router-dom'
 import ThemeToggler from "../../components/ThemeToggler";
+import { useForm } from "react-hook-form";
 
-const SignupMain = (props) => {
+const SignupMain = () => {
     const { signup, loading, error } = useAuth();
-    const { theme, toggleTheme } = useDarkMode();
-    let navigate = useNavigate()
-    const [errorMessages, setErrorMessages] = useState({
-        userNameMessage: "",
-        emailMessage: "",
-        passwordMessage: "",
-        allFieldsMessage: "",
-    })
-    const [formData, setFormData] = useState({
-        userName: "",
-        email: "",
-        password: ""
-    })
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
-    const handleChange = (event) => {
-        let { name, value } = event.target
-        setFormData(prevData => {
-            return {
-                ...prevData,
-                [name]: value
-            }
-        })
+    const onSubmit = data => {
+        signup(data.userName, data.email, data.password);
     }
-    function submitForm(event) {
-
-        event.preventDefault()
-        if (formData.email === '' || formData.password === '' || formData.userName === '') {
-            setErrorMessages(prevMessages => {
-                return {
-                    ...prevMessages,
-                    allFieldsMessage: "all fields are required"
-                }
-            })
-        } else {
-            signup(formData.userName, formData.email, formData.password)
-        }
-    }
-    useEffect(() => {
-        setErrorMessages({
-            userNameMessage: "",
-            emailMessage: "",
-            passwordMessage: ""
-        })
-
-        return () => {
-
-        }
-    }, [formData])
 
     return (
-        <div>
+        <div className="overflow-x-hidden">
             <div className="w-screen h-screen overflow-hidden flex items-center flex-col justify-center dark:bg-[#252329]">
-                <form method="post" onSubmit={submitForm} className="lg:w-[30%] md:w-[70%] sm:w-[100%] h-auto flex justify-center items-center rounded-3xl border-[1px] border-[#BDBDBD] px-14 py-8">
+                <form onSubmit={handleSubmit(onSubmit)} className="lg:w-[30%] md:w-[70%] sm:w-[100%] h-auto flex justify-center items-center rounded-3xl border-[1px] border-[#BDBDBD] px-14 py-8">
                     <div className="w-full flex flex-col justify-center items-center">
                         <div className="flex justify-between items-center w-full">
                             <div className="flex items-center mb-4">
@@ -77,34 +32,24 @@ const SignupMain = (props) => {
                             <p className="dark:text-[#E0E0E0]">start live conversations with other people, tweep your experiences and have fun.</p>
                         </div>
                         <div className="my-2 flex flex-col w-full">
-                            <input type="text" autoComplete="off"
+                            <input type="text" autoComplete="off" {...register("userName", { required: true, min: 2, max: 40 })}
                                 className="border-[1px] border-[#BDBDBD] px-4 rounded-[8px] py-2 my-2 placeholder:text-lg dark:text-white dark:border-[#BDBDBD] dark:bg-inherit"
                                 placeholder="Username"
-                                name="userName"
-                                value={formData.userName}
-                                onChange={handleChange}
                             />
-                            <p className="text-red-300 font-[600] mx-auto animate-pulse">{errorMessages.userNameMessage}</p>
-                            <input type="Email" autoComplete="off"
+                            {errors?.userName && <p className="text-red-300 font-[600] mx-auto animate-pulse">Invalid username</p>}
+                            <input type="Email" autoComplete="off" {...register("email", { required: true })}
                                 className="border-[1px] border-[#BDBDBD] rounded-[8px] py-2 my-2 placeholder:text-lg px-4  dark:text-white dark:border-[#BDBDBD] dark:bg-inherit"
                                 placeholder="email"
-                                name="email"
-                                onChange={handleChange}
-                                value={formData.email}
                             />
-                            <p className="text-red-300 font-[600] mx-auto animate-pulse">{errorMessages.emailMessage}</p>
-                            <input type="password" autoComplete="off"
+                            {errors?.email && <p className="text-red-300 font-[600] mx-auto animate-pulse">Invalid Email address</p>}
+                            <input type="password" autoComplete="off" {...register("password", { required: true, min: 4, max: 30 })}
                                 className={"border-[1px]  border-[#BDBDBD] rounded-[8px] py-2 my-2 placeholder:text-lg px-4  dark:text-white dark:bg-inherit"}
                                 placeholder="Password"
-                                name="password"
-                                onChange={handleChange}
-                                value={formData.password}
                             />
-                            <p className="text-red-300 font-[600] mx-auto animate-pulse">{errorMessages.passwordMessage}</p>
+                            {errors?.password && <p className="text-red-300 font-[600] mx-auto animate-pulse">Invalid password!</p>}
                         </div>
-                        <p className="text-red-300 font-[600] mx-auto animate-pulse">{errorMessages.allFieldsMessage}</p>
                         <div className="w-full my-3">
-                            <button className="bg-[#2F80ED] text-white w-full py-2 rounded-[8px] text-lg">Start tweeping now</button>
+                            <button type="button" className="bg-[#2F80ED] text-white w-full py-2 rounded-[8px] text-lg">Start tweeping now</button>
                         </div>
                         <div>
                             <p className="text-[#828282] my-1">or continue with these social profiles</p>

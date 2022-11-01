@@ -3,7 +3,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import React, { useState, useEffect } from 'react';
 import axios from "../../axios.config";
 import useAuth from "../hooks/useAuth";
-import useData from "../hooks/useData";
 
 const Comment = (props) => {
 
@@ -19,7 +18,7 @@ const Comment = (props) => {
         };
 
         async function getProfile() {
-            await axios.get(`/profiles/${props.name}`).then(({ data }) => {
+            await axios.get(`/profiles/${props.commentedBy}`).then(({ data }) => {
                 if (data.profile.profileImage) {
                     setProfileImage(data.profile.profileImage)
                 }
@@ -61,9 +60,9 @@ const Comment = (props) => {
                         style={{ fill: "#808080" }} />}
                 <div className='flex flex-col w-full pl-2'>
                     <div
-                        className='flex flex-col justify-center bg-[#FAFAFA] rounded-md mb-2 dark:bg-inherit dark:border-gray-700 dark:shadow-md dark:border-[0.2px]'>
+                        className='flex flex-col justify-center bg-[#FAFAFA] rounded-md mb-2 dark:bg-inherit dark:border-gray-700 dark:shadow-md dark:border-[0.2px] py-2 px-4'>
                         <div className='flex items-center mb-2'>
-                            <p className={" font-medium mr-4 dark:text-white"}>{props.name}</p>
+                            <p className={" font-medium mr-4 dark:text-white"}>{props.commentedBy}</p>
                             <p className="text-[14px] text-[#929191]">on {props.createdAt}</p>
                         </div>
                         <div>
@@ -76,9 +75,7 @@ const Comment = (props) => {
                                 <FavoriteBorderOutlinedIcon
                                     fontSize="inherit" className="mr-1 " />dislike
                             </button>
-
                             :
-
                             <button className={"hover:text-[#EB5757] flex items-center"} onClick={likeComment}>
                                 <FavoriteBorderOutlinedIcon
                                     fontSize="inherit" className="mr-1 " />like</button>

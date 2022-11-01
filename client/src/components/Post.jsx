@@ -203,13 +203,13 @@ const Post = (props) => {
                 autoFocus={autoFocus}
                 placeholder="Tweep your reply"
                 rows="1"
-                className="bg-[#FAFAFA] w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none dark:bg-inherit dark:shadow-sm dark:placeholder:text-[#BDBDBD] dark:text-white"
+                className="bg-[#f8f4f4] w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded border-none dark:bg-inherit dark:shadow-sm dark:placeholder:text-[#BDBDBD] dark:text-white dark:bg-[#37333d] pl-4"
                 name="comment"
                 onInput={handleCommentChange}
                 value={commentData.comment}
             ></textarea>
             {sendVisible && <button
-                className="px-5 py-2 flex items-center justify-center bg-blue-500 hover:bg-blue-600  rounded-xl"
+                className="px-5 py-2 flex items-center justify-center bg-blue-500 hover:bg-blue-600  rounded"
                 onClick={updateComments}><SendOutlinedIcon style={{ fill: "white" }} fontSize="small" className="" />
             </button>}
         </div>

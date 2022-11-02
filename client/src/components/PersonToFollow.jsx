@@ -1,7 +1,7 @@
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import useAuth from '../hooks/useAuth';
-import backgroundCover from '../images/background.png'
-import profileAvatar from "../images/profileAvatar.png"
+import backgroundCover from '/images/background.png'
+import profileAvatar from "/images/profileAvatar.png"
 import axios from "../../axios.config"
 const PersonToFollow = (props) => {
     const { user } = useAuth();

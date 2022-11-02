@@ -39,14 +39,14 @@ const Comment = (props) => {
     const likeComment = () => {
         setIsLiking(true)
         setLikes(prevLikes => prevLikes + 1)
-        updateLikes(props.postId)
+        updateLikes(props._id)
     }
 
     // disliking a comment
     const disLikeComment = () => {
         setIsLiking(false)
         setLikes(prevLikes => prevLikes - 1)
-        updateLikes(props.postId)
+        updateLikes(props._id)
     }
     //liking and disliking a comment
 

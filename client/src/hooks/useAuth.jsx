@@ -24,7 +24,8 @@ export const AuthProvider = ({ children }) => {
 
     /** this is a login function which receives email and password of the user */
     async function login(email, password) {
-        setLoading(true)
+        setLoading(true);
+        console.log("login function called")
         await axios.post('/login', {
             email: email,
             password: password
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }) => {
             }
         })
             .catch(err => {
-                setError(err.code)
+                console.log(err);
             })
             .finally(setLoading(false))
     }

@@ -6,7 +6,7 @@ import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import Person from './Person';
-import profile1 from '../../images/commentor1.png';
+import profile1 from '/images/commentor1.png';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import ThemeToggler from "../../components/ThemeToggler";

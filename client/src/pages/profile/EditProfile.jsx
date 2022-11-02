@@ -240,29 +240,11 @@ const EditProfile = (props) => {
                             {/*}*/}
                             <form
                                 className={'text-white relative top-20 px-5 pb-8 flex flex-col items-center justify-evenly h-64'}>
-                                <input
-                                    required={true}
-                                    name={'userName'}
-                                    value={profileData.userName}
-                                    onInput={updateProfileData}
-                                    type={"text"}
-                                    placeholder={'UserName'}
+                                <input required={true} name={'userName'} value={profileData.userName} onInput={updateProfileData} type={"text"} placeholder={'UserName'}
                                     className={'h-12 focus:outline-none pl-6 rounded-2xl bg-inherit border-2 mt-4  w-full '} />
-                                <input
-                                    required={true}
-                                    type={"email"}
-                                    name={'email'}
-                                    onInput={updateProfileData}
-                                    value={profileData.email}
-                                    placeholder={'Email'}
+                                <input required={true} type={"email"} name={'email'} onInput={updateProfileData} value={profileData.email} placeholder={'Email'}
                                     className={'h-12  pl-6 w-full focus:outline-none  rounded-2xl bg-inherit border-2 mt-4'} />
-                                <input
-                                    name={'bio'}
-                                    value={profileData.bio}
-                                    onInput={updateProfileData}
-                                    required={true}
-                                    type={"text"}
-                                    placeholder={'Bio'}
+                                <input name={'bio'} value={profileData.bio} onInput={updateProfileData} required={true} type={"text"} placeholder={'Bio'}
                                     className={'h-12 pl-6  w-full focus:outline-none  rounded-2xl bg-inherit border-2 mt-4'} />
                             </form>
                         </div>

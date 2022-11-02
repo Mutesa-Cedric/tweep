@@ -10,20 +10,22 @@ import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth'
 import usePost from "../hooks/usePost";
 import axios from "../../axios.config";
+import { useForm } from "react-hook-form";
 
 const Post = (props) => {
     //states
     const [isLiking, setIsLiking] = useState(false)
     const [showComments, setShowComments] = useState(false)
     const [autoFocus, setAutoFocus] = useState(false);
-    const [likes, setLikes] = useState(props.likes);
-    const [saves, setSaves] = useState(props.saved);
+    const [likes, setLikes] = useState(props.likes.length);
+    const [saves, setSaves] = useState(props.saved.length);
     const [isSaving, setIsSaving] = useState(false);
     const [isRetweeped, setIsRetweeped] = useState(false);
-    const [retweeps, setRetweeps] = useState(props.retweeps);
+    const [retweeps, setRetweeps] = useState(props.retweeps.length);
     const { user } = useAuth();
     const { postComment, handleLikePost, handleRetweep, handleSavePost } = usePost()
     const [postedBy, setPostedBy] = useState(null);
+
     const toggleShowComments = () => {
         setShowComments(prevState => {
             return !prevState
@@ -59,7 +61,9 @@ const Post = (props) => {
 
     //posting a comment
     const updateComments = () => {
-        postComment(user.name, props.postId, commentData.comment);
+        console.log(commentData.comment);
+        postComment(user.userName, props._id, commentData.comment);
+        commentData.comment = "";
     }
 
     const getPostedBy = async (userName) => {
@@ -68,41 +72,34 @@ const Post = (props) => {
     }
 
     useEffect(() => {
-        if (saves.includes(user.userName)) {
-            setIsSaving(true)
-        }
-        if (likes.includes(user.userName)) {
-            setIsLiking(true)
-        }
-        if (retweeps.includes(user.userName)) {
-            setIsRetweeped(true)
-        }
+        props.saved.includes(user.userName) && setIsSaving(true);
+        props.likes.includes(user.userName) && setIsLiking(true)
+        props.retweeps.includes(user.userName) && setIsRetweeped(true);
+
         // // get a person who posted a post
         getPostedBy(props.postedBy);
+
     }, [])
 
-    // update likes
+    // update likes 
     const updateLikes = () => {
+        isLiking ? setLikes(likes - 1) : setLikes(likes + 1);
         setIsLiking(!isLiking);
-        handleLikePost(user.name, props.postId);
+        handleLikePost(user.userName, props._id);
     }
 
     // updating saves
     const updateSaves = () => {
-        if (isSaving) {
-            setIsSaving(false);
-            setSaves(prevSaves => prevSaves - 1);
-        } else {
-            setIsSaving(true);
-            setSaves(prevSaves => prevSaves + 1);
-        }
-        handleSavePost(user.name, props.postId);
+        setIsSaving(!isSaving);
+        isSaving ? setSaves(saves - 1) : setSaves(saves + 1);
+        handleSavePost(user.userName, props._id);
     }
 
     //retweeping
     const updateRetweeps = () => {
         setIsRetweeped(!isRetweeped);
-        handleRetweep();
+        isRetweeped ? setRetweeps(retweeps - 1) : setRetweeps(retweeps + 1);
+        handleRetweep(user.userName, props._id);
     }
 
     return <div
@@ -129,11 +126,11 @@ const Post = (props) => {
         </div>}
         <div
             className="flex text-[#BDBDBD] text-[13px] float-right border-b-[1.3px] items-center py-[6px] justify-end px-2">
-            <p className="cursor-pointer ">{likes.length} Likes</p>
+            <p className="cursor-pointer ">{likes} Likes</p>
             <p className="cursor-pointer mx-4" onClick={toggleShowComments}>{props.comments.length} Comments</p>
 
-            <p className="cursor-pointer mx-4">{retweeps.length} Retweeps</p>
-            <p className="cursor-pointer ">{saves.length} Saved</p>
+            <p className="cursor-pointer mx-4">{retweeps} Retweeps</p>
+            <p className="cursor-pointer ">{saves} Saved</p>
         </div>
         <div className="w-full flex justify-between items-center py-1 border-b-[1.3px]">
             <button onClick={toggleShowComments}
@@ -145,7 +142,7 @@ const Post = (props) => {
 
                 <button
                     onClick={updateRetweeps}
-                    className="text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:hover:text-[#EB5757]  dark:bg-inherit dark:hover:bg-black">
+                    className="text-[#EB5757] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover:py-2 font-medium rounded-[8px] dark:hover:text-[#EB5757]  dark:bg-inherit dark:hover:bg-black">
                     <CachedOutlinedIcon fontSize="small" className="mr-2" />Retweeped
                 </button>
 
@@ -153,7 +150,7 @@ const Post = (props) => {
 
                 <button
                     onClick={updateRetweeps}
-                    className="text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover: py-2 font-medium rounded-[8px] dark:text-white dark:hover:bg-black dark:bg-inherit">
+                    className="text-[#4F4F4F] flex hover:bg-[#F2F2F2] text-[14px] bg-gray-50 px-8 hover:py-2 font-medium rounded-[8px] dark:text-white dark:hover:bg-black dark:bg-inherit">
                     <CachedOutlinedIcon fontSize="small" className="mr-2" />Retweep
                 </button>}
 
@@ -187,7 +184,7 @@ const Post = (props) => {
             <div
                 className="w-full h-auto max-h-72 border-t-2 overflow-y-scroll flex flex-col">
                 {props.comments.length !== 0 ? props.comments.map((comment, i) => (
-                    <Comment key={i} {...comment} postId={props.postId} createdAt={new Date(comment.commentedAt).toDateString()} />
+                    <Comment key={i} {...comment} postId={props._id} createdAt={new Date(comment.commentedAt).toDateString()} />
                 )) :
                     <p className='text-gray-600 mx-auto py-6 capitalize dark:text-white'> no
                         comments yet! be first to comment</p>}
@@ -203,13 +200,13 @@ const Post = (props) => {
                 autoFocus={autoFocus}
                 placeholder="Tweep your reply"
                 rows="1"
-                className="bg-[#FAFAFA] w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded-md border-none dark:bg-inherit dark:shadow-sm dark:placeholder:text-[#BDBDBD] dark:text-white"
+                className="bg-[#f8f4f4] w-full placeholder:text-[#BDBDBD] placeholder:font-medium placeholder:text-[14px] py-2 focus:outline-none   rounded border-none dark:bg-inherit dark:shadow-sm dark:placeholder:text-[#BDBDBD] dark:text-white dark:bg-[#37333d] pl-4"
                 name="comment"
                 onInput={handleCommentChange}
                 value={commentData.comment}
             ></textarea>
             {sendVisible && <button
-                className="px-5 py-2 flex items-center justify-center bg-blue-500 hover:bg-blue-600  rounded-xl"
+                className="px-5 py-2 flex items-center justify-center bg-blue-500 hover:bg-blue-600  rounded"
                 onClick={updateComments}><SendOutlinedIcon style={{ fill: "white" }} fontSize="small" className="" />
             </button>}
         </div>

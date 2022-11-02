@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import useAuth from '../hooks/useAuth';
 import useData from "../hooks/useData";
 import axios from "../../axios.config"
+import {useForm} from "react-hook-form";
 
 let TweepSomething = (props) => {
     let postForm = document.getElementById("postForm")
@@ -69,7 +70,7 @@ let TweepSomething = (props) => {
                 <p className={"text-[#4F4F4F] font-[600] text-[14px] py-2 dark:text-white"}>Tweep something</p>
             </div>
             <form id="postForm" onSubmit={handlePostSubmit} onLoad={(e) => e.preventDefault()} encType="multipart/form-data">
-                <div className="flex items-center mt-3">
+                <div className="flex  mt-3">
                     {user.profileImage ? <img src={user.profileImage} alt="profile" className="w-[36px] h-[40px] rounded-md mr-4" /> : <PersonIcon fontSize="large" className=" rounded-[50%] w-[36px] h-[36px] mr-4 bg-gray-200" style={{ fill: "#808080" }} />}
                     <textarea placeholder="what 's happening?" className={"placeholder:text-[#BDBDBD] focus:outline-none border-none w-full h-full bg-inherit dark:text-white dark:bg-[#322f37] px-4 placeholder:pt-2  bg-gray-100  rounded"}
                         name="text"

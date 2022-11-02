@@ -3,9 +3,9 @@ import SideSection from '../../components/SideSection';
 import Post from '../../components/Post';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditProfile from "./EditProfile";
-import backgroundCover from '../../images/background.png'
+import backgroundCover from '/images/background.png'
 import { Link } from "react-router-dom";
-import profileAvatar from "../../images/profileAvatar.png"
+import profileAvatar from "/images/profileAvatar.png"
 import useData from '../../hooks/useData';
 import useAuth from '../../hooks/useAuth';
 

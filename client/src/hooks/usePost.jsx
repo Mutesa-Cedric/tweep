@@ -22,8 +22,9 @@ export const PostProvider = ({ children }) => {
             commentedAt: new Date().getTime(),
             likes: []
         }).then(data => {
-            console.log(data)
+            // console.log(data)
         }).catch(err => {
+            // console.log(err)
             setError(err.message)
         })
     }
@@ -35,7 +36,7 @@ export const PostProvider = ({ children }) => {
 
     // handle save post
     async function handleSavePost(username, postId) {
-        await axios.patch(`/posts/updateSaved/${postId}`, { saved: username })
+        await axios.patch(`/posts/updateSaved/${postId}`, { save: username })
     }
 
     // handle like post
@@ -44,11 +45,11 @@ export const PostProvider = ({ children }) => {
     }
 
     const memoedValues = useMemo(() => ({
-        postComment, postLoading, handleRetweep, handleSavePost, handleLikePost, postComment
+        postComment, postLoading, handleRetweep, handleSavePost, handleLikePost
     }), [])
 
     return <PostContext.Provider value={memoedValues}>
-        {children}  
+        {children}
     </PostContext.Provider>
 }
 

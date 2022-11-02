@@ -4,12 +4,15 @@ import axios from "../../axios.config"
 import useAuth from '../hooks/useAuth';
 
 const WhoToFollow = (props) => {
-    const [peopleToFollow, setPeopleToFollow] = useState([]);
+    const [peopleToFollow, setPeopleToFollow] = useState(null);
     const { user } = useAuth();
+    const [loading, setLoading] = useState(true);
 
     const getPeopleToFollow = async () => {
+        setLoading(true);
         await axios.get(`/getMostFollowedUsers/${user.userName}`).then(({ data }) => {
             setPeopleToFollow(data.profiles);
+            setLoading(false);
         })
     }
 
@@ -31,12 +34,20 @@ const WhoToFollow = (props) => {
                         <p className={"mb-2  font-[600] text-[14px] dark:text-white"}>Who
                             to follow</p>
                     </div>
-                    {peopleToFollow.length > 0 ?
+                    {peopleToFollow && peopleToFollow.length > 0 ?
                         peopleToFollow.map(person => (
                             <PersonToFollow finishedFollowing={finishedFollowing} key={person._id} {...person} />
                         ))
                         :
-                        <p className={"text-[#828282] py-24 border-t-2 text-xl dark:text-gray-500"}>No one left to follow</p>
+                        <>
+                            {loading ?
+                                <div className="flex border-t-[1.3px] mt-4 justify-center w-full py-12 items-center">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2F80ED]"></div>
+                                </div>
+                                :
+                                <p className={"text-[#828282] py-24 border-t-2 text-xl dark:text-gray-500"}>No one left to follow</p>
+                            }
+                        </>
                     }
                 </div>
             </div>

@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
 import SideSection from '../../components/SideSection';
 import Post from '../../components/Post';
-import backgroundCover from '../../images/background.png'
-import profileAvatar from "../../images/profileAvatar.png"
+import backgroundCover from '/images/background.png'
+import profileAvatar from "/images/profileAvatar.png"
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import PersonRemoveAlt1OutlinedIcon from '@mui/icons-material/PersonRemoveAlt1Outlined';
 import useAuth from '../../hooks/useAuth';

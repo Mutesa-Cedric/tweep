@@ -10,13 +10,16 @@ import ThemeToggler from "./ThemeToggler";
 import useDarkMode from "../hooks/useDarkMode"
 import '../App.css';
 import useAuth from "../hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 
-let Navbar = (props) => {
+const Navbar = () => {
+    const location = useLocation();
     const { theme, _setTheme } = useDarkMode();
     const { logout, user } = useAuth();
     const [showDropDown, setShowDropDown] = useState(false);
-    
+    const [activePage, setActivePage] = useState(location.pathname.slice(1));
+
     const toggleDropDown = () => {
         setShowDropDown(prevState => {
             return !prevState
@@ -24,15 +27,18 @@ let Navbar = (props) => {
     }
 
     useEffect(() => {
-        window.addEventListener("scroll", () => {
-            setShowDropDown(() => {
-                return false;
-            })
-        })
-    })
+        let handleScroll = () => {
+            setShowDropDown(false);
+        }
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [])
 
+    useEffect(() => {
+        setActivePage(location.pathname.slice(1));
+    }, [location])
     return (
-        
+
         <div id="nav" className={"w-full h-16 pb-2 lg:px-[72px] md:px-7 px-3 bg-white fixed left-0 top-0 z-50 dark:shadow-md dark:bg-[#252329] dark:border-b dark:border-gray-700"}>
             <div className="w-full h-full flex items-center justify-between relative">
                 {/* logo */}
@@ -48,9 +54,9 @@ let Navbar = (props) => {
 
                 {/* links */}
                 <div id="links" className={"md:flex lg:flex w-96 sm:hidden  items-center justify-between text-[#828282] dark:text-white"}>
-                    <Link className="hover:text-[#2f80ed]" to="/"><p className={props.toHome ? "text-[#2F80ED] font-[600] text-[14px] py-3 px-3 border-b-[3px]   border-[#2F80ED]" : " font-[600] text-[14px] py-3 px-3"} >Home</p></Link>
-                    <Link className="hover:text-[#2f80ed]" to="/explore?filter=top"><p className={props.toExplore ? "text-[#2F80ED] font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]" : "font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] "} >Explore</p></Link>
-                    <Link className="hover:text-[#2f80ed]" to="/bookmarks"><p className={props.toBookmarks ? " text-[#2F80ED] font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]" : "font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed]"}>Bookmarks</p></Link>
+                    <Link className="hover:text-[#2f80ed]" to="/"><p className={activePage === "" ? "text-[#2F80ED] font-[600] text-[14px] py-3 px-3 border-b-[3px]   border-[#2F80ED]" : " font-[600] text-[14px] py-3 px-3"} >Home</p></Link>
+                    <Link className="hover:text-[#2f80ed]" to="/explore?filter=top"><p className={activePage === "explore" ? "text-[#2F80ED] font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]" : "font-medium text-[14px] py-3 px-3 hover:text-[#2f80ed] "} >Explore</p></Link>
+                    <Link className="hover:text-[#2f80ed]" to="/bookmarks"><p className={activePage === "bookmarks" ? " text-[#2F80ED] font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed] border-b-[3px]   border-[#2F80ED]" : "font-medium text-[14px]  py-3 px-3 hover:text-[#2f80ed]"}>Bookmarks</p></Link>
                 </div>
 
                 {/* profile */}

@@ -15,7 +15,7 @@ import { ThemeProvider } from "./hooks/useDarkMode";
 import { DataProvider } from "./hooks/useData";
 import { PostProvider } from './hooks/usePost';
 import { RecoilRoot } from 'recoil';
-import MainLayout from './components/MainLayout';
+import MainLayout from './Layouts/MainLayout';
 
 
 function App() {
@@ -54,7 +54,7 @@ function App() {
                       <Route path='/explore' exact element={<Explore />} />
                       <Route path='/' exact element={<Home fixSide={fixSide} />} />
                       <Route path='/profile/' element={<Profile fixSideSearch={fixSideSearch} />} />
-                      <Route path='/currentProfile' element={<CurrentProfile />} />
+                      <Route path='/currentProfile' element={<CurrentProfile/>} />
                     </Routes>
                   </MainLayout>
                 </div>

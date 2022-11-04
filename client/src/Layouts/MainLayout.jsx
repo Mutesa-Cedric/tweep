@@ -2,7 +2,7 @@ import { CircularProgress } from '@mui/material';
 import React from 'react';
 import useAuth from '../hooks/useAuth';
 import useData from '../hooks/useData';
-import Navbar from './Navbar';
+import Navbar from '../components/Navbar';
 
 
 const MainLayout = ({ children }) => {

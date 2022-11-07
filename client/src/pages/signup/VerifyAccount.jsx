@@ -15,5 +15,5 @@ const VerifyAccount=(props)=>{
         </div>
     )
 }
-
+l;
 export default VerifyAccount;

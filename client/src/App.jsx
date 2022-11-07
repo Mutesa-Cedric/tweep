@@ -50,11 +50,11 @@ function App() {
                   </Routes>
                   <MainLayout>
                     <Routes>
-                      <Route path='/bookmarks' exact element={<Bookmarks />} />
+                      <Route path='/bookmarks' exact element={<Bookmarks fixSideSearch={fixSideSearch} />} />
                       <Route path='/explore' exact element={<Explore />} />
                       <Route path='/' exact element={<Home fixSide={fixSide} />} />
                       <Route path='/profile/' element={<Profile fixSideSearch={fixSideSearch} />} />
-                      <Route path='/currentProfile' element={<CurrentProfile/>} />
+                      <Route path='/currentProfile' element={<CurrentProfile />} />
                     </Routes>
                   </MainLayout>
                 </div>

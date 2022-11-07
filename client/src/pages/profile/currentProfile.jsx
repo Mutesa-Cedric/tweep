@@ -11,7 +11,7 @@ import useAuth from '../../hooks/useAuth';
 
 
 const CurrentProfile = (props) => {
-    const { user, loading } = useAuth();
+    const { user } = useAuth();
     const { loadingPosts, posts } = useData();
     const [isEditing, setIsEditing] = useState(false)
     const [userPosts, setUserPosts] = useState(null);
@@ -22,7 +22,7 @@ const CurrentProfile = (props) => {
         }
     }, [user, posts]);
 
-    const [successStatus, setSuccessStatus] = useState({
+    const [setSuccessStatus] = useState({
         coverSuccessful: false,
         profileSuccessful: false,
         aboutSuccessful: false,
@@ -94,36 +94,12 @@ const CurrentProfile = (props) => {
     return (
         <>
             {isEditing && <EditProfile successProfile={successProfile} successAll={successAll} successAbout={successAbout} successCover={successCover} toggleIsEditing={toggleIsEditing} />}
-            {user.coverImage ? <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(${user.coverImage})` }} >
-                <div className={"bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4 dark:bg-[#23212b]"}>
+            <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  xl:px-[210px] lg:px-[100px] md:px-[20px] px-2 flex items-end justify-center" style={{ backgroundImage: `url(${user.coverImage ? backgroundCover : user.coverImage})` }} >
+                <div className={"bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 xl:h-[163px] md:h-[200px] mb-4 dark:bg-[#23212b] dark:shadow-md"}>
                     <div className="flex">
-
-                        {user.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${user.profileImage})` }}>
-                        </div> : <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${profileAvatar})` }}>
-                        </div>}
-                        <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
-                            <div className="flex items-center justify-between  mb-4">
-                                <h1 className={"text-2xl font-[600] dark:text-gray-300"}>{user.userName}</h1>
-                                <p className={"text-[#828282] text-[14px] dark:text-[#828282]"}><span className={"font-[600] text-black dark:text-gray-300"}>{user.following.length}</span> following</p>
-                                <p className={"text-[#828282] text-[14px] dark:text-[#828282]"}><span className={"font-[600] text-black dark:text-gray-300"}>{user.followers.length}</span>  followers</p>
-                            </div>
-                            <div>
-                                <p className={"text-[#828282] dark:font-medium"}>{user.bio ? user.bio : "You have no bio yet!"}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <button className="bg-[#2F80ED] text-white h-max flex items-center justify-between py-1 px-5 capitalize rounded-sm mt-5 mx-10" onClick={toggleIsEditing}>
-                        <EditOutlinedIcon fontSize="small" className="mr-2" /> edit Profile
-                    </button>
-                </div>
-            </div> : <div className="w-full  mt-16 h-[294px] bg-no-repeat bg-cover  px-[210px] flex items-end justify-center" style={{ backgroundImage: `url(${backgroundCover})` }} >
-                <div className={"bg-white flex justify-between w-full rounded-xl relative  top-24 z-0  shadow-sm mr-4 h-[163px] mb-4 dark:bg-[#23212b] dark:shadow-md"}>
-                    <div className="flex">
-                        {user.profileImage ? <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${user.profileImage})` }}>
-                        </div> : <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${profileAvatar})` }}>
-                        </div>}
-                        <div className="flex flex-col absolute left-[20%] top-4 w-2/6 h-auto">
-                            <div className="flex items-center justify-between  mb-4">
+                        <div className="w-[152px] h-[152px] bg-no-repeat bg-cover absolute left-[2.5%] bottom-[35%] rounded-lg " style={{ backgroundImage: `url(${user.profileImage ? user.profileImage : profileAvatar})` }}> </div>
+                        <div className="flex flex-col absolute xl:left-[20%] lg:left-[23%] md:left-[26%] left-[45%] top-4 w-2/6 h-auto">
+                            <div className="flex items-center justify-between  mb-4 space-x-2">
                                 <h1 className={"text-2xl font-medium dark:text-gray-300"}>{user.userName}</h1>
                                 <p className={"text-[#828282] text-[14px] dark:font-medium"}><span className={"font-medium text-black dark:text-gray-300"}>{user.following.length}</span> following</p>
                                 <p className={"text-[#828282] text-[14px] dark:font-medium"}><span className={"font-medium text-black dark:text-gray-300"}>{user.followers.length}</span>  followers</p>
@@ -137,7 +113,7 @@ const CurrentProfile = (props) => {
                         <EditOutlinedIcon fontSize="small" className="mr-2" /> edit Profile
                     </button>
                 </div>
-            </div>}
+            </div>
             <div className=" mt-28 flex justify-between  xl:px-52  ">
                 <div>
                     <SideSection fixLinks={props.fixSideSearch} />
